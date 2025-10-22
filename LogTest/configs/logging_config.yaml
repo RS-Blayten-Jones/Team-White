@@ -1,0 +1,30 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+handlers:
+  general_file:
+    class: logging.FileHandler
+    level: INFO
+    formatter: standard
+    filename: logs/general.log  # relative to working directory
+
+  security_file:
+    class: logging.FileHandler
+    level: WARNING
+    formatter: standard
+    filename: logs/security.log
+
+loggers:
+  generalLogger:
+    level: INFO
+    handlers: [general_file]
+    propagate: False
+
+  securityLogger:
+    level: WARNING
+    handlers: [security_file]
+    propagate: False
