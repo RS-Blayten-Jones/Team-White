@@ -1,0 +1,5 @@
+2025-10-22 22:30:21,598 - securityLogger - WARNING - test_module2.check_access:6 - Access check initiated for role: employee
+2025-10-22 22:30:21,598 - securityLogger - WARNING - test_module2.check_access:9 - Unauthorized access attempt by role: employee
+2025-10-22 22:30:47,722 - securityLogger - WARNING - test_module2.check_access:6 - Access check initiated for role: employee
+2025-10-22 22:30:47,722 - securityLogger - WARNING - test_module2.check_access:9 - Unauthorized access attempt by role: employee
+2025-10-22 22:30:47,723 - securityLogger - WARNING - test_module2.check_access:6 - Access check initiated for role: admin
