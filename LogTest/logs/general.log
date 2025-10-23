@@ -1,7 +1,16 @@
-2025-10-22 14:33:29,802 - generalLogger - INFO - Application logic started.
-2025-10-22 14:33:29,802 - generalLogger - INFO - Calculation result: 21.0
-2025-10-22 14:33:29,802 - generalLogger - INFO - Application logic finished.
-2025-10-22 14:58:57,274 - generalLogger - INFO - Running app logic
-2025-10-22 14:58:57,274 - generalLogger - INFO - App logic completed
-2025-10-22 14:59:41,908 - generalLogger - WARNING - Running app logic
-2025-10-22 14:59:41,908 - generalLogger - INFO - App logic completed
+2025-10-22 22:30:21,594 - generalLogger - INFO - test_module1.run_app_logic:7 - Testing 1.1
+2025-10-22 22:30:21,594 - generalLogger - INFO - test_module1.run_app_logic:8 - Testing 1.2
+2025-10-22 22:30:21,594 - generalLogger - ERROR - test_module1.run_app_logic:12 - Division failed
+Traceback (most recent call last):
+  File "C:\Users\bjones2\Downloads\LogTest\code\test_module1.py", line 10, in run_app_logic
+    1 / 0
+    ~~^~~
+ZeroDivisionError: division by zero
+2025-10-22 22:30:47,717 - generalLogger - INFO - test_module1.run_app_logic:7 - Testing 1.1
+2025-10-22 22:30:47,718 - generalLogger - INFO - test_module1.run_app_logic:8 - Testing 1.2
+2025-10-22 22:30:47,718 - generalLogger - ERROR - test_module1.run_app_logic:12 - Division failed
+Traceback (most recent call last):
+  File "C:\Users\bjones2\Downloads\LogTest\code\test_module1.py", line 10, in run_app_logic
+    1 / 0
+    ~~^~~
+ZeroDivisionError: division by zero

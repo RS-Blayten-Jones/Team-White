@@ -3,14 +3,16 @@ disable_existing_loggers: False
 
 formatters:
   standard:
-    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(module)s.%(funcName)s:%(lineno)d - %(message)s"
+  console:
+    format: "%(name)s;%(levelname)s - %(module)s.%(funcName)s:%(lineno)d - %(message)s"
 
 handlers:
   general_file:
     class: logging.FileHandler
     level: INFO
     formatter: standard
-    filename: logs/general.log  # relative to working directory
+    filename: logs/general.log  #Relative to working directory
 
   security_file:
     class: logging.FileHandler
@@ -18,13 +20,18 @@ handlers:
     formatter: standard
     filename: logs/security.log
 
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: console
+
 loggers:
   generalLogger:
     level: INFO
-    handlers: [general_file]
+    handlers: [general_file, console]
     propagate: False
 
   securityLogger:
     level: WARNING
-    handlers: [security_file]
+    handlers: [security_file, console]
     propagate: False
