@@ -93,4 +93,3 @@ class Joke(ContentObject):
     
     def get_explanation(self) -> str:
         return self.__explanation    
-    
