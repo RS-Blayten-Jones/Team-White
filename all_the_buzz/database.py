@@ -1,5 +1,6 @@
 # content is {"joke": "", "difficulty": ..}
 def add(table, content, person):
+    table.split("_")[1]=="private":
     # check status of person
     # add to table 
     # return 
