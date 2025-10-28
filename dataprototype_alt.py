@@ -58,8 +58,10 @@ ERROR_CODE_MAP = {
     "ChecksumValidationError": (500, "Integrity check failed. Try again later."),
     "FieldValidationError": (400, "One of the fields was of an incorrect type. Please ensure that data is of the correct field type."),
     "LengthValidationError": (413, "One of the fields was too large. Please ensure that data is within acceptable parameters."),
-    "PermissionIncongruency": (405, "User does not have the correction permissions required for this action."),
+    "PermissionIncongruency": (403, "User does not have the correction permissions required for this action."),
 }
+
+
 
 def mongo_safe(func):
     @wraps(func)
@@ -67,7 +69,7 @@ def mongo_safe(func):
         logger = LoggerFactory.get_general_logger()
         try:
             result = func(*args, **kwargs)
-            logger.debug(f"Success! Data: {result}")
+            logger.info(f"Success! Data: {result}")
             return ResponseCode(success=True, error_code=200, error_tag="OK", message="Success!", data=result)
         except PyMongoError as e:
             error_tag = e.__class__.__name__
@@ -178,23 +180,23 @@ class PrivateTriviaDAO(DatabaseAccessObject):
 
 class PublicQuoteDAO(DatabaseAccessObject):
     def __init__(self, client_uri: str, database_name: str):
-        super().__init__("quote_public", client_uri, database_name)
+        super().__init__("quotes_public", client_uri, database_name)
 
     @mongo_safe
     def check_not_used(self) -> ResponseCode:
         self.__logger.debug(f"Checking for no used quotes...")
-        document_list = list(self.__collection.find({"usedStatus": False}))
+        document_list = list(self.__collection.find({"used_status": False}))
         return document_list
     
     @mongo_safe
     def reset_quotes(self) -> ResponseCode:
         self.__logger.debug(f"Reseting all quotes...")
-        result = self.__collection.update_many({}, {"$set": { "usedStatus": True}})
+        result = self.__collection.update_many({}, {"$set": { "used_status": True}})
         return result
 
 class PrivateQuoteDAO(DatabaseAccessObject):
     def __init__(self, client_uri: str, database_name: str):
-        super().__init__("quote_private", client_uri, database_name)
+        super().__init__("quotes_private", client_uri, database_name)
 
 
 
