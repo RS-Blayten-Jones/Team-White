@@ -97,10 +97,6 @@ class ContentObject(ABC):
     def get_content(self) -> str:
         return self.__content
 
-
-
-
-
 class Joke(ContentObject):
     def __init__(self, ID: int, language: str, content: str, difficulty: Difficulty, explanation: str = ""):
         super().__init__(ID, language, content)
