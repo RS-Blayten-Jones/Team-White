@@ -6,6 +6,21 @@ source .\venv\Scripts\activate
  Set-ExecutionPolicy Unrestricted -Force 
  Set-ExecutionPolicy -Scope CurrentUser Unrestricted -Force   
  pip install  
- python --version 
+ python --version
+ pip --version 
  .\venv\Scripts\activate     
  deactivate   
+
+
+Switch to branches (git terminal):
+git checkout (branch name)
+
+git status
+git add . 
+git commit -m "This is my message"
+git pull origin (branch name to pull from) 
+git push origin (branch name to push changes to)
+
+Activate virtual environment (Powershell terminal):
+...\Team-White> .\venv\Scripts\activate
+(venv) ...\Team-White> deactivate
