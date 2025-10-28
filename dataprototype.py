@@ -1,26 +1,48 @@
+from pymongo import MongoClient
+
+from abc import ABC, abstractmethod
+from typing import Optional, Any
+from enum import Enum
+
 class DatabaseAccessObject:
     def __init__(self, client_uri: str, database_name: str):
         self.__client_uri = client_uri
         self.__client = MongoClient(client_uri)
         self.__db = self.__client[database_name]
 
-    def get_by_key(self, ID: int, table: type) -> Optional[dict[str, Any]]: 
+    def get_by_key(self, ID: str, table: type) -> Optional[dict[str, Any]]: 
         collection = self.__db[table.__name__]
-        document = collection.find_one({"_id": ObjectId(ID)})
+        document = collection.find_one({"_id": ID})
         return document
 
-    def get_by_fields(self, table: type, **filters: Any) -> list[dict[str, Any]]:
+    def get_by_fields(self, table: type, filter: dict[str, Any]) -> list[dict[str, Any]]:
         collection = self.__db[table.__name__]
-        document_list = list(collection.find(filters))
+        document_list = list(collection.find(filter))
         return document_list
+    
+    def update_record(self, ID: str, table: type, updates: dict[str, Any]) -> bool:
+        collection = self.__db[table.__name__]
+        update_op = {"$set": updates}
+        result = collection.update_one({"_id": ID}, update_op)
+        return result.acknowledged
+    
+    def create_record(self, table: type, entry: dict[str, Any]) -> str:
+        collection = self.__db[table.__name__]
+        result = collection.insert_one(entry)
+        if(result.acknowledged):
+            return result.inserted_id
+        else:
+            return "ERROR"
+
+    def delete_record(self, ID: str, table: type) -> bool:
+        collection = self.__db[table.__name__]
+        result = collection.delete_one({"_id": ID})
+        return result.acknowledged
+    
 
     __client_uri = None
     __client = None
     __db = None
-
-
-
-
 
 class DAOFactory:
     #Factory for DAO to ensure only one instance exists
@@ -48,25 +70,22 @@ class DAOFactory:
     def reset(cls):
         cls._dao_instance = None
 
-from abc import ABC, abstractmethod
-from typing import Optional, Any
-from enum import Enum
-
 class Difficulty(Enum):
     EASY = 1
     MEDIUM = 2
     HARD = 3
 
 class ContentObject(ABC):
-    def __init__(self, ID: int, language: str, content: str):
+    def __init__(self, language: str, content: str, ID: None):
         self.__ID = ID
         self.__language = language
         self.__content = content
 
+    #Update these functions to first check for ID    
     def get_document_by_ID(self, DAO: DatabaseAccessObject, ID: int) -> dict[str, Any]:
         return DAO.getByKey(ID, type(self))
     
-    def get_document(self, DAO: DatabaseAccessObject, **filters: dict[str, Any]) -> list[dict[str, Any]]:
+    def get_document(self, DAO: DatabaseAccessObject, filters: dict[str, Any]) -> list[dict[str, Any]]:
         return DAO.get_by_fields(type(self), filters)
     
     def get_ID(self) -> int:
@@ -92,4 +111,4 @@ class Joke(ContentObject):
         return self.__difficulty
     
     def get_explanation(self) -> str:
-        return self.__explanation    
+        return self.__explanation

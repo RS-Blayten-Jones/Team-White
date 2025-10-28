@@ -3,6 +3,7 @@ import logging
 import logging.config
 import yaml
 import os
+import config_manager
 
 #Ensures logging security so that malicious user cannot define a new path
 ALLOWED_LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "logs"))
