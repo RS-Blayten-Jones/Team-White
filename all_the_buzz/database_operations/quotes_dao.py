@@ -23,7 +23,7 @@ class PublicQuoteDAO(DatabaseAccessObject):
         #Check to see if there are any unused quotes
         num_unused_quotes = self.__collection.count_documents({"used_status": False})
         if(num_unused_quotes == 0):
-            self.reset_quotes()
+            self._reset_quotes()
             num_unused_quotes = self.__collection.count_documents({"used_status": False})
         today = date.today()
         #Knuth multiplication method; reduced to 32 bit hash-space; spreads out values well
