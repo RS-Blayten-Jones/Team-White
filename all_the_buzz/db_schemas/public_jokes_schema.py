@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv() 
 ATLAS_URI = os.getenv("ATLAS_URI")
 DATABASE_NAME = "team_white_database"
-COLLECTION_NAME = "jokes_private"
+COLLECTION_NAME = "jokes_public"
 
 #this is an example of creating a database connection and is just an example, keep it commented out
 # try:
@@ -21,7 +21,7 @@ COLLECTION_NAME = "jokes_private"
 
 
 #the mongo db schema with the validation criteria
-jokes_private_schema = {
+jokes_public_schema = {
     # $and forces all rules in the array to be true
     "$and": [
         #RULE 1: Basic Structure Validation $jsonSchema
@@ -30,11 +30,9 @@ jokes_private_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "is_edit", "level", "content", "language"], #ADD THE OG ID FIELD 
+                "required": ["_id", "level", "content", "language"], #ADD THE OG ID FIELD 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
-                    "is_edit": {"bsonType": "bool"},
-                    "original_id": {"bsonType": "objectId"},
                     "level": {"bsonType": "int", "enum": [1, 2, 3]},
                     "explanation": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
@@ -55,15 +53,7 @@ jokes_private_schema = {
         },
 
         #RULE 2: Conditional Check: is_edit=True REQUIRES original_id
-        {
-            "$or": [
-                { "is_edit": False },
-                { "$and": [ 
-                    { "is_edit": True },
-                    { "original_id": { "$exists": True, "$ne": None } }
-                ]}
-            ]
-        },
+       
 
         #RULE 3: Conditional Check: level=3 REQUIRES explanation
         {
@@ -97,19 +87,19 @@ jokes_private_schema = {
     ]
 }
 
-#This code underneath is code that is only run once to create a collection with the schema above ^^
+# #This code underneath is code that is only run once to create a collection with the schema above ^^
 # try:
 #     client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
 #     db = client[DATABASE_NAME]
 #     if COLLECTION_NAME in db.list_collection_names(): #this should not be the case but just to be safe
 #         print(f"Updating validation rules for existing collection: {COLLECTION_NAME}...")
-#         db.command('collMod', COLLECTION_NAME, **{'validator': jokes_private_schema, 'validationLevel': 'strict'})
+#         db.command('collMod', COLLECTION_NAME, **{'validator': jokes_public_schema, 'validationLevel': 'strict'})
 #         print("Validation rules updated successfully (validationLevel: strict).")
 #     else:
 #         print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
 #         db.create_collection(
 #             COLLECTION_NAME, 
-#             validator=jokes_private_schema, ****change this line to say collection_privateOrPublic_schema
+#             validator=jokes_public_schema, #****change this line to say collection_publicOrPublic_schema
 #             validationAction='error',
 #             validationLevel='strict'
 #         )

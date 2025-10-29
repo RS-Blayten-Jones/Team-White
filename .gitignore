@@ -1,9 +1,4 @@
-# Python virtual environment (if using one)
-venv/
-
-# Editor/OS temporary files
+.env
+.venv/
 .vscode/
 .DS_Store
-
-# SECRETS
-.env
