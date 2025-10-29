@@ -22,7 +22,8 @@ class PublicQuoteDAO(DatabaseAccessObject):
     def get_quote_of_day(self) -> ResponseCode:
         #Check to see if there are any unused quotes
         num_unused_quotes = self.__collection.count_documents({"used_status": False})
-        if(num_unused_quotes == 0):
+        #If it is a new year OR all of the quotes have been used, reset and get total number of quotes
+        if((today.month == 1 and today.day == 1) or (num_unused_quotes == 0)):
             self._reset_quotes()
             num_unused_quotes = self.__collection.count_documents({"used_status": False})
         today = date.today()
