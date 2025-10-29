@@ -69,22 +69,22 @@ bios_private_schema = {
 }
 
 #This code underneath is code that is only run once to create a collection with the schema above ^^
-try:
-    client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-    db = client[DATABASE_NAME]
-    if COLLECTION_NAME in db.list_collection_names(): #this should not be the case but just to be safe
-        print(f"Updating validation rules for existing collection: {COLLECTION_NAME}...")
-        db.command('collMod', COLLECTION_NAME, **{'validator': bios_private_schema, 'validationLevel': 'strict'})
-        print("Validation rules updated successfully (validationLevel: strict).")
-    else:
-        print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
-        db.create_collection(
-            COLLECTION_NAME, 
-            validator=bios_private_schema, #****change this line to say collection_privateOrPublic_schema
-            validationAction='error',
-            validationLevel='strict'
-        )
-        print("Collection created with validation successfully.")
+# try:
+#     client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
+#     db = client[DATABASE_NAME]
+#     if COLLECTION_NAME in db.list_collection_names(): #this should not be the case but just to be safe
+#         print(f"Updating validation rules for existing collection: {COLLECTION_NAME}...")
+#         db.command('collMod', COLLECTION_NAME, **{'validator': bios_private_schema, 'validationLevel': 'strict'})
+#         print("Validation rules updated successfully (validationLevel: strict).")
+#     else:
+#         print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
+#         db.create_collection(
+#             COLLECTION_NAME, 
+#             validator=bios_private_schema, #****change this line to say collection_privateOrPublic_schema
+#             validationAction='error',
+#             validationLevel='strict'
+#         )
+#         print("Collection created with validation successfully.")
 
 
 
@@ -100,9 +100,9 @@ try:
 #     print(f"Error Message Snippet: {e.details.get('errmsg', 'Validation Error')}")
 
 
-except Exception as e:
-    print(f"An error occurred during connection or command execution: {e}")
+# except Exception as e:
+#     print(f"An error occurred during connection or command execution: {e}")
 
-finally:
-    if 'client' in locals() and client is not None:
-        client.close()
+# finally:
+#     if 'client' in locals() and client is not None:
+#         client.close()
