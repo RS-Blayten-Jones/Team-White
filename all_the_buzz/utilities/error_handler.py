@@ -1,7 +1,7 @@
 from typing import Optional, Any
 from utilities.logger import LoggerFactory
 
-__RESPONSE_MAP = {
+_RESPONSE_MAP = {
     #PyMongo Errors
     "AutoReconnect": (503, "The operation MAY have succeeded, but the connection to the database was lost. Please retry."),
     "BulkWriteError": (400, "The write operation failed due to invalid data."),
@@ -54,7 +54,7 @@ class ResponseCode:
         self.__logger = LoggerFactory.get_general_logger()
         self.__error_tag = error_tag
         #Defualt to 500 error if it cannot be found in look-up table
-        self.__error_code, self.__message = __RESPONSE_MAP.get(error_tag, (500, "An unexpected error occurred."))
+        self.__error_code, self.__message = _RESPONSE_MAP.get(error_tag, (500, "An unexpected error occurred."))
         self.__success = (self.__error_code < 300)
         self.__data = data
         if(not self.__success):
