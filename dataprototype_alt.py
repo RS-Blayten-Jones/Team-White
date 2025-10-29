@@ -7,6 +7,8 @@ from pymongo.errors import PyMongoError
 from functools import wraps
 from dataclasses import dataclass
 from LogTest.code.logger_factory import LoggerFactory
+from dotenv import load_dotenv
+from datetime import date
 
 @dataclass
 class ResponseCode:
@@ -18,7 +20,7 @@ class ResponseCode:
 
 
 
-ERROR_CODE_MAP = {
+ERROR_RESPONSE_MAP = {
     #PyMongo Errors
     "AutoReconnect": (503, "The operation MAY have succeeded, but the connection to the database was lost. Please retry."),
     "BulkWriteError": (400, "The write operation failed due to invalid data."),
@@ -74,7 +76,7 @@ def mongo_safe(func):
         except PyMongoError as e:
             error_tag = e.__class__.__name__
             #Defualt to 500 error if it cannot be found in look-up table
-            error_code, message = ERROR_CODE_MAP.get(error_tag, (500, "An unexpected error occurred."))
+            error_code, message = ERROR_RESPONSE_MAP.get(error_tag, (500, "An unexpected error occurred."))
             logger.error(f"{error_code}. {error_tag}: {message}; data: {result}")
             return ResponseCode(success=False, error_code=error_code, error_tag=error_tag, message=message, data=result)
     return wrapper
@@ -82,11 +84,14 @@ def mongo_safe(func):
 
 
 class DatabaseAccessObject(ABC):
-    def __init__(self, table_name: str, client_uri: str, database_name: str):
-        self.__client = MongoClient(client_uri)
-        self.__db = self.__client[database_name]
+    def __init__(self, table_name: str, client: MongoClient, database_name: str):
+        self.__db = client[database_name]
         self.__collection = self.__db[table_name]
         self.__logger = LoggerFactory.get_general_logger()
+
+    #Hook method; this should set any default field values; just override it
+    def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
+        return entry  #Default: no changes
 
     @mongo_safe
     def get_by_key(self, ID: str) -> ResponseCode:
@@ -111,7 +116,7 @@ class DatabaseAccessObject(ABC):
         return random_document
     
     @mongo_safe
-    def get_short_content(self, numReturned: int, filter: dict[str, Any] = None, max_length: int = 80) -> ResponseCode:
+    def get_short_record(self, numReturned: int, filter: dict[str, Any] = None, max_length: int = 80) -> ResponseCode:
         filter = filter or {}
         self.__logger.debug(f"Getting  {numReturned} random short (less than {max_length} characters) {self.__class__.__name__} record by fields {filter}.")
         #randomizes the result, because I guess it does not matter?
@@ -143,6 +148,7 @@ class DatabaseAccessObject(ABC):
     
     @mongo_safe
     def create_record(self, entry: dict[str, Any]) -> ResponseCode:
+        entry = self._prepare_entry(entry) #Determines if there should be default field values; override in subclass
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {result.inserted_id}")
@@ -182,21 +188,44 @@ class PublicQuoteDAO(DatabaseAccessObject):
     def __init__(self, client_uri: str, database_name: str):
         super().__init__("quotes_public", client_uri, database_name)
 
-    @mongo_safe
-    def check_not_used(self) -> ResponseCode:
-        self.__logger.debug(f"Checking for no used quotes...")
-        document_list = list(self.__collection.find({"used_status": False}))
-        return document_list
+    #used_status should default to false when added!
+    def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
+        entry["used_status"] = False
+        return entry
     
     @mongo_safe
     def reset_quotes(self) -> ResponseCode:
         self.__logger.debug(f"Reseting all quotes...")
-        result = self.__collection.update_many({}, {"$set": { "used_status": True}})
+        result = self.__collection.update_many({}, {"$set": {"used_status": False}})
         return result
+    
+    @mongo_safe
+    def get_quote_of_day(self) -> ResponseCode:
+        #Check to see if there are any unused quotes
+        num_unused_quotes = self.__collection.count_documents({"used_status": False})
+        if(num_unused_quotes == 0):
+            self.reset_quotes()
+            num_unused_quotes = self.__collection.count_documents({"used_status": False})
+        today = date.today()
+        #Knuth multiplication method; reduced to 32 bit hash-space; spreads out values well
+        #Unique value for each day...
+        seed = 10000*today.year + 100*today.month + today.day
+        hashed = (seed * 2654435761) % 2**32
+        unused_list = list(self.__collection.find({"used_status": False}))
+        #Obtain a record using a hashed value so that it is unified across users and not random per session
+        record = unused_list[hashed % num_unused_quotes]
+        #Ensure that this quote has been used so that it is not used again until it has been reset
+        self.update_record(record["_id"], {"used_status": True})
+        return record
 
 class PrivateQuoteDAO(DatabaseAccessObject):
     def __init__(self, client_uri: str, database_name: str):
         super().__init__("quotes_private", client_uri, database_name)
+
+    #used_status should default to false when added!    
+    def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
+        entry["used_status"] = False
+        return entry
 
 
 
