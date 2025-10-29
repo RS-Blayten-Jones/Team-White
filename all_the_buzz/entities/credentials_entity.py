@@ -1,12 +1,11 @@
 # house all entity classes
 class Credentials:
-    def __init__(self, id=0, fname="Mike", lname="Tiger", 
-                 role="Manager", department="Sales", 
+    def __init__(self, id="0", fname="Mike", lname="Tiger", 
+                 department="Sales", 
                  title="Manager", location="United States" ):
         self.__id=id
         self.__fname=fname
         self.__lname=lname
-        self.__role=role
         self.__department=department
         self.__title=title
         self.__location=location
@@ -19,9 +18,9 @@ class Credentials:
     def id(self,id):
         if id is None:
             raise ValueError("Missing ID")
-        elif not isinstance(id,int):
+        elif not isinstance(id,str):
             raise ValueError("Id must be integer")
-        elif id < 0:
+        elif len(id) < 0:
             raise ValueError("ID must be zero or higher")
         else:
             self.__id=id
@@ -64,25 +63,6 @@ class Credentials:
             raise ValueError("Last name must be letters")
         else:
             self.__fname=lname.strip()
-
-    @property
-    def role(self):
-        return self.__role
-    
-    @role.setter
-    def role(self, role):
-        if role is None:
-            raise ValueError("Role must be present")
-        elif not isinstance(role, str):
-            raise ValueError("Role must be a string")
-        elif len(role.strip()) == 0:
-            raise ValueError("Role must not be all spaces")
-        elif len(role.strip()) > 50:
-            raise ValueError("Role is too long")
-        elif not all(part.isalpha() for part in role.strip().split()):
-            raise ValueError("Role must only be alphabet")
-        else:
-            self.__role=role
 
     @property
     def department(self):
@@ -142,16 +122,20 @@ class Credentials:
     @staticmethod
     def from_json_object(content):
         #check is content has proper fields (maybe validation schema)
-        return Credentials(content["id"], content["first_name"], 
-                           content["last_name"], content["role"],
-                           content["department"], content["title"],
-                           content["location"])
+        requried_fields=['id','fName','lName','dept','title','loc']
+        error_field='mesg'
+        if not isinstance(content, dict):
+            raise ValueError("Must be dictionary input")
+        elif error_field in content:
+            raise ValueError(content[error_field])
+        elif not all(key in content for key in requried_fields):
+            raise ValueError("Missing required fields")
+        else:
+            return Credentials(content["id"], content["fName"], 
+                           content["lName"], content["dept"], 
+                           content["title"], content["loc"])
     
-    def to_json_object(self):
-        pass
-
-person=Credentials()
-print(person.title)
+    
 
 class Token:
     def __init__(self, token):
@@ -175,7 +159,14 @@ class Token:
 
     @staticmethod
     def from_json_object(content):
-        return Token(content["token"])
+        #check content is proper type
+        required_fields=['token']
+        if not isinstance(content, dict):
+            raise ValueError("Must be of type dictionary")
+        elif not all(key in content for key in required_fields):
+            raise ValueError("Missing Requried fields")
+        else:
+            return Token(content["token"])
     
     def to_json_object(self):
         return {'token': self.__token}
