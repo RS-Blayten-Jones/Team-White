@@ -1,3 +1,5 @@
-.vscode
+.venv/
 .env
-all_the_buzz/config_files/
+.vscode/
+.DS_Store
+all_the_buzz/configs/
