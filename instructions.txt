@@ -22,5 +22,5 @@ git pull origin (branch name to pull from)
 git push origin (branch name to push changes to)
 
 Activate virtual environment (Powershell terminal):
-...\Team-White> .\venv\Scripts\activate
-(venv) ...\Team-White> deactivate
+...\Team-White> .\.venv\Scripts\activate
+(.venv) ...\Team-White> deactivate
