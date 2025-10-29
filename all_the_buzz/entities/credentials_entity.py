@@ -1,8 +1,31 @@
+'''
+credentials_entity.py
+
+This module contains entity classes for data related to the authentication.
+
+Classes:
+    Credentials: An entity class for storing and validating credential information. 
+    Token: An entity class for storing and validating the token
+'''
+
 # house all entity classes
 class Credentials:
+    '''
+    Validates credential data passed to it.
+    This class includes the id, first name, last name, department,
+    title, and location information for the user.
+    
+    To initialize this class, you can use the from_json_object method.
+    To do this just pass in a dict in form:
+    {'id': <id>, 'fname' : <fname>, 'lname': <lname>,
+    'department': <department>, 'title':<title>,
+    'location':<location>}
+
+    All fields are required.
+    '''
     def __init__(self, id="0", fname="Mike", lname="Tiger", 
-                 department="Sales", 
-                 title="Manager", location="United States" ):
+                 department="Sales", title="Manager", 
+                 location="United States" ):
         self.__id=id
         self.__fname=fname
         self.__lname=lname
