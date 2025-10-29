@@ -1,4 +1,5 @@
-.env
 .venv/
+.env
 .vscode/
 .DS_Store
+all_the_buzz/configs/
