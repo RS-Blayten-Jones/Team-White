@@ -1,2 +1,12 @@
+<<<<<<< HEAD
 venv
 .env
+=======
+.venv/
+.env
+.vscode/
+.DS_Store
+all_the_buzz/configs/
+all_the_buzz/logs/
+__pycache__/
+>>>>>>> 610e0836ca903249213ef12a88648372f930f834

@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv() 
 ATLAS_URI = os.getenv("ATLAS_URI")
 DATABASE_NAME = "team_white_database"
-COLLECTION_NAME = "jokes_private"
+COLLECTION_NAME = "bios_private"
 
 #this is an example of creating a database connection and is just an example, keep it commented out
 # try:
@@ -21,7 +21,7 @@ COLLECTION_NAME = "jokes_private"
 
 
 #the mongo db schema with the validation criteria
-jokes_private_schema = {
+bios_private_schema = {
     # $and forces all rules in the array to be true
     "$and": [
         #RULE 1: Basic Structure Validation $jsonSchema
@@ -30,26 +30,21 @@ jokes_private_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "is_edit", "level", "content", "language"], #ADD THE OG ID FIELD 
+                "required": ["_id", "is_edit", "name", "paragraph", "language" ,"source_url"], #ADD THE OG ID FIELD 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "is_edit": {"bsonType": "bool"},
                     "original_id": {"bsonType": "objectId"},
-                    "level": {"bsonType": "int", "enum": [1, 2, 3]},
-                    "explanation": {"bsonType": "string"},
+                    "birth_year": {"bsonType": "int"},
+                    "death_year": {"bsonType": "int"},
+                    "name": {"bsonType": "string"},
+                    "paragraph": {"bsonType": "string"},
+                    "summary": {"bsonType": "string"},
+                    "source_url": {"bsonType": "string"}, 
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined
-                    "content": {
-                        "bsonType": "object",
-                        "required": ["type"],
-                        "properties": {
-                            "type": {"bsonType": "string", "enum": ["one_liner", "qa"]},
-                            "text": {"bsonType": "string"},
-                            "question": {"bsonType": "string"},
-                            "answer": {"bsonType": "string"}
-                        }
-                    }
+                    
                 }
             }
         },
@@ -66,34 +61,10 @@ jokes_private_schema = {
         },
 
         #RULE 3: Conditional Check: level=3 REQUIRES explanation
-        {
-            "$or": [
-                { "$and": [
-                    { "level": { "$in": [1, 2] } }, # Valid if level is 1 or 2
-                ]},
-                { "$and": [
-                    { "level": 3 },                 # OR Valid if level is 3 AND
-                    { "explanation": { "$exists": True, "$ne": None } } #
-                ]}
-            ]
-        },
+        
 
         #RULE 4: Conditional Check: Content Structure for QA vs. One Liner
-        {
-            "$or": [
-                # CASE A: If type is 'qa', then 'question' and 'answer' MUST exist
-                { "$and": [
-                    { "content.type": "qa" },
-                    { "content.question": { "$exists": True, "$ne": None } },
-                    { "content.answer": { "$exists": True, "$ne": None } },
-                ]},
-                # CASE B: If type is 'one_liner', then 'text' MUST exist
-                { "$and": [
-                    { "content.type": "one_liner" },
-                    { "content.text": { "$exists": True, "$ne": None } }
-                ]}
-            ]
-        }
+        
     ]
 }
 
@@ -103,13 +74,13 @@ jokes_private_schema = {
 #     db = client[DATABASE_NAME]
 #     if COLLECTION_NAME in db.list_collection_names(): #this should not be the case but just to be safe
 #         print(f"Updating validation rules for existing collection: {COLLECTION_NAME}...")
-#         db.command('collMod', COLLECTION_NAME, **{'validator': jokes_private_schema, 'validationLevel': 'strict'})
+#         db.command('collMod', COLLECTION_NAME, **{'validator': bios_private_schema, 'validationLevel': 'strict'})
 #         print("Validation rules updated successfully (validationLevel: strict).")
 #     else:
 #         print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
 #         db.create_collection(
 #             COLLECTION_NAME, 
-#             validator=jokes_private_schema, ****change this line to say collection_privateOrPublic_schema
+#             validator=bios_private_schema, #****change this line to say collection_privateOrPublic_schema
 #             validationAction='error',
 #             validationLevel='strict'
 #         )
