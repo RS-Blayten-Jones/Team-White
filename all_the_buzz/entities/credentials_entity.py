@@ -43,8 +43,8 @@ class Credentials:
             raise ValueError("Missing ID")
         elif not isinstance(id, str):
             raise ValueError("Id must be string")
-        elif id.strip() == "":
-            raise ValueError("ID cannot be empty")
+        elif len(id) == 0:
+            raise ValueError("ID too short")
 
         else:
             self.__id=id
@@ -60,8 +60,8 @@ class Credentials:
             raise ValueError("First name must be provided")
         elif not isinstance(fname, str):
             raise ValueError("First name must be a string")
-        elif len(fname) < 0:
-            raise ValueError("First name length cannot be negative")
+        elif len(fname) == 0:
+            raise ValueError("First name too short")
         elif len(fname.strip()) == 0:
             raise ValueError("First name can't be all spaces")
         elif len(fname.strip()) > 50:
@@ -81,8 +81,8 @@ class Credentials:
             raise ValueError("Last name must be provided")
         elif not isinstance(lname, str):
             raise ValueError("Last name must be a string")
-        elif len(lname) < 0:
-            raise ValueError("Last name length cannot be negative")
+        elif len(lname) == 0:
+            raise ValueError("Last name too short")
         elif len(lname.strip()) == 0:
             raise ValueError("Last name can't be all spaces")
         elif len(lname.strip()) > 50:
@@ -102,14 +102,12 @@ class Credentials:
             raise ValueError("Department cannot be None")
         elif not isinstance(department, str):
             raise ValueError("Department must be a string")
-        elif len(department) < 0:
-            raise ValueError("Department length cannot be negative")
+        elif len(department) == 0:
+            raise ValueError("Department length cannot be 0")
         elif len(department.strip()) == 0:
             raise ValueError("Department can't only be spaces")
         elif len(department) > 35:
             raise ValueError("Department cannot be greater than 35 characters")
-        elif len(department) < 0:
-            raise ValueError("Department length cannot be negative")
         elif not all(part.isalpha() for part in department.strip().split()):
             raise ValueError("Department must be letters")
         else:
@@ -126,8 +124,8 @@ class Credentials:
             raise ValueError("Title cannot be None")
         elif not isinstance(title, str):
             raise ValueError("Title must be a string")
-        elif len(title) < 0:
-            raise ValueError("Title length cannot be negative")
+        elif len(title) == 0:
+            raise ValueError("Title too short")
         elif len(title.strip()) == 0:
             raise ValueError("Title can't only be spaces")
         elif len(title.strip()) > 50:
@@ -147,8 +145,8 @@ class Credentials:
             raise ValueError("Location cannot be None")
         elif not isinstance(location, str):
             raise ValueError("Location must be a string")
-        elif len(location) < 0:
-            raise ValueError("Location length cannot be negative")
+        elif len(location) == 0:
+            raise ValueError("Location too short")
         elif len(location.strip()) == 0:
             raise ValueError("Location can not be spaces")
         elif len(location.strip()) > 75:

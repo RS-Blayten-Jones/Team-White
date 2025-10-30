@@ -8,7 +8,7 @@ To unit test:
 To test coverage:
 (.venv)...\all_the_buzz> pip install pytest-cov
 (.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term
-
+(.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term-missing
 """
 
 from entities import Credentials, Token
@@ -30,7 +30,7 @@ def test_id_setter_int():
     with pytest.raises(ValueError):
         cred.id = 1234
 
-def test_id_setter_empty():
+def test_id_setter_length_zero():
     cred = Credentials()
     with pytest.raises(ValueError):
         cred.id = ""
@@ -54,11 +54,11 @@ def test_fname_setter_int():
     with pytest.raises(ValueError):
         cred.fname = 1234
 
-def test_fname_setter_negative_len():
+def test_fname_setter_length_zero():
     cred = Credentials()
     cred.id = "1234"
     with pytest.raises(ValueError):
-        cred.fname = -1
+        cred.fname = ""
 
 def test_fname_setter_spaces():
     cred = Credentials()
@@ -97,11 +97,11 @@ def test_lname_setter_int():
     with pytest.raises(ValueError):
         cred.lname = 1234
 
-def test_lname_setter_negative_len():
+def test_lname_setter_length_zero():
     cred = Credentials()
     cred.id = "1234"
     with pytest.raises(ValueError):
-        cred.lname = -1
+        cred.lname = ""
 
 def test_lname_setter_spaces():
     cred = Credentials()
@@ -140,11 +140,11 @@ def test_department_setter_int():
     with pytest.raises(ValueError):
         cred.department = 1234
 
-def test_department_setter_negative():
+def test_department_setter_length_zero():
     cred = Credentials()
     cred.id = "1234"
     with pytest.raises(ValueError):
-        cred.department = -1
+        cred.department = ""
 
 def test_department_setter_spaces():
     cred = Credentials()
@@ -157,12 +157,6 @@ def test_department_setter_greater_than_35():
     cred.id = "1234"
     with pytest.raises(ValueError):
         cred.department = "a" * 36
-
-def test_department_setter_negative():
-    cred = Credentials()
-    cred.id = "1234"
-    with pytest.raises(ValueError):
-        cred.department = -1
 
 def test_department_setter_non_letters():
     cred = Credentials()
@@ -189,11 +183,11 @@ def test_title_setter_int():
     with pytest.raises(ValueError):
         cred.title = 1234
 
-def test_title_setter_negative():
+def test_title_setter_length_zero():
     cred = Credentials()
     cred.id = "1234"
     with pytest.raises(ValueError):
-        cred.title = -1
+        cred.title = ""
 
 def test_title_setter_spaces():
     cred = Credentials()
@@ -232,11 +226,11 @@ def test_location_setter_int():
     with pytest.raises(ValueError):
         cred.location = 1234
 
-def test_location_setter_negative():
+def test_location_setter_length_zero():
     cred = Credentials()
     cred.id = "1234"
     with pytest.raises(ValueError):
-        cred.location = -1
+        cred.location = ""
 
 def test_location_setter_spaces():
     cred = Credentials()
@@ -272,10 +266,10 @@ def test_token_setter_int():
     with pytest.raises(ValueError):
         tok.token = 1234
 
-def test_token_setter_negative():
+def test_token_setter_length_zero():
     tok = Token()
     with pytest.raises(ValueError):
-        tok.token = -1
+        tok.token = ""
 
 def test_token_setter_less_than_250():
     tok = Token()
