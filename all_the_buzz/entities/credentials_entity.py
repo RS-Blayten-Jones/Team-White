@@ -15,7 +15,7 @@ class Credentials:
     This class includes the id, first name, last name, department,
     title, and location information for the user.
     
-    To initialize this class, you can use the from_json_object method.
+    To initialize this class, the from_json_object method can be used.
     To do this just pass in a dict in form:
     {'id': <id>, 'fname' : <fname>, 'lname': <lname>,
     'department': <department>, 'title':<title>,
@@ -39,10 +39,19 @@ class Credentials:
     
     @id.setter
     def id(self,id):
+        """
+        Validates the ID is the in the proper format and follows
+        business logic.
+        
+        Exceptions:
+            ValueError: ID is missing
+            ValueError: ID must be integer
+            ValueError: ID must be zero or higher
+        """
         if id is None:
             raise ValueError("Missing ID")
         elif not isinstance(id,int):
-            raise ValueError("Id must be integer")
+            raise ValueError("ID must be integer")
         elif id < 0:
             raise ValueError("ID must be zero or higher")
         else:
@@ -54,7 +63,16 @@ class Credentials:
     
     @fname.setter
     def fname(self, fname):
-        # check business logic
+        """
+        Validates First Name follows business logic.
+        
+        Exceptions:
+            ValueError: First name must be provide
+            ValueError: First name must be string
+            ValueError: First name must not be all spaces
+            ValueError: First name has too many characters
+            ValueError: First name must only contain letters
+            """
         if fname is None:
             raise ValueError("First name must be provided")
         elif not isinstance(fname, str):
@@ -63,10 +81,10 @@ class Credentials:
             raise ValueError("First name length cannot be negative")
         elif len(fname.strip()) == 0:
             raise ValueError("First name can't be all spaces")
-        elif len(fname.strip()) > 50:
-            raise ValueError("First name must be less than 50 characters")
+        elif len(fname.strip()) > 100:
+            raise ValueError('First name is too long ')
         elif not all(part.isalpha() for part in fname.strip().split()):
-            raise ValueError("First name must be letters")
+            raise ValueError("First name must be alphabetic")
         else:
             self.__fname=fname.strip()
     
@@ -76,6 +94,16 @@ class Credentials:
     
     @lname.setter
     def lname(self,lname):
+        """
+        Method for validating Last name follows business logic.
+        
+        Exceptions:
+            ValueError: Last name must be provided
+            ValueError: Last name must be string
+            ValueError: Last name must not be all spaces
+            ValueError: Last name has too many characters
+            ValueError: Last name must only contain letters
+            """
         if lname is None:
             raise ValueError("Last name must be provided")
         elif not isinstance(lname, str):
@@ -87,7 +115,7 @@ class Credentials:
         elif len(lname.strip()) > 50:
             raise ValueError("Last name must be less than 50 characters")
         elif not all(part.isalpha() for part in lname.strip().split()):
-            raise ValueError("Last name must be letters")
+            raise ValueError("Last name must be alphabetic")
         else:
             self.__lname=lname.strip()
 
@@ -97,6 +125,15 @@ class Credentials:
     
     @department.setter
     def department(self, department):
+        """
+        Method for ensuring department follows business rules.
+        
+        Exceptions:
+            ValueError: Department must be present
+            ValueError: Department must be a string
+            ValueError: Department is too long
+            ValueError: Deparment must only contain letters
+            """
         if department == None:
             raise ValueError("Department cannot be None")
         elif not isinstance(department, str):
@@ -120,6 +157,16 @@ class Credentials:
     
     @title.setter
     def title(self, title):
+        """
+        Method for ensuring title follows business logic.
+
+        Exceptions:
+            ValueError: Title must be present
+            ValueError: Title must be a string
+            ValueError: Title must not be empty
+            ValueError: Title is too long
+            ValueError: Title must only contain letters
+        """
         if title is None:
             raise ValueError("Title cannot be None")
         elif not isinstance(title, str):
@@ -127,10 +174,10 @@ class Credentials:
         elif len(title) < 0:
             raise ValueError("Title length cannot be negative")
         elif len(title.strip()) == 0:
-            raise ValueError("Title can't only be spaces")
-        elif len(title.strip()) > 50:
-            raise ValueError("Title cannot be greater than 50 characters")
-        elif not all(part.isalpha() for part in title.strip().split()):
+            raise ValueError("Title must not be empty")
+        elif len(title.strip()) > 100:
+            raise ValueError("Title too long")
+        elif not all(part.strip().isalpha() for part in title.strip().split()):
             raise ValueError("Title must be only contain letters")
         else:
             self.__title=title.strip()
@@ -141,6 +188,16 @@ class Credentials:
     
     @location.setter
     def location(self, location):
+        """
+        Method for validating location follows business logic.
+        
+        Exceptions:
+            ValueError: Location is required
+            ValueError: Location must be a string
+            ValueError: Location can not be empty
+            ValueError: Location has too many characters
+            ValueError: Location can only contain letters
+            """
         if location is None:
             raise ValueError("Location cannot be None")
         elif not isinstance(location, str):
@@ -159,6 +216,15 @@ class Credentials:
     @staticmethod
     def from_json_object(content):
         #check is content has proper fields (maybe validation schema)
+        """
+        Method for initializing Credential object with dictionary. This
+        method will also ensure the dictionary has the required feilds.
+        
+        Exception:
+            ValueError: Must be a dictionary
+            ValueError: Authentication Server Response
+            ValueError: Required fields are missing
+            """
         requried_fields=['id','fName','lName','dept','title','loc']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -175,8 +241,11 @@ class Credentials:
     
 
 class Token:
-    def __init__(self, token=None):
-        self.__token = token
+    """
+    Entity class for the json web tokens.
+    """
+    def __init__(self, token='ABC'):
+        self.token=token
 
     @property
     def token(self):
@@ -184,12 +253,24 @@ class Token:
     
     @token.setter
     def token(self,token):
+        """
+        Method for validating token follows the business logic.
+
+        Exceptions:
+            ValueError: Token can not be none
+            ValueError: Token must be a string
+            ValueError: Token must be not be empty
+            ValueError: Token is too short
+            ValueError: Token is too long
+        """
         if token is None:
             raise ValueError("Token can not be None")
         elif not isinstance(token, str):
-            raise ValueError("Token must be a string")
+            raise ValueError("Token must be string")
+        elif len(token) == 0:
+            raise ValueError("Token must be be longer than zero")
         elif len(token) < 250:
-            raise ValueError("Token is too short")
+            raise ValueError("Token is too short.")
         elif len(token) > 400:
             raise ValueError("Token is too long")
         else:
@@ -197,7 +278,15 @@ class Token:
 
     @staticmethod
     def from_json_object(content):
-        #check content is proper type
+        """
+        Method for initializing Token object from a dictionary.
+        This method also validates the format of the dictionary and ensures
+        the token field is present.
+        
+        Exceptions:
+            ValueError: Must be a dictionary
+            ValueError: Missing Required fields
+            """
         required_fields=['token']
         if not isinstance(content, dict):
             raise ValueError("Must be of type dictionary")
