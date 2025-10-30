@@ -1,5 +1,7 @@
 from flask import Flask, request
-
+import authentication
+from entities.credentials_entity import Credentials
+from utilities.error_handler import ResponseCode
 
 class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
@@ -10,4 +12,15 @@ app = MyFlask(__name__)
 
 @ app.route("/jokes", methods=["GET"])
 def retrieve_public_jokes_collection():
+    #get the token from the header 
+    user_token = request.headers.get('Bearer')
+    if user_token: #if the token is not null
+        try:
+            cred_object = authentication(user_token) #creates a Credentials object 
+        except Exception as e: #
+            return ResponseCode(e)
+
+
+        
+
     pass
