@@ -4,3 +4,8 @@
 .DS_Store
 all_the_buzz/configs/
 all_the_buzz/logs/
+__pycache__/
+checksummer.py
+all_the_buzz/database_operations/test_file.py
+all_the_buzz/.coverage
+all_the_buzz/entities/__pycache__/credentials_entity.cpython-312.pyc
