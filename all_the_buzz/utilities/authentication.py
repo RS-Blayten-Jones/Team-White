@@ -36,7 +36,7 @@ def authentication(token) -> Credentials:
     # sanitize token to avoid code injection
     safe_token=sanitize_json(token)
     secure_logger.debug("Token successfully sanitized")
-
+    
     # validate token dict is of proper format
     try:
         logger.debug("Begin validating format of token")

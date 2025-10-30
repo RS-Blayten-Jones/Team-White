@@ -26,12 +26,12 @@ class Credentials:
     def __init__(self, id="0", fname="Mike", lname="Tiger", 
                  department="Sales", title="Manager", 
                  location="United States" ):
-        self.__id=id
-        self.__fname=fname
-        self.__lname=lname
-        self.__department=department
-        self.__title=title
-        self.__location=location
+        self.id=id
+        self.fname=fname
+        self.lname=lname
+        self.department=department
+        self.title=title
+        self.location=location
 
     @property
     def id(self):
@@ -110,6 +110,7 @@ class Credentials:
     
     @title.setter
     def title(self, title):
+        print("hi")
         if title is None:
             raise ValueError("Title is nessacary")
         elif not isinstance(title, str):
@@ -118,7 +119,7 @@ class Credentials:
             raise ValueError("Title must be")
         elif len(title.strip()) > 100:
             raise ValueError("Title too long")
-        elif not all(part.isalpha() for part in title.strip().split().strip()):
+        elif not all(part.strip().isalpha() for part in title.strip().split()):
             raise ValueError("Title must be only contain letters")
         else:
             self.__title=title.strip()
@@ -137,7 +138,7 @@ class Credentials:
             raise ValueError("Location can not be empty")
         elif len(location.strip()) > 100:
             raise ValueError("Location too long")
-        elif not all(part.isalpha() for part in location.strip().split().strip()):
+        elif not all(part.strip().isalpha() for part in location.strip().split()):
             raise ValueError("Location can only be letters")
         else:
             self.__location=location.strip()
@@ -161,12 +162,13 @@ class Credentials:
     
 
 class Token:
-    def __init__(self, token):
-        self.__token=token
+    def __init__(self, token='ABC'):
+        self.token=token
 
     @property
     def token(self):
         return self.__token
+    
     @token.setter
     def token(self,token):
         if token is None:
@@ -175,7 +177,7 @@ class Token:
             raise ValueError("Token must be string")
         elif len(token) == 0:
             raise ValueError("Token must be be longer than zero")
-        elif len(token) >200:
+        elif len(token) > 300:
             raise ValueError("Token is too long")
         else:
             self.__token=token
@@ -193,3 +195,8 @@ class Token:
     
     def to_json_object(self):
         return {'token': self.__token}
+    
+Token.from_json_object({'token': 'ABC'})
+tk=Token('ABC')
+tk.token
+Credentials()
