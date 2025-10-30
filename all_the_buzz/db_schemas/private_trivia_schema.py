@@ -36,7 +36,7 @@ trivia_private_schema = {
                     "is_edit": {"bsonType": "bool"},
                     "original_id": {"bsonType": "objectId"},
                     "question": {"bsonType": "string"},
-                    "question": {"bsonType": "string"},
+                    "answer": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined
