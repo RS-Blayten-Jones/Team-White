@@ -16,9 +16,16 @@ def retrieve_public_jokes_collection():
     user_token = request.headers.get('Bearer')
     if user_token: #if the token is not null
         try:
-            cred_object = authentication(user_token) #creates a Credentials object 
-        except Exception as e: #
-            return ResponseCode(e)
+            cred_or_response_code = authentication(user_token) #creates a Credentials object if valid or response code object 
+            if isinstance(cred_or_response_code, ResponseCode): #if it is a response code, just return it
+                return cred_or_response_code
+            if isinstance(cred_or_response_code, Credentials):
+                #if credentials.role == manager, post new joke to public jokes table
+                #else, post new joke to private jokes table
+                pass
+
+        except Exception as e: #error at authentication function in authentication.py
+            return ResponseCode(error_tag=e, data=e)
 
 
         
