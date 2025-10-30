@@ -1,14 +1,13 @@
 '''
 credentials_entity.py
 
-This module contains entity classes for data related to the authentication.
+This module contains entity classes for data related to authentication.
 
 Classes:
     Credentials: An entity class for storing and validating credential information. 
     Token: An entity class for storing and validating the token
 '''
 
-# house all entity classes
 class Credentials:
     '''
     Validates credential data passed to it.
@@ -46,14 +45,14 @@ class Credentials:
         Exceptions:
             ValueError: ID is missing
             ValueError: ID must be integer
-            ValueError: ID must be zero or higher
+            ValueError: ID must not be negative
         """
         if id is None:
             raise ValueError("Missing ID")
         elif not isinstance(id,int):
             raise ValueError("ID must be integer")
         elif id < 0:
-            raise ValueError("ID must be zero or higher")
+            raise ValueError("ID must be not be negative")
         else:
             self.__id=id
 
@@ -83,7 +82,7 @@ class Credentials:
             raise ValueError("First name can't be all spaces")
         elif len(fname.strip()) > 100:
             raise ValueError('First name is too long ')
-        elif not all(part.isalpha() for part in fname.strip().split()):
+        elif not all(part.strip().isalpha() for part in fname.strip().split()):
             raise ValueError("First name must be alphabetic")
         else:
             self.__fname=fname.strip()
@@ -114,7 +113,7 @@ class Credentials:
             raise ValueError("Last name can't be all spaces")
         elif len(lname.strip()) > 50:
             raise ValueError("Last name must be less than 50 characters")
-        elif not all(part.isalpha() for part in lname.strip().split()):
+        elif not all(part.strip().isalpha() for part in lname.strip().split()):
             raise ValueError("Last name must be alphabetic")
         else:
             self.__lname=lname.strip()
@@ -146,7 +145,7 @@ class Credentials:
             raise ValueError("Department cannot be greater than 35 characters")
         elif len(department) < 0:
             raise ValueError("Department length cannot be negative")
-        elif not all(part.isalpha() for part in department.strip().split()):
+        elif not all(part.strip().isalpha() for part in department.strip().split()):
             raise ValueError("Department must be letters")
         else:
             self.__department=department.strip()
@@ -177,7 +176,7 @@ class Credentials:
             raise ValueError("Title must not be empty")
         elif len(title.strip()) > 100:
             raise ValueError("Title too long")
-        elif not all(part.strip().isalpha() for part in title.strip().split()):
+        elif not all(part.strip().isalpha() for part in title.strip()):
             raise ValueError("Title must be only contain letters")
         else:
             self.__title=title.strip()
@@ -215,7 +214,6 @@ class Credentials:
 
     @staticmethod
     def from_json_object(content):
-        #check is content has proper fields (maybe validation schema)
         """
         Method for initializing Credential object with dictionary. This
         method will also ensure the dictionary has the required feilds.
