@@ -11,13 +11,13 @@ DATABASE_NAME = "team_white_database"
 COLLECTION_NAME = "jokes_public"
 
 #this is an example of creating a database connection and is just an example, keep it commented out
-# try:
-#     client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-#     db = client[DATABASE_NAME]
-#     print("MongoDB client initialized successfully.")
+try:
+    client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
+    db = client[DATABASE_NAME]
+    print("MongoDB client initialized successfully.")
 
-# except Exception as e:
-#     print(f"An error occurred during connection or command execution: {e}")
+except Exception as e:
+    print(f"An error occurred during connection or command execution: {e}")
 
 
 #the mongo db schema with the validation criteria
@@ -112,11 +112,59 @@ jokes_public_schema = {
 # test it but the code above has to be commented out to run the file again
 
 # invalid_doc = {"is_edit": False, "level": 3, "content": {"type": "one_liner", "text": "A joke"}, "language": "English"}
-# try:
-#     db[COLLECTION_NAME].insert_one(invalid_doc)
-#     print("\nAttempted to insert valid document. SUCCESS.")
-# except Exception as e:
-#     print(f"Error Message Snippet: {e.details.get('errmsg', 'Validation Error')}")
+# test_data = [
+#   {
+#     "level": 5,
+#     "language": "english",
+#     "content": {
+#       "type": "one_liner",
+#       "text": "I told my computer I needed a break, and it said 'No problem — I'll crash.'"
+#     }
+#   },
+#   {
+#     "level": 3,
+#     "language": "spanish",
+#     "content": {
+#       "type": "qa",
+#       "question": "¿Por qué el libro se sintió triste?",
+#       "answer": "Porque tenía demasiados problemas."
+#     }
+#   },
+#   {
+#     "level": 3,
+#     "language": "french",
+#     "explanation": "Parce qu'il électron est-il toujours",
+#     "content": {
+#       "type": "qa",
+#       "question": "Pourquoi l'électron est-il toujours en difficulté?"
+#     #   "answer": "Parce qu'il est toujours chargé."
+#     }
+#   },
+#   {
+#     "level": 8,
+#     "language": "english",
+#     "explanation": "The humor comes from the unexpected twist in the punchline.",
+#     "content": {
+#       "type": "one_liner",
+#       "text": "I asked the gym instructor if he could teach me to do the splits. He said, 'How flexible are you?' I said, 'I can’t make it on Tuesdays.'"
+#     }
+#   },
+#   {
+#     "level": 9,
+#     "language": "german",
+#     "content": {
+#       "type": "qa",
+#       "question": "Warum können Geister nicht lügen?",
+#       "answer": "Weil man durch sie hindurchsehen kann."
+#     }
+#   }
+# ]
+# for i in range(len(test_data)):
+#     try:
+#         db[COLLECTION_NAME].insert_one(test_data[i])
+#         print("\nAttempted to insert valid document. SUCCESS.")
+#     except Exception as e:
+#         print(f"Error Message Snippet: {e.details.get('errmsg', 'Validation Error')}")
 
 
 # except Exception as e:
