@@ -23,7 +23,7 @@ class Credentials:
 
     All fields are required.
     '''
-    def __init__(self, id="0", fname="Mike", lname="Tiger", 
+    def __init__(self, id=0, fname="Mike", lname="Tiger", 
                  department="Sales", title="Manager", 
                  location="United States" ):
         self.id=id
@@ -41,9 +41,9 @@ class Credentials:
     def id(self,id):
         if id is None:
             raise ValueError("Missing ID")
-        elif not isinstance(id,str):
+        elif not isinstance(id,int):
             raise ValueError("Id must be integer")
-        elif len(id) < 0:
+        elif id < 0:
             raise ValueError("ID must be zero or higher")
         else:
             self.__id=id
@@ -110,7 +110,6 @@ class Credentials:
     
     @title.setter
     def title(self, title):
-        print("hi")
         if title is None:
             raise ValueError("Title is nessacary")
         elif not isinstance(title, str):
