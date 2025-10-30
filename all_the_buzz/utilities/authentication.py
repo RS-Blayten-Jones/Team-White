@@ -90,23 +90,22 @@ def authentication(token) -> Credentials:
     
     # validate credentials follow business rules
     try:
-        secure_logger.debug("Begin validating formate of recieved credentials.")
+        secure_logger.debug("Begin validating format of recieved credentials.")
         creds=Credentials.from_json_object(safe_content)
         secure_logger.debug("Credentials successfully validated.")
         logger.debug("Successfully loaded credentials.")
         # return credentials object
         return creds
     except ValueError as e:
-        print(e)
-        secure_logger.error("Unable to validate credentials.")
-        return ResponseCode('InvalidOperation')
+        secure_logger.error(e)
+        return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
         
 
 
 with open("./configs/jwt.json","r") as json_file:
     token=json.load(json_file)
 
-print(authentication(token).fname)
+print(isinstance(authentication(token),ResponseCode))
     
 
     
