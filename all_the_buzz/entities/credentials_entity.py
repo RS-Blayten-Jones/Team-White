@@ -75,8 +75,10 @@ class Credentials:
             """
         if fname is None:
             raise ValueError("First name must be provided")
-        elif not isinstance(fname,str):
-            raise ValueError("First name must be string")
+        elif not isinstance(fname, str):
+            raise ValueError("First name must be a string")
+        elif len(fname) < 0:
+            raise ValueError("First name length cannot be negative")
         elif len(fname.strip()) == 0:
             raise ValueError("First name can't be all spaces")
         elif len(fname.strip()) > 100:
@@ -104,16 +106,18 @@ class Credentials:
             """
         if lname is None:
             raise ValueError("Last name must be provided")
-        elif not isinstance(lname,str):
-            raise ValueError("Last name must be string")
-        elif len(lname.strip()) < 0:
+        elif not isinstance(lname, str):
+            raise ValueError("Last name must be a string")
+        elif len(lname) < 0:
+            raise ValueError("Last name length cannot be negative")
+        elif len(lname.strip()) == 0:
             raise ValueError("Last name can't be all spaces")
-        elif len(lname.strip()) > 100:
-            raise ValueError("Last name is too long")
+        elif len(lname.strip()) > 50:
+            raise ValueError("Last name must be less than 50 characters")
         elif not all(part.isalpha() for part in lname.strip().split()):
             raise ValueError("Last name must be alphabetic")
         else:
-            self.__fname=lname.strip()
+            self.__lname=lname.strip()
 
     @property
     def department(self):
@@ -131,11 +135,17 @@ class Credentials:
             ValueError: Deparment must only contain letters
             """
         if department == None:
-            raise ValueError("Department must be present")
+            raise ValueError("Department cannot be None")
         elif not isinstance(department, str):
             raise ValueError("Department must be a string")
-        elif len(department) > 100:
-            raise ValueError("Department is too long")
+        elif len(department) < 0:
+            raise ValueError("Department length cannot be negative")
+        elif len(department.strip()) == 0:
+            raise ValueError("Department can't only be spaces")
+        elif len(department) > 35:
+            raise ValueError("Department cannot be greater than 35 characters")
+        elif len(department) < 0:
+            raise ValueError("Department length cannot be negative")
         elif not all(part.isalpha() for part in department.strip().split()):
             raise ValueError("Department must be letters")
         else:
@@ -158,9 +168,11 @@ class Credentials:
             ValueError: Title must only contain letters
         """
         if title is None:
-            raise ValueError("Title is nessacary")
+            raise ValueError("Title cannot be None")
         elif not isinstance(title, str):
-            raise ValueError("Title must be string")
+            raise ValueError("Title must be a string")
+        elif len(title) < 0:
+            raise ValueError("Title length cannot be negative")
         elif len(title.strip()) == 0:
             raise ValueError("Title must not be empty")
         elif len(title.strip()) > 100:
@@ -187,14 +199,16 @@ class Credentials:
             ValueError: Location can only contain letters
             """
         if location is None:
-            raise ValueError("Location is required")
-        elif not isinstance(location,str):
-            raise ValueError("Location must be string")
+            raise ValueError("Location cannot be None")
+        elif not isinstance(location, str):
+            raise ValueError("Location must be a string")
+        elif len(location) < 0:
+            raise ValueError("Location length cannot be negative")
         elif len(location.strip()) == 0:
-            raise ValueError("Location can not be empty")
-        elif len(location.strip()) > 100:
-            raise ValueError("Location too long")
-        elif not all(part.strip().isalpha() for part in location.strip().split()):
+            raise ValueError("Location can not be spaces")
+        elif len(location.strip()) > 75:
+            raise ValueError("Location cannot be greater than 75 characters")
+        elif not all(part.isalpha() for part in location.strip().split()):
             raise ValueError("Location can only be letters")
         else:
             self.__location=location.strip()
@@ -250,7 +264,7 @@ class Token:
             ValueError: Token is too long
         """
         if token is None:
-            raise ValueError("Token can not be empty")
+            raise ValueError("Token can not be None")
         elif not isinstance(token, str):
             raise ValueError("Token must be string")
         elif len(token) == 0:
