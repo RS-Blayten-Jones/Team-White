@@ -28,6 +28,7 @@ _RESPONSE_MAP = {
     "WriteConcernError": (500, "The write was successful but did not meet durability requirements."),
     "WriteError": (400, "The write operation failed due to invalid data."),
     "PyMongoError": (500, "An unexpected and unknown database error occurred. Please try again or contact support."),
+    "ResourceNotFound": (404, "This resource does not exist in our database."), #Custom error
     
     #Custom Error Calls
         #Token Validation Errors
@@ -58,9 +59,9 @@ class ResponseCode:
         self.__success = (self.__error_code < 300)
         self.__data = data
         if(not self.__success):
-            self.__logger.error(f"{self.__error_code}. {error_tag}: {self.__message}; data: {self.__data}")
+            self.__logger.error(f"{self.__error_code}. {error_tag}: {self.__message}\n\t\t\tdata: {self.__data}")
         else:
-            self.__logger.info(f"{self.__error_code}. {error_tag}: {self.__message}; data: {self.__data}")
+            self.__logger.info(f"{self.__error_code}. {error_tag}: {self.__message}\n\t\t\tdata: {self.__data}")
 
     def get_success(self) -> bool:
         return self.__success

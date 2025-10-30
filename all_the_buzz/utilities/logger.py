@@ -43,6 +43,7 @@ class LoggerFactory:
     _initialized = False
     _general_logger = None
     _security_logger = None
+    _use_smart_logger = True #Default; change in config!
 
     def _is_safe_log_path(path):
         abs_path = os.path.abspath(path)
@@ -57,6 +58,7 @@ class LoggerFactory:
         #Ensure the proper files are in place; if not, create them
         logs_dir = os.path.join(base_dir, 'logs')
         os.makedirs(logs_dir, exist_ok=True)
+
         general_log_path = os.path.join(logs_dir, 'general.log')
         security_log_path = os.path.join(logs_dir, 'security.log')
         for path in [general_log_path, security_log_path]:
@@ -67,6 +69,8 @@ class LoggerFactory:
         config_path = os.path.join(base_dir, 'configs', 'logging_config.yaml')
         with open(config_path, 'r') as f:
             config = yaml.safe_load(f)
+
+        LoggerFactory._use_smart_logger = config.get("use_smart_logger", True)
         
         #Set the absolute path of the log files inside the config file
         for _, handler in config.get("handlers", {}).items():
@@ -83,12 +87,18 @@ class LoggerFactory:
     def get_general_logger() -> logging.Logger:
         LoggerFactory.initialize()
         if LoggerFactory._general_logger is None:
-            LoggerFactory._general_logger = _SmartLogger("generalLogger")
+            if LoggerFactory._use_smart_logger:
+                LoggerFactory._general_logger = _SmartLogger("generalLogger")
+            else:
+                LoggerFactory._general_logger = logging.getLogger("generalLogger")
         return LoggerFactory._general_logger
 
     @staticmethod
     def get_security_logger() -> logging.Logger:
         LoggerFactory.initialize()
         if LoggerFactory._security_logger is None:
-            LoggerFactory._security_logger = _SmartLogger("securityLogger")
+            if LoggerFactory._use_smart_logger:
+                LoggerFactory._security_logger = _SmartLogger("securityLogger")
+            else:
+                LoggerFactory._security_logger = logging.getLogger("securityLogger")
         return LoggerFactory._security_logger
