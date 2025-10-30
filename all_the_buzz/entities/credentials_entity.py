@@ -1,14 +1,37 @@
+'''
+credentials_entity.py
+
+This module contains entity classes for data related to the authentication.
+
+Classes:
+    Credentials: An entity class for storing and validating credential information. 
+    Token: An entity class for storing and validating the token
+'''
+
 # house all entity classes
 class Credentials:
-    def __init__(self, id=None, fname=None, lname=None, 
-                 department=None, 
-                 title=None, location=None ):
-        self.__id=id
-        self.__fname=fname
-        self.__lname=lname
-        self.__department=department
-        self.__title=title
-        self.__location=location
+    '''
+    Validates credential data passed to it.
+    This class includes the id, first name, last name, department,
+    title, and location information for the user.
+    
+    To initialize this class, you can use the from_json_object method.
+    To do this just pass in a dict in form:
+    {'id': <id>, 'fname' : <fname>, 'lname': <lname>,
+    'department': <department>, 'title':<title>,
+    'location':<location>}
+
+    All fields are required.
+    '''
+    def __init__(self, id="0", fname="Mike", lname="Tiger", 
+                 department="Sales", title="Manager", 
+                 location="United States" ):
+        self.id=id
+        self.fname=fname
+        self.lname=lname
+        self.department=department
+        self.title=title
+        self.location=location
 
     @property
     def id(self):
@@ -98,6 +121,7 @@ class Credentials:
     
     @title.setter
     def title(self, title):
+        print("hi")
         if title is None:
             raise ValueError("Title cannot be None")
         elif not isinstance(title, str):
@@ -186,3 +210,8 @@ class Token:
     
     def to_json_object(self):
         return {'token': self.__token}
+    
+Token.from_json_object({'token': 'ABC'})
+tk=Token('ABC')
+tk.token
+Credentials()

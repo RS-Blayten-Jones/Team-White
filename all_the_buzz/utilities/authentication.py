@@ -3,54 +3,109 @@ from utilities.config import config_file_reader
 from entities.credentials_entity import Credentials, Token
 from utilities.sanitize import sanitize_json
 import json
+from utilities.error_handler import ResponseCode
+from utilities.logger import LoggerFactory
+from requests.exceptions import ConnectionError
 
 '''
-This module contains a function authenticating a token. It requires an input of token which 
-is a dictionary in form {'token': <token string> }.
+authentication.py
+
+This module provides functions for interacting with the authentication server. It is primarily
+for obtaining creditionals based on a passed token.
+
+Functions:
+    - authentication: recieved a token and returns a credential object or error response.
 '''
 
-def authentication(token):
+def authentication(token) -> Credentials:
+    '''
+    Authenticates users credentials given generated json web token.
     
-    # sanitize token
-    safe_token=sanitize_json(token)
+    Args:
+        token: a dictionary in format {'token': <token string>}
 
-    # validate token 
+    Returns:
+        cred: a Credential object initialized from returned credentials.
+    '''
+    logger=LoggerFactory.get_general_logger()
+    secure_logger=LoggerFactory.get_security_logger()
+
+    logger.debug("Begin authenticating token")
+    secure_logger.debug("Begin authenticating token.")
+
+    # sanitize token to avoid code injection
+    safe_token=sanitize_json(token)
+    secure_logger.debug("Token successfully sanitized")
+    
+    # validate token dict is of proper format
     try:
+        logger.debug("Begin validating format of token")
         valid_token_object=Token.from_json_object(safe_token)
         valid_token=valid_token_object.to_json_object()
     except ValueError as e:
-        pass
+        secure_logger.error(e)
+        return ResponseCode('InvalidOperation')
     
-    # load authenication server url
-    data=config_file_reader("./config_files/authentication_params.yaml")
-    url=data["url"]
+    # load authenication server uris
+    secure_logger.debug("Begin read in config file")
+    try:
+        data=config_file_reader("./configs/authentication_params.yaml")
+        uri=data["uri"]
+        ping_uri=data["ping_uri"]
+        secure_logger.debug("Successfully loaded config file")
+    except:
+        secure_logger.error("Unsuccessfully loaded config file")
+        return ResponseCode("InvalidName")
+    
+    # check if server online
+    secure_logger.debug("Pinging authentication server.")
+    try:
+        response=requests.get(ping_uri)
+        if response.status_code == 200:
+            secure_logger.debug("Authentication Server is up.")
+        else:
+            raise ConnectionError("Could not connect to server")
+    except:
+        secure_logger.error("Cannot connect to server")
+        return ResponseCode("InvalidOperation")
     
     # send sanitized and valid token to authenication server
     headers={
         "Content-Type": 'application/json'
     }
     try:
-        response=requests.post(url, json=valid_token, headers=headers)
+        secure_logger.debug("Begin requesting creditionals from authentication server.")
+        response=requests.post(uri, json=valid_token, headers=headers)
         json_content=json.loads(response.text)
+        secure_logger.debug("Successfully recieved response from authentication server.")
     except:
-        return "issue reaching authenitication server"
+        # issue reaching server
+        secure_logger.error("Issue reaching authentication server.")
+        return ResponseCode('InvalidOperation')
+    
     # sanitize response from authentication server
+    secure_logger.debug("Begin sanatize authentication server response")
     safe_content=sanitize_json(json_content)
+    secure_logger.debug("Successfully sanitized authentication server.")
     
     # validate credentials follow business rules
     try:
+        secure_logger.debug("Begin validating formate of recieved credentials.")
         creds=Credentials.from_json_object(safe_content)
+        secure_logger.debug("Credentials successfully validated.")
+        logger.debug("Successfully loaded credentials.")
+        # return credentials object
         return creds
     except ValueError as e:
-        print(e)
-        #log here 
+        secure_logger.error("Unable to validate credentials.")
+        return ResponseCode('InvalidOperation')
         
 
 
-with open("./config_files/jwt.json","r") as json_file:
+with open("./configs/jwt.json","r") as json_file:
     token=json.load(json_file)
 
-print(authentication(token))
+authentication(token)
     
 
     

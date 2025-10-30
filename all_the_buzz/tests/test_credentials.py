@@ -2,10 +2,12 @@
 This file runs unit tests on setter methods for credentials entities
 
 To unit test:
-...\all_the_buzz> python -m pytest
+(.venv)...\all_the_buzz> pip install pytest
+(.venv)...\all_the_buzz> python -m pytest
 
 To test coverage:
-...\all_the_buzz> python -m pytest --cov=entities --cov-report=term
+(.venv)...\all_the_buzz> pip install pytest-cov
+(.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term
 
 """
 
