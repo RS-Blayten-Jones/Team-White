@@ -34,7 +34,7 @@ trivia_public_schema = {
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "question": {"bsonType": "string"},
-                    "question": {"bsonType": "string"},
+                    "answer": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined

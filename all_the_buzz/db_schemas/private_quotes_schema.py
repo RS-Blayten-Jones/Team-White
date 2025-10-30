@@ -38,7 +38,7 @@ quotes_private_schema = {
                     "content": {"bsonType": "string"},
                     "category": {"bsonType": "string"},
                     "author": {"bsonType": "string"},
-                    "used_status": {"bsonType": "bool"},
+                    "used_status": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined
