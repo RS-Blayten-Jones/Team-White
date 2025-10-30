@@ -80,7 +80,7 @@ def authentication(token) -> Credentials:
         secure_logger.debug("Successfully recieved response from authentication server.")
     except:
         # issue reaching server
-        secure_logger.error("Issue reaching authentication server.")
+        secure_logger.error("Issue obtaining credentials from authentication server.")
         return ResponseCode('InvalidOperation')
     
     # sanitize response from authentication server
@@ -97,6 +97,7 @@ def authentication(token) -> Credentials:
         # return credentials object
         return creds
     except ValueError as e:
+        print(e)
         secure_logger.error("Unable to validate credentials.")
         return ResponseCode('InvalidOperation')
         
@@ -105,7 +106,7 @@ def authentication(token) -> Credentials:
 with open("./configs/jwt.json","r") as json_file:
     token=json.load(json_file)
 
-authentication(token)
+print(authentication(token).fname)
     
 
     
