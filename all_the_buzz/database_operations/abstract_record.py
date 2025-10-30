@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from abc import ABC
-from typing import Any, Optional
+from typing import Any
 from pymongo.errors import PyMongoError
 from functools import wraps
 from utilities.logger import LoggerFactory
@@ -11,10 +11,16 @@ def mongo_safe(func):
     def wrapper(*args, **kwargs) -> ResponseCode:
         try:
             result = func(*args, **kwargs)
-            return ResponseCode("TODO: CHANGE THIS", result)
+            if isinstance(result, ResponseCode):
+                return result  #Don't wrap again
+            return ResponseCode("GeneralSuccess", result)
         except PyMongoError as e:
             error_tag = e.__class__.__name__
             return ResponseCode(error_tag=error_tag)
+        except Exception as e:
+            error_tag = e.__class__.__name__
+            data = f"UnhandledError: {error_tag}"
+            return ResponseCode(error_tag=error_tag, data=data)
     return wrapper
 
 class DatabaseAccessObject(ABC):
@@ -31,6 +37,8 @@ class DatabaseAccessObject(ABC):
     def get_by_key(self, ID: str) -> ResponseCode:
         self.__logger.debug(f"Getting {self.__class__.__name__} record by ID {ID}.")
         document = self.__collection.find_one({"_id": ID})
+        if document is None:
+            return ResponseCode(error_tag="ResourceNotFound")
         return document
 
     @mongo_safe
@@ -43,11 +51,11 @@ class DatabaseAccessObject(ABC):
     def get_random(self, numReturned: int, filter: dict[str, Any] = None) -> ResponseCode:
         filter = filter or {}
         self.__logger.debug(f"Getting {numReturned} random {self.__class__.__name__} record by fields {filter}.")
-        random_document = list(self.__collection.aggregate([
+        random_documents = list(self.__collection.aggregate([
             {"$match": filter},
             {"$sample": {"size": numReturned}}
         ]))
-        return random_document
+        return random_documents
     
     @mongo_safe
     def get_short_record(self, numReturned: int, filter: dict[str, Any] = None, max_length: int = 80) -> ResponseCode:
@@ -78,6 +86,8 @@ class DatabaseAccessObject(ABC):
         self.__logger.debug(f"Updating {self.__class__.__name__} with ID {ID}: {updates}.")
         update_op = {"$set": updates}
         result = self.__collection.update_one({"_id": ID}, update_op)
+        if result.matched_count == 0:
+            return ResponseCode(error_tag="ResourceNotFound")
         return {"matched_count": result.matched_count, "modified_count": result.modified_count}
     
     @mongo_safe
@@ -86,55 +96,12 @@ class DatabaseAccessObject(ABC):
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {result.inserted_id}")
-        return result.inserted_id
+        return ResponseCode("PostSuccess", result) #May need to edit this if we want to send 203 for pending. TODO: ask Kassidy
 
     @mongo_safe
     def delete_record(self, ID: str) -> ResponseCode:
         self.__logger.debug(f"Deleting {self.__class__.__name__} record.")
         result = self.__collection.delete_one({"_id": ID})
+        if result.deleted_count == 0:
+            return ResponseCode(error_tag="ResourceNotFound")
         return {"deleted_count": result.deleted_count}
-    
-class DAOFactory:
-    #Factory for DAO to ensure only one instance per sub-class exists
-    #This allows for dependency injection without the drawbacks of a global Singleton object
-    #Below are example usages of this class to manipulate individual DAOs
-    '''
-    #Create a DAO
-    public_joke_dao = DAOFactory.create_dao(\"PublicJokeDAO\", uri, db_name)
-
-    #Get the same DAO later
-    same_dao = DAOFactory.get_dao(\"PublicJokeDAO\")
-
-    #Reset just one DAO
-    DAOFactory.reset(\"PublicJokeDAO\")
-
-    #Or reset all
-    DAOFactory.reset()
-    '''
-
-    _instances: dict[type, DatabaseAccessObject] = {}
-
-    @classmethod
-    def create_dao(cls, dao_class: str, client_uri: str, database_name: str) -> DatabaseAccessObject:
-        if dao_class in cls._instances:
-            raise RuntimeError(f"{dao_class.__name__} instance already created. Use get_dao() to access it.")
-        instance = dao_class(client_uri, database_name)
-        cls._instances[dao_class] = instance
-        return instance
-
-    @classmethod
-    def get_dao(cls, dao_class: str) -> DatabaseAccessObject:
-        if dao_class not in cls._instances:
-            raise RuntimeError(f"{dao_class.__name__} instance not yet created. Use create_dao() first.")
-        return cls._instances[dao_class]
-
-    @classmethod
-    def set_dao(cls, dao_class:str, instance: DatabaseAccessObject):
-        cls._instances[dao_class] = instance
-
-    @classmethod
-    def reset(cls, dao_class: Optional[str] = None):
-        if dao_class:
-            cls._instances.pop(dao_class, None)
-        else:
-            cls._instances.clear()
