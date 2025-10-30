@@ -1,5 +1,6 @@
 from utilities.error_handler import ResponseCode
 from pymongo import MongoClient
+from typing import Optional
 from abstract_record import mongo_safe
 
 class ChecksumDAO:
@@ -8,7 +9,7 @@ class ChecksumDAO:
         self.__collection = self.__db["checksum"]
 
     @mongo_safe
-    def get_checksum(self, file_name: str) -> ResponseCode:
+    def get_checksum(self, file_name: str) -> Optional[ResponseCode]:
         document = self.__collection.find_one({"fileName": file_name})
         return document
     
