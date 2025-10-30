@@ -32,12 +32,14 @@ _RESPONSE_MAP = {
     
     #Custom Error Calls
         #Token Validation Errors
-    "AuthorizationTimeout": (503, "Authorization server did not respond. Try again later."),
-    "MalformedAuthorizationResponse": (502, "Authorization server gave a malformed object to the API. Try again later."),
+    "AuthenticationTimeout": (503, "Authentication server did not respond. Try again later."),
+    "MalformedAuthenticationResponse": (502, "Authentication server gave a malformed object to the API. Try again later."),
     "UnauthorizedToken": (401, "Token was expired or invalid. Please send a new valid JWT."),
         #API Request Errors
     "MalformedContent": (400, "Request content had malformed syntax. Please check your request."),
     "RateLimit": (429, "Too many requests have been sent. Please wait until you can request again."),
+    "Unauthorized": (401, "Unauthorized request"),
+    "Internal Authentication Error": (500, "Internal Authentication Error"),
         #Security Errors
     "ChecksumValidationError": (500, "Integrity check failed. Try again later."),
     "FieldValidationError": (400, "One of the fields was of an incorrect type. Please ensure that data is of the correct field type."),
@@ -77,3 +79,13 @@ class ResponseCode:
     
     def get_data(self) -> Optional[Any]:
         return self.__data
+    def to_http_response(self) -> tuple[int, dict]:
+        response_body = {
+            "status": "success" if self.__success else "error",
+            "code_tag": self.__error_tag,
+            "message": self.__message
+        }
+        if self.__data is not None:
+            response_body["data"] = self.__data
+        
+        return self.__error_code, response_body

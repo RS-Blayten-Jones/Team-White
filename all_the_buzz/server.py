@@ -1,6 +1,8 @@
-from flask import Flask, request
-import authentication
-from entities.credentials_entity import Credentials
+from flask import Flask, request, jsonify, make_response
+import utilities.authentication
+from typing import Callable, Any
+from functools import wraps
+from entities.credentials_entity import Credentials, Token
 from utilities.error_handler import ResponseCode
 
 class MyFlask(Flask):
@@ -10,24 +12,48 @@ class MyFlask(Flask):
 app = MyFlask(__name__)
 #CORS Preflight necessary only when we integrate with front end 
 
+#middleware 
+def authentication_middleware(f: Callable) -> Callable:
+    """
+    Function decorator that extracts the token from a request,
+    authenticates it with the function in authentication.py,
+    and injects a Credentials object or returns a ResponseCode 
+    """
+    @wraps(f)
+    def decorated_function(*args: Any, **kwargs: Any) -> Any:
+        user_token = Token(request.headers.get('Bearer'))
+        authentication_result = authentication(user_token)
+        #if the authentication result is an error code
+        if isinstance(authentication_result, ResponseCode):
+            status_code, body = authentication_result.to_http_response()
+            return jsonify(body), status_code
+        #if the authentication result is valid credentials
+        if isinstance(authentication_result, Credentials):
+            kwargs['credentials'] = authentication_result
+            return f(*args, **kwargs)
+        #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
+        status_code, body = ResponseCode("Internal Authentication Error").to_http_response()
+        return jsonify(body), status_code
+    return decorated_function
+
+
 @ app.route("/jokes", methods=["GET"])
-def retrieve_public_jokes_collection():
-    #get the token from the header 
-    user_token = request.headers.get('Bearer')
-    if user_token: #if the token is not null
-        try:
-            cred_or_response_code = authentication(user_token) #creates a Credentials object if valid or response code object 
-            if isinstance(cred_or_response_code, ResponseCode): #if it is a response code, just return it
-                return cred_or_response_code
-            if isinstance(cred_or_response_code, Credentials):
-                #if credentials.role == manager, post new joke to public jokes table
-                #else, post new joke to private jokes table
-                pass
-
-        except Exception as e: #error at authentication function in authentication.py
-            return ResponseCode(error_tag=e, data=e)
+@authentication_middleware
+def retrieve_public_jokes_collection(credentials: Credentials):
+    if credentials.title: 
+        #grab the jokes public dao object
+        #all_jokes = jokes_public_dao.get_all_jokes()
+        #return jsonify(all_jokes), 200
+        pass
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 
-        
+def run():
+    port = 8080
+    print(f"Server running on port {port}")
+    app.run(host='0.0.0.0', port=port)
 
-    pass
+if __name__ == '__main__':
+    run()
