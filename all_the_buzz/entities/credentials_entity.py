@@ -290,7 +290,3 @@ class Token:
     def to_json_object(self):
         return {'token': self.__token}
     
-Token.from_json_object({'token': 'ABC'})
-tk=Token('ABC')
-tk.token
-Credentials()

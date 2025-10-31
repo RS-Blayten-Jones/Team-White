@@ -97,7 +97,7 @@ def authentication(token) -> Credentials:
         # return credentials object
         return creds
     except ValueError as e:
-        secure_logger.error(e)
+        logger.error(e)
         return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
         
 

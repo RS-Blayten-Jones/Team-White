@@ -30,4 +30,3 @@ def sanitize_json(content):
         return content
     
 
-print(sanitize_json({"help":"<script>He</script><p>Hello</p>"}))
