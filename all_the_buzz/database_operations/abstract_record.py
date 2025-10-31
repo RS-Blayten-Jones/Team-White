@@ -1,35 +1,11 @@
 from pymongo import MongoClient
 from abc import ABC
-from typing import Any, Optional, Callable
+from typing import Any, Callable
 from pymongo.errors import PyMongoError
 from functools import wraps
 from utilities.logger import LoggerFactory
 from utilities.error_handler import ResponseCode
 from entities.credentials_entity import Credentials
-
-'''
-abstract_record.py
-
-This module provides the superclass for all DAO objects. Most of the functions here are generalized
-for all content
-
-Functions:
-    -mongo_safe <decorator>: ensures that any exception will be caught or result and will be encapsulated
-    by a ResponseCode
-    -rbac_action <decorator>: determines which roles have access to a function based on ROLE_MATRIX table
-    -prepare_entry <override>: used before create to insert default values in DB 
-    -get_by_key: returns ResponseCode with entry if found
-    -get_by_fields: returns ResponseCode with list of entries if any
-    -get_all_records: returns all records in a table with an optional limit to the number returned
-    -get_random: returns ResponseCode with list of entries (defined by user's number request);
-    if too many are requested, an error is returned
-    -get_short_record: returns ResponseCode with list of entries (defined by user) less than desired
-    number of characters; if too many are requested, an error is returned
-    -update_record: updates table and then returns success and the number updated (find by ID only)
-    -create_record: creates new record and then returns ID if successful. 201 response code
-    -delete_record: deletes a record by ID and returns success
-    -delete_record_by_field: deletes records by field. Exactly one (no more, no less) field used
-'''
 
 def mongo_safe(func):
     '''

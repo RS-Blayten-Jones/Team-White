@@ -53,7 +53,16 @@ _RESPONSE_MAP = {
 }
 
 class ResponseCode:
+    '''
+    This class wraps a detailed HTTP response code with a custom message and added data and automatically
+    logs this result 
+    '''
     def __init__(self, error_tag: str = "", data: Optional[Any] = None):
+        '''
+        Args:
+            error_tag (str): the name of error that will be passed to the RESPONSE_MAP to get the HTTP error code
+            data (any optional): extra data from the operation or error to be sent with the response (defaults to None)
+        '''
         self.__logger = LoggerFactory.get_general_logger()
         self.__error_tag = error_tag
         #Defualt to 500 error if it cannot be found in look-up table
@@ -79,7 +88,15 @@ class ResponseCode:
     
     def get_data(self) -> Optional[Any]:
         return self.__data
+    
     def to_http_response(self) -> tuple[int, dict]:
+        '''
+        Creates an HTTP response to send back to the user
+        
+        Returns:
+            response (tuple[int, dict]): a coupled a tuple of the response code and a JSONified version
+            of the information stored in ResponseCode
+        '''
         response_body = {
             "status": "success" if self.__success else "error",
             "code_tag": self.__error_tag,
