@@ -70,7 +70,6 @@ class Credentials:
             ValueError: First name must be string
             ValueError: First name must not be all spaces
             ValueError: First name has too many characters
-            ValueError: First name must only contain letters
             """
         if fname is None:
             raise ValueError("First name must be provided")
@@ -99,7 +98,6 @@ class Credentials:
             ValueError: Last name must be string
             ValueError: Last name must not be all spaces
             ValueError: Last name has too many characters
-            ValueError: Last name must only contain letters
             """
         if lname is None:
             raise ValueError("Last name must be provided")
