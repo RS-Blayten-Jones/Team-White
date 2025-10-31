@@ -1,35 +1,11 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, ObjectId
 from abc import ABC
-from typing import Any, Optional, Callable
+from typing import Any, Callable
 from pymongo.errors import PyMongoError
 from functools import wraps
 from utilities.logger import LoggerFactory
 from utilities.error_handler import ResponseCode
 from entities.credentials_entity import Credentials
-
-'''
-abstract_record.py
-
-This module provides the superclass for all DAO objects. Most of the functions here are generalized
-for all content
-
-Functions:
-    -mongo_safe <decorator>: ensures that any exception will be caught or result and will be encapsulated
-    by a ResponseCode
-    -rbac_action <decorator>: determines which roles have access to a function based on ROLE_MATRIX table
-    -prepare_entry <override>: used before create to insert default values in DB 
-    -get_by_key: returns ResponseCode with entry if found
-    -get_by_fields: returns ResponseCode with list of entries if any
-    -get_all_records: returns all records in a table with an optional limit to the number returned
-    -get_random: returns ResponseCode with list of entries (defined by user's number request);
-    if too many are requested, an error is returned
-    -get_short_record: returns ResponseCode with list of entries (defined by user) less than desired
-    number of characters; if too many are requested, an error is returned
-    -update_record: updates table and then returns success and the number updated (find by ID only)
-    -create_record: creates new record and then returns ID if successful. 201 response code
-    -delete_record: deletes a record by ID and returns success
-    -delete_record_by_field: deletes records by field. Exactly one (no more, no less) field used
-'''
 
 def mongo_safe(func):
     '''
@@ -144,7 +120,7 @@ class DatabaseAccessObject(ABC):
             with the JSON document as data
         '''
         self.__logger.debug(f"Getting {self.__class__.__name__} record by ID {ID}.")
-        document = self.__collection.find_one({"_id": ID})
+        document = self.__collection.find_one({"_id": ObjectId(ID)})
         if document is None:
             return ResponseCode(error_tag="ResourceNotFound")
         return document
@@ -284,7 +260,7 @@ class DatabaseAccessObject(ABC):
         entry = self._prepare_entry(entry) #Determines if there should be default field values; override in subclass
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
         result = self.__collection.insert_one(entry)
-        self.__logger.debug(f"Created! New ID {result.inserted_id}")
+        self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         return ResponseCode("PostSuccess", result)
 
     @rbac_action("delete")
@@ -301,7 +277,7 @@ class DatabaseAccessObject(ABC):
             deleted_count ({1}) as data
         '''
         self.__logger.debug(f"Deleting {self.__class__.__name__} record.")
-        result = self.__collection.delete_one({"_id": ID})
+        result = self.__collection.delete_one({"_id": ObjectId(ID)})
         if result.deleted_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return {"deleted_count": result.deleted_count}
