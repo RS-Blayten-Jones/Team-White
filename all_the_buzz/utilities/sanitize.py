@@ -28,3 +28,6 @@ def sanitize_json(content):
         return nh3.clean(content)
     else:
         return content
+    
+
+print(sanitize_json({"help":"<script>He</script><p>Hello</p>"}))

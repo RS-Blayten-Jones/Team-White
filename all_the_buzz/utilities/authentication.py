@@ -52,7 +52,7 @@ def authentication(token) -> Credentials:
         data=config_file_reader("./configs/authentication_params.yaml")
         uri=data["uri"]
         ping_uri=data["ping_uri"]
-        secure_logger.debug("Successfully loaded config file")
+        logger.debug("Successfully loaded config file")
     except:
         secure_logger.error("Unsuccessfully loaded config file")
         return ResponseCode("InvalidName")
