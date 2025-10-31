@@ -1,9 +1,36 @@
 from flask import Flask, request, jsonify, make_response
-import utilities.authentication
+from utilities.authentication import authentication
 from typing import Callable, Any
 from functools import wraps
 from entities.credentials_entity import Credentials, Token
 from utilities.error_handler import ResponseCode
+from database_operations.dao_factory import DAOFactory
+from pymongo.errors import PyMongoError
+import os
+from dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+DB = None
+ATLAS_URI = os.getenv("ATLAS_URI") 
+DATABASE_NAME = "team_white_database"
+def create_mongodb_connection():
+    load_dotenv() 
+    if not ATLAS_URI:
+        raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+    try:
+        client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
+        db = client[DATABASE_NAME]
+        client.admin.command('ping')
+        print("MongoDB client initialized successfully.")
+        return db
+
+    except Exception as PyMongoError:
+        #status_code, body = ResponseCode(PyMongoError.__class__.__name__).to_http_response()
+        #return jsonify(body), status_code
+        print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
+        raise
+
 
 class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
@@ -40,7 +67,8 @@ def authentication_middleware(f: Callable) -> Callable:
 @ app.route("/jokes", methods=["GET"])
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
-    if credentials.title: 
+    if credentials.title:
+        public_joke_dao = DAOFactory.create_dao("PublicJokeDAO", MongoClient)
         #grab the jokes public dao object
         #all_jokes = jokes_public_dao.get_all_jokes()
         #return jsonify(all_jokes), 200
@@ -51,6 +79,14 @@ def retrieve_public_jokes_collection(credentials: Credentials):
 
 
 def run():
+    global DB 
+    #NOT WORKING HAVE TO CREATE 8 DIFFERENT ONES 
+    try:
+        DB = create_mongodb_connection()
+    except Exception:
+        print("Application startup halted due to database connection failure.")
+        return
+    DAOFactory.create_dao(DB, )
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
