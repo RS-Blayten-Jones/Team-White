@@ -12,6 +12,10 @@ ALLOWED_LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", 
 #is set to that level or above. Stacklevel is set to 2 to ensure the original call's file will be
 #output and not the wrapper.
 class _SmartLogger:
+    '''
+    This class optimizes the speed of the loggers by discarding logs below the currently set
+    sensitivity. To change this, disable the SmartLogger variable in the log config
+    '''
     def __init__(self, name):
         self._logger = logging.getLogger(name)
 
@@ -40,17 +44,35 @@ class _SmartLogger:
 
 #Create singleton Logger factory to ensure only one Logger is allocated.
 class LoggerFactory:
+    '''
+    This class is a static singleton that produces a single logger of each type (security and general).
+    Depending on the logger config SmartLogger will be turned on, which saves memory and optimizes speed 
+    '''
     _initialized = False
     _general_logger = None
     _security_logger = None
     _use_smart_logger = True #Default; change in config!
 
-    def _is_safe_log_path(path):
+    def _is_safe_log_path(path: str) -> bool:
+        '''
+        Checks a given tag against the ALLOWED_LOG_DIR path
+        
+        Args:
+            path (str): the file path to check
+
+        Returns:
+            is_safe (bool): a boolean that determines if the path starts with the ALLOWED_LOG_DIR
+        '''
         abs_path = os.path.abspath(path)
-        return abs_path.startswith(ALLOWED_LOG_DIR)
+        is_safe = abs_path.startswith(ALLOWED_LOG_DIR)
+        return is_safe
 
     @staticmethod
-    def initialize():
+    def initialize() -> None:
+        '''
+        Initialize the LoggerFactory, create or connect logging files, and read the logging config to set
+        certain variables. If it is initialized, do nothing
+        '''
         if LoggerFactory._initialized:
             return
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -85,6 +107,12 @@ class LoggerFactory:
 
     @staticmethod
     def get_general_logger() -> logging.Logger:
+        '''
+        Returns the general logger. First initalizes LoggerFactory if not already initialized
+        
+        Returns:
+            general_logger (logging.Logger): the logger for the general.log file
+        '''
         LoggerFactory.initialize()
         if LoggerFactory._general_logger is None:
             if LoggerFactory._use_smart_logger:
@@ -95,6 +123,12 @@ class LoggerFactory:
 
     @staticmethod
     def get_security_logger() -> logging.Logger:
+        '''
+        Returns the security logger. First initalizes LoggerFactory if not already initialized
+        
+        Returns:
+            security_logger (logging.Logger): the logger for the security.log file
+        '''
         LoggerFactory.initialize()
         if LoggerFactory._security_logger is None:
             if LoggerFactory._use_smart_logger:
