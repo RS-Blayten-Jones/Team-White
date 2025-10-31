@@ -82,8 +82,6 @@ class Credentials:
             raise ValueError("First name can't be all spaces")
         elif len(fname.strip()) > 100:
             raise ValueError('First name is too long ')
-        elif not all(part.strip().isalpha() for part in fname.strip().split()):
-            raise ValueError("First name must be alphabetic")
         else:
             self.__fname=fname.strip()
     
@@ -113,8 +111,6 @@ class Credentials:
             raise ValueError("Last name can't be all spaces")
         elif len(lname.strip()) > 50:
             raise ValueError("Last name must be less than 50 characters")
-        elif not all(part.strip().isalpha() for part in lname.strip().split()):
-            raise ValueError("Last name must be alphabetic")
         else:
             self.__lname=lname.strip()
 
