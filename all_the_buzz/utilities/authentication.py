@@ -52,7 +52,7 @@ def authentication(token) -> Credentials:
         data=config_file_reader("./configs/authentication_params.yaml")
         uri=data["uri"]
         ping_uri=data["ping_uri"]
-        secure_logger.debug("Successfully loaded config file")
+        logger.debug("Successfully loaded config file")
     except:
         secure_logger.error("Unsuccessfully loaded config file")
         return ResponseCode("InvalidName")
@@ -97,7 +97,7 @@ def authentication(token) -> Credentials:
         # return credentials object
         return creds
     except ValueError as e:
-        secure_logger.error(e)
+        logger.error(e)
         return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
         
 
