@@ -1,4 +1,4 @@
-from abstract_record import DatabaseAccessObject, mongo_safe
+from database_operations.abstract_record import DatabaseAccessObject, mongo_safe
 from utilities.error_handler import ResponseCode
 from typing import Any
 from datetime import date

@@ -102,10 +102,10 @@ def authentication(token) -> Credentials:
         
 
 
-with open("./configs/jwt.json","r") as json_file:
-    token=json.load(json_file)
+# with open("./configs/jwt.json","r") as json_file:
+#     token=json.load(json_file)
 
-print(isinstance(authentication(token),ResponseCode))
+# print(isinstance(authentication(token),ResponseCode))
     
 
     

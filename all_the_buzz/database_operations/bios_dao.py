@@ -1,4 +1,4 @@
-from abstract_record import DatabaseAccessObject
+from database_operations.abstract_record import DatabaseAccessObject
 from utilities.error_handler import ResponseCode
 from pymongo import MongoClient
 

@@ -11,7 +11,22 @@ from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-DB = None
+
+global mongo_client
+
+global public_jokes_dao
+global private_jokes_dao
+
+global public_quotes_dao
+global private_quotes_dao
+
+global public_trivia_dao
+global private_trivia_dao
+
+global public_bio_dao
+global private_bio_dao
+
+
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
 def create_mongodb_connection():
@@ -20,16 +35,13 @@ def create_mongodb_connection():
         raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
     try:
         client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-        db = client[DATABASE_NAME]
         client.admin.command('ping')
         print("MongoDB client initialized successfully.")
-        return db
+        return client
 
     except Exception as PyMongoError:
-        #status_code, body = ResponseCode(PyMongoError.__class__.__name__).to_http_response()
-        #return jsonify(body), status_code
         print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
-        raise
+        raise ResponseCode(str(PyMongoError))
 
 
 class MyFlask(Flask):
@@ -68,7 +80,6 @@ def authentication_middleware(f: Callable) -> Callable:
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
     if credentials.title:
-        public_joke_dao = DAOFactory.create_dao("PublicJokeDAO", MongoClient)
         #grab the jokes public dao object
         #all_jokes = jokes_public_dao.get_all_jokes()
         #return jsonify(all_jokes), 200
@@ -78,15 +89,27 @@ def retrieve_public_jokes_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-def run():
-    global DB 
-    #NOT WORKING HAVE TO CREATE 8 DIFFERENT ONES 
+def establish_all_daos(client):
     try:
-        DB = create_mongodb_connection()
-    except Exception:
-        print("Application startup halted due to database connection failure.")
-        return
-    DAOFactory.create_dao(DB, )
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", mongo_client, DATABASE_NAME)
+
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", mongo_client, DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", mongo_client, DATABASE_NAME)
+
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", mongo_client, DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", mongo_client, DATABASE_NAME)
+
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", mongo_client, DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", mongo_client, DATABASE_NAME)
+    except Exception as RuntimeError:
+        raise ResponseCode("Issue Creating DAOs", RuntimeError)
+        
+
+
+def run(): 
+    mongo_client = create_mongodb_connection()
+    establish_all_daos()
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
