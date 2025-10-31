@@ -3,8 +3,21 @@ from database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
 from database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
 from database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
 from database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
-from typing import Optional, Union
+from typing import Optional
 from pymongo import MongoClient
+
+'''
+dao_factory.py
+
+This module allows a singular instance of each DAO to be made without accidentally creating more.
+
+Functions:
+    -create_dao <classmethod>: creates a DAO for the specified type and returns it; it will raise an
+    error if one exists 
+    -get_dao <classmethod>: returns the DAO of a given type if it exists
+    -reset <classmethod>: if (for whatever unknown reason???) you need to reset the DAOs, you can clarify
+    which one or reset all
+'''
 
 _DAO_REGISTRY = {
     "PublicBioDAO": PublicBioDAO,
@@ -23,46 +36,68 @@ class DAOFactory:
     #This allows for dependency injection without the drawbacks of a global Singleton object
     #Below are example usages of this class to manipulate individual DAOs
     '''
-    #Create a DAO
-    public_joke_dao = DAOFactory.create_dao(\"PublicJokeDAO\", uri, db_name)
-
-    #Get the same DAO later
-    same_dao = DAOFactory.get_dao(\"PublicJokeDAO\")
-
-    #Reset just one DAO
-    DAOFactory.reset(\"PublicJokeDAO\")
-
-    #Or reset all
-    DAOFactory.reset()
+    This class is a factory that creates a single "global" instance of each type of DAO, as long as it is within
+    the _DAO_REGISTRY. Cannot be initialized. Use classmethods instead.
+    List of acceptable DAO tables:\n
+    "PublicBioDAO"\n
+    "PrivateBioDAO"\n
+    "PublicJokeDAO"\n
+    "PrivateJokeDAO"\n
+    "PublicQuoteDAO"\n
+    "PrivateQuoteDAO"\n
+    "PublicTriviaDAO"\n
+    "PrivateTriviaDAO"\n
     '''
 
     _instances: dict[type, DatabaseAccessObject] = {}
 
     @classmethod
-    def create_dao(cls, dao_class_name: str, client: MongoClient, database_name: str) -> Union[DatabaseAccessObject]:
+    def create_dao(cls, dao_class_name: str, client: MongoClient, database_name: str) -> DatabaseAccessObject:
+        '''
+        Creates a DAO of the given class and passes the MongoClient. If one exists, it raises an error
+        
+        Args:
+            dao_class_name (str): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
+            client (MongoClient): the MongoClient that establishes a connection with the database
+            database_name (str): the name of the database where the collection is stored
+
+        Returns:
+            instance (DatabaseAccessObject): a DatabaseAccessObject of the given dao_class_name string
+        '''
         #If the given type has not been registered, throw an error by testing for None type; else, check for instances
         dao_class = _DAO_REGISTRY.get(dao_class_name, "Error")
         if(not dao_class):
             raise RuntimeError(f"This DAO type has not been registered. Try a valid identifier.")
         if dao_class in cls._instances:
-            raise RuntimeError(f"{dao_class.__name__} instance already created. Use get_dao() to access it.")
+            raise RuntimeError(f"{dao_class} instance already created. Use get_dao() to access it.")
         instance = dao_class(client, database_name)
         cls._instances[dao_class] = instance
         return instance
 
     @classmethod
-    def get_dao(cls, dao_class: str) -> DatabaseAccessObject:
-        if dao_class not in cls._instances:
-            raise RuntimeError(f"{dao_class.__name__} instance not yet created. Use create_dao() first.")
-        return cls._instances[dao_class]
+    def get_dao(cls, dao_class_name: str) -> DatabaseAccessObject:
+        '''
+        Returns a DAO if it exists; otherwise, raises an error
+        
+        Args:
+            dao_class_name (str): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
+
+        Returns:
+            instance (DatabaseAccessObject): a DatabaseAccessObject of the given dao_class_name string
+        '''
+        if dao_class_name not in cls._instances:
+            raise RuntimeError(f"{dao_class_name} instance not yet created. Use create_dao() first.")
+        return cls._instances[dao_class_name]
 
     @classmethod
-    def set_dao(cls, dao_class:str, instance: DatabaseAccessObject):
-        cls._instances[dao_class] = instance
-
-    @classmethod
-    def reset(cls, dao_class: Optional[str] = None):
-        if dao_class:
-            cls._instances.pop(dao_class, None)
+    def reset(cls, dao_class_name: Optional[str] = None):
+        '''
+        Resets either a specific DAO (if given a dao_class_name) or all of them
+        
+        Args:
+            dao_class_name (str optional): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
+        '''
+        if dao_class_name:
+            cls._instances.pop(dao_class_name, None)
         else:
             cls._instances.clear()
