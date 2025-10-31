@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, ObjectId
 from abc import ABC
 from typing import Any, Callable
 from pymongo.errors import PyMongoError
@@ -120,7 +120,7 @@ class DatabaseAccessObject(ABC):
             with the JSON document as data
         '''
         self.__logger.debug(f"Getting {self.__class__.__name__} record by ID {ID}.")
-        document = self.__collection.find_one({"_id": ID})
+        document = self.__collection.find_one({"_id": ObjectId(ID)})
         if document is None:
             return ResponseCode(error_tag="ResourceNotFound")
         return document
@@ -260,7 +260,7 @@ class DatabaseAccessObject(ABC):
         entry = self._prepare_entry(entry) #Determines if there should be default field values; override in subclass
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
         result = self.__collection.insert_one(entry)
-        self.__logger.debug(f"Created! New ID {result.inserted_id}")
+        self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         return ResponseCode("PostSuccess", result)
 
     @rbac_action("delete")
@@ -277,7 +277,7 @@ class DatabaseAccessObject(ABC):
             deleted_count ({1}) as data
         '''
         self.__logger.debug(f"Deleting {self.__class__.__name__} record.")
-        result = self.__collection.delete_one({"_id": ID})
+        result = self.__collection.delete_one({"_id": ObjectId(ID)})
         if result.deleted_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return {"deleted_count": result.deleted_count}
