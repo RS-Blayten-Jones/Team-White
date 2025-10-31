@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from pathlib import Path
 
 
 global mongo_client
@@ -26,11 +27,16 @@ global private_trivia_dao
 global public_bio_dao
 global private_bio_dao
 
+BASE_DIR = Path(__file__).resolve().parent
+dotenv_path = BASE_DIR / '.env'
+
+load_dotenv(dotenv_path) 
+    
 
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
 def create_mongodb_connection():
-    load_dotenv() 
+    #load_dotenv() 
     if not ATLAS_URI:
         raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
     try:
@@ -91,17 +97,17 @@ def retrieve_public_jokes_collection(credentials: Credentials):
 
 def establish_all_daos(client):
     try:
-        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
-        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", mongo_client, DATABASE_NAME)
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
 
-        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", mongo_client, DATABASE_NAME)
-        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", mongo_client, DATABASE_NAME)
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", client, DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", client, DATABASE_NAME)
 
-        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", mongo_client, DATABASE_NAME)
-        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", mongo_client, DATABASE_NAME)
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", client, DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", client, DATABASE_NAME)
 
-        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", mongo_client, DATABASE_NAME)
-        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", mongo_client, DATABASE_NAME)
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
         
@@ -109,7 +115,7 @@ def establish_all_daos(client):
 
 def run(): 
     mongo_client = create_mongodb_connection()
-    establish_all_daos()
+    establish_all_daos(mongo_client)
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)

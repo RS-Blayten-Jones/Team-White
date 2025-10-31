@@ -100,12 +100,6 @@ def authentication(token) -> Credentials:
         secure_logger.error(e)
         return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
         
-
-
-# with open("./configs/jwt.json","r") as json_file:
-#     token=json.load(json_file)
-
-# print(isinstance(authentication(token),ResponseCode))
     
 
     
