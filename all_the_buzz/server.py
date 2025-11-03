@@ -12,6 +12,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pathlib import Path
 from utilities.logger import LoggerFactory
+from bson.json_util import dumps
 
 
 global mongo_client
@@ -78,7 +79,7 @@ def authentication_middleware(f: Callable) -> Callable:
         try:
             print("trying authentication")
             authentication_result = authentication(token_dict)
-        except:
+        except Exception as e:
             print("authentication error")
         #if the authentication result is an error code
         if isinstance(authentication_result, ResponseCode):
@@ -89,6 +90,9 @@ def authentication_middleware(f: Callable) -> Callable:
             kwargs['credentials'] = authentication_result
             return f(*args, **kwargs)
         #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
+        
+        print(f"Authentication results: {authentication_result}")
+        print(f"Authentication result type: {type(authentication_result)}")
         status_code, body = ResponseCode("Internal Authentication Error").to_http_response()
         return jsonify(body), status_code
     return decorated_function
@@ -98,15 +102,24 @@ def authentication_middleware(f: Callable) -> Callable:
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
     mongo_client = create_mongodb_connection()
-    #establish_all_daos(mongo_client)
-    public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
+    establish_all_daos(mongo_client)
+    #public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
     if credentials.title:
+        print("creating the dao")
         public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
+        public_jokes_dao.set_credentials(credentials)
         all_jokes = public_jokes_dao.get_all_records()
-        return jsonify(all_jokes), 200
+        json_string = dumps(all_jokes)
+        return json_string, 200
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+
+@ app.route("/jokes", methods=["POST"])
+@authentication_middleware
+def create_a_new_joke(credentials: Credentials): #employee credentials create in private, manager's create in public
+    pass
+
 
 
 def establish_all_daos(client):

@@ -230,12 +230,13 @@ class Credentials:
             raise ValueError(content[error_field])
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
-        elif content['title'].capitalize() != 'Manager':
-            content['title']='Employee' 
-        else:
+        else: 
+            if content['title'].capitalize() != 'Manager':
+                content['title']='Employee'
+        
             return Credentials(content["id"], content["fName"], 
-                           content["lName"], content["dept"], 
-                           content["title"], content["loc"])
+                            content["lName"], content["dept"], 
+                            content["title"], content["loc"])
     
     
 
