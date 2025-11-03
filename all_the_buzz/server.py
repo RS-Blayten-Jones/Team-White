@@ -22,11 +22,11 @@ global private_jokes_dao
 global public_quotes_dao
 global private_quotes_dao
 
-global public_trivia_dao
-global private_trivia_dao
+global public_trivias_dao
+global private_trivias_dao
 
-global public_bio_dao
-global private_bio_dao
+global public_bios_dao
+global private_bios_dao
 
 BASE_DIR = Path(__file__).resolve().parent
 dotenv_path = BASE_DIR / '.env'
@@ -97,6 +97,9 @@ def authentication_middleware(f: Callable) -> Callable:
 @ app.route("/jokes", methods=["GET"])
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
+    mongo_client = create_mongodb_connection()
+    #establish_all_daos(mongo_client)
+    public_joke_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
     if credentials.title:
         public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
         all_jokes = public_jokes_dao.get_all_records()
@@ -107,6 +110,18 @@ def retrieve_public_jokes_collection(credentials: Credentials):
 
 
 def establish_all_daos(client):
+
+    global public_jokes_dao
+    global private_jokes_dao
+
+    global public_quotes_dao
+    global private_quotes_dao
+
+    global public_trivias_dao
+    global private_trivias_dao
+
+    global public_bios_dao
+    global private_bios_dao
     try:
         public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
         private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
@@ -127,11 +142,12 @@ def establish_all_daos(client):
 
 
 def run(): 
-    mongo_client = create_mongodb_connection()
-    establish_all_daos(mongo_client)
+    #mongo_client = create_mongodb_connection()
+    #establish_all_daos(mongo_client)
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
+    #establish_all_daos(mongo_client)
 
 if __name__ == '__main__':
     run()
