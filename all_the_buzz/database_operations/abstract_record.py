@@ -1,4 +1,5 @@
-from pymongo import MongoClient, ObjectId
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 from abc import ABC
 from typing import Any, Callable
 from pymongo.errors import PyMongoError
@@ -106,6 +107,12 @@ class DatabaseAccessObject(ABC):
             credentials (Credentials): the credentials given by the authorization server to use for role-based access control
         '''
         self.__credentials = credentials
+
+    def clear_credentials(self) -> None:
+        '''
+        Clears any set credentials by setting the current one t "None"
+        '''
+        self.__credentials = None
 
     @rbac_action("read")
     def get_by_key(self, ID: str) -> ResponseCode:
