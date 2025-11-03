@@ -29,7 +29,6 @@ _DAO_REGISTRY = {
     "PrivateQuoteDAO": PrivateQuoteDAO,
     "PublicTriviaDAO": PublicTriviaDAO,
     "PrivateTriviaDAO": PrivateTriviaDAO,
-    "Error": None
 }
 
 class DAOFactory:
@@ -50,7 +49,13 @@ class DAOFactory:
     "PrivateTriviaDAO"\n
     '''
 
-    _instances: dict[type, DatabaseAccessObject] = {}
+    _instances: dict[str, DatabaseAccessObject] = {}
+
+    
+    @classmethod
+    def list_active(cls) -> list[str]:
+        return list(cls._instances.keys())
+
 
     @classmethod
     def create_dao(cls, dao_class_name: str, client: MongoClient, database_name: str) -> DatabaseAccessObject:
@@ -66,15 +71,23 @@ class DAOFactory:
             instance (DatabaseAccessObject): a DatabaseAccessObject of the given dao_class_name string
         '''
         #If the given type has not been registered, throw an error by testing for None type; else, check for instances
+<<<<<<< HEAD
         dao_class = _DAO_REGISTRY.get(dao_class_name, "Error")
         print(f"class: {dao_class}\ninstances: {cls._instances}\n\n")
+=======
+        dao_class = _DAO_REGISTRY.get(dao_class_name)
+>>>>>>> origin/test
         if(not dao_class):
             raise RuntimeError(f"This DAO type has not been registered. Try a valid identifier.")
         if dao_class in cls._instances:
             raise RuntimeError(f"{dao_class} instance already created. Use get_dao() to access it.")
         instance = dao_class(client, database_name)
+<<<<<<< HEAD
         print(f"Class instance: {instance}")
         cls._instances[dao_class] = instance
+=======
+        cls._instances[dao_class_name] = instance
+>>>>>>> origin/test
         return instance
 
     @classmethod

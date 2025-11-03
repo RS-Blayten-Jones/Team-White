@@ -178,7 +178,7 @@ class Credentials:
         elif not all(part.strip().isalpha() for part in title.strip()):
             raise ValueError("Title must be only contain letters")
         else:
-            self.__title=title.strip()
+            self.__title=title.strip().capitalize()
 
     @property
     def location(self):
@@ -230,6 +230,8 @@ class Credentials:
             raise ValueError(content[error_field])
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
+        elif content['title'].capitalize() != 'Manager':
+            content['title']='Employee' 
         else:
             return Credentials(content["id"], content["fName"], 
                            content["lName"], content["dept"], 
