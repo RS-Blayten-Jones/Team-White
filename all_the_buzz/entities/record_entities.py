@@ -190,10 +190,8 @@ class Joke(BaseRecord):
 
         return record_dict
 
-
-joke=Joke()
-print(joke.to_json_object())
-
+#joke=Joke.from_json_object(content)
+#joke.to_json_object()
 
 
     
