@@ -277,6 +277,7 @@ class Bios(BaseRecord):
     
     @paragraph.setter
     def pragraph(self, paragraph):
+        pass
         
     @staticmethod
     def from_json_object(content):

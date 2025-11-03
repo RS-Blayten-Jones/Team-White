@@ -108,6 +108,12 @@ class DatabaseAccessObject(ABC):
         '''
         self.__credentials = credentials
 
+    def clear_credentials(self) -> None:
+        '''
+        Clears any set credentials by setting the current one t "None"
+        '''
+        self.__credentials = None
+
     @rbac_action("read")
     def get_by_key(self, ID: str) -> ResponseCode:
         '''
