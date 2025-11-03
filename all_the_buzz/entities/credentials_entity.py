@@ -8,6 +8,11 @@ Classes:
     Token: An entity class for storing and validating the token
 '''
 
+#TODO make the filters for Employee here, A person
+# object from his server has titles like sales agent 
+#or developer and those need to be filtered to say that 
+#their title is Employee instead also filter for Managers too
+
 class Credentials:
     '''
     Validates credential data passed to it.
@@ -229,12 +234,13 @@ class Credentials:
             raise ValueError(content[error_field])
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
-        elif content['title'].capitalize() != 'Manager':
-            content['title']='Employee' 
-        else:
+        else: 
+            if content['title'].capitalize() != 'Manager':
+                content['title']='Employee'
+        
             return Credentials(content["id"], content["fName"], 
-                           content["lName"], content["dept"], 
-                           content["title"], content["loc"])
+                            content["lName"], content["dept"], 
+                            content["title"], content["loc"])
     
     
 
