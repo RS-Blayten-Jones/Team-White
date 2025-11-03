@@ -1,4 +1,4 @@
-from abstract_record import DatabaseAccessObject
+from database_operations.abstract_record import DatabaseAccessObject
 from pymongo import MongoClient
 
 class PublicTriviaDAO(DatabaseAccessObject):

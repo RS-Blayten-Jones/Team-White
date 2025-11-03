@@ -3,6 +3,7 @@ from database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
 from database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
 from database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
 from database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
+from utilities.logger import LoggerFactory
 from typing import Optional
 from pymongo import MongoClient
 

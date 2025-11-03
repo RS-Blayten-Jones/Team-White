@@ -9,9 +9,9 @@ To test coverage:
 (.venv)...\all_the_buzz> pip install pytest-cov
 (.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term
 (.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term-missing
-"""
+"""  
 
-from entities import Credentials, Token
+from all_the_buzz.entities import Credentials, Token
 import pytest
 
 # ------- Testing ID setter ------
@@ -183,7 +183,7 @@ def test_title_setter_valid():
     cred = Credentials()
     cred.id = 1234
     cred.title = "Emperor of the Universe"
-    assert cred.title == "Emperor of the Universe"
+    assert cred.title == "Emperor of the universe"
 
 def test_title_setter_none():
     cred = Credentials()

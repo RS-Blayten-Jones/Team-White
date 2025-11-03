@@ -1,9 +1,55 @@
 from flask import Flask, request, jsonify, make_response
-import utilities.authentication
+from utilities.authentication import authentication
 from typing import Callable, Any
 from functools import wraps
 from entities.credentials_entity import Credentials, Token
 from utilities.error_handler import ResponseCode
+from database_operations.dao_factory import DAOFactory
+from pymongo.errors import PyMongoError
+import os
+from dotenv import load_dotenv
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+from pathlib import Path
+from utilities.logger import LoggerFactory
+from bson.json_util import dumps
+
+
+global mongo_client
+
+global public_jokes_dao
+global private_jokes_dao
+
+global public_quotes_dao
+global private_quotes_dao
+
+global public_trivias_dao
+global private_trivias_dao
+
+global public_bios_dao
+global private_bios_dao
+
+BASE_DIR = Path(__file__).resolve().parent
+dotenv_path = BASE_DIR / '.env'
+
+load_dotenv(dotenv_path) 
+    
+
+ATLAS_URI = os.getenv("ATLAS_URI") 
+DATABASE_NAME = "team_white_database"
+def create_mongodb_connection():
+    if not ATLAS_URI:
+        raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+    try:
+        client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
+        client.admin.command('ping')
+        print("MongoDB client initialized successfully.")
+        return client
+
+    except Exception as PyMongoError:
+        print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
+        raise ResponseCode(str(PyMongoError))
+
 
 class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
@@ -21,8 +67,20 @@ def authentication_middleware(f: Callable) -> Callable:
     """
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
-        user_token = Token(request.headers.get('Bearer'))
-        authentication_result = authentication(user_token)
+        try:
+            #get user token from request
+            user_token = request.headers.get('Bearer')
+        except:
+            #send back a credentials missing response
+            missing_token_result = ResponseCode("MissingToken")
+            status_code, body = missing_token_result.to_http_response()
+            return jsonify(body), status_code
+        token_dict = {'token': str(user_token)}
+        try:
+            print("trying authentication")
+            authentication_result = authentication(token_dict)
+        except Exception as e:
+            print("authentication error")
         #if the authentication result is an error code
         if isinstance(authentication_result, ResponseCode):
             status_code, body = authentication_result.to_http_response()
@@ -32,6 +90,9 @@ def authentication_middleware(f: Callable) -> Callable:
             kwargs['credentials'] = authentication_result
             return f(*args, **kwargs)
         #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
+        
+        print(f"Authentication results: {authentication_result}")
+        print(f"Authentication result type: {type(authentication_result)}")
         status_code, body = ResponseCode("Internal Authentication Error").to_http_response()
         return jsonify(body), status_code
     return decorated_function
@@ -40,20 +101,66 @@ def authentication_middleware(f: Callable) -> Callable:
 @ app.route("/jokes", methods=["GET"])
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
-    if credentials.title: 
-        #grab the jokes public dao object
-        #all_jokes = jokes_public_dao.get_all_jokes()
-        #return jsonify(all_jokes), 200
-        pass
+    mongo_client = create_mongodb_connection()
+    establish_all_daos(mongo_client)
+    #public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
+    if credentials.title:
+        print("creating the dao")
+        public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
+        public_jokes_dao.set_credentials(credentials)
+        all_jokes = public_jokes_dao.get_all_records()
+        json_string = dumps(all_jokes)
+        return json_string, 200
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+@ app.route("/jokes", methods=["POST"])
+@authentication_middleware
+def create_a_new_joke(credentials: Credentials): #employee credentials create in private, manager's create in public
+    pass
 
-def run():
+
+
+def establish_all_daos(client):
+
+    global public_jokes_dao
+    global private_jokes_dao
+
+    global public_quotes_dao
+    global private_quotes_dao
+
+    global public_trivias_dao
+    global private_trivias_dao
+
+    global public_bios_dao
+    global private_bios_dao
+    try:
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
+
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", client, DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", client, DATABASE_NAME)
+
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", client, DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", client, DATABASE_NAME)
+
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
+        print("created")
+    except Exception as RuntimeError:
+        raise ResponseCode("Issue Creating DAOs", RuntimeError)
+    
+        
+
+
+def run(): 
+    #mongo_client = create_mongodb_connection()
+    #establish_all_daos(mongo_client)
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
+    #establish_all_daos(mongo_client)
 
 if __name__ == '__main__':
     run()

@@ -42,6 +42,7 @@ def authentication(token) -> Credentials:
         logger.debug("Begin validating format of token")
         valid_token_object=Token.from_json_object(safe_token)
         valid_token=valid_token_object.to_json_object()
+        #print(f" token in line 45 of authentication.py {valid_token}")
     except ValueError as e:
         secure_logger.error(e)
         return ResponseCode('InvalidOperation')
@@ -91,21 +92,18 @@ def authentication(token) -> Credentials:
     # validate credentials follow business rules
     try:
         secure_logger.debug("Begin validating format of recieved credentials.")
+        #print(safe_content)
         creds=Credentials.from_json_object(safe_content)
+        #print(f"credentials object line 97 of authentication.py {creds}")
         secure_logger.debug("Credentials successfully validated.")
         logger.debug("Successfully loaded credentials.")
         # return credentials object
         return creds
     except ValueError as e:
+        #print(e)
         logger.error(e)
         return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
         
-
-
-with open("./configs/jwt.json","r") as json_file:
-    token=json.load(json_file)
-
-print(isinstance(authentication(token),ResponseCode))
     
 
     
