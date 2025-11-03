@@ -3,20 +3,35 @@ from abc import ABC, abstractmethod
 from datetime import date
 
 class BaseRecord(ABC):
-    def __init__(self, id=None, ref_id=None, is_edit=False,
+    def __init__(self, id=None, ref_id=None, is_edit=None,
                   language="english"):
         self.id=id
         self.ref_id=ref_id
         self.is_edit=is_edit
         self.language=language
 
+    def hexadecimal_test(s):
+        try:
+            int(s,16)
+            return True
+        except ValueError:
+            return False
+        
     @property
     def id(self):
         return self.__id
     
     @id.setter
     def id(self, id):
-        self.__id=id
+        #only hexadecimal characters and only 24 characters
+        if not isinstance(id, str) and not isinstance(id, type(None)):
+            raise ValueError("Record ID must be either string or None")
+        elif isinstance(id, str) and len(id) != 24:
+            raise ValueError("Invalid Record ID")
+        elif isinstance(id, str) and not self.hexadecimal_test(id):
+            raise ValueError("Invalid Record ID")
+        else:
+            self.__id=id
     
     @property
     def ref_id(self):
@@ -24,7 +39,14 @@ class BaseRecord(ABC):
     
     @ref_id.setter 
     def ref_id(self,ref_id):
-        self.__ref_id=ref_id
+        if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
+            raise ValueError("Record ID must be either string or None")
+        elif isinstance(ref_id, str) and len(ref_id) != 24:
+            raise ValueError("Invalid Record ID")
+        elif isinstance(ref_id, str) and not self.hexadecimal_test(ref_id):
+            raise ValueError("Invalid Record ID")
+        else:
+            self.__ref_id=ref_id
     
     @property
     def is_edit(self):
@@ -61,8 +83,8 @@ class BaseRecord(ABC):
 
 
 class Joke(BaseRecord):
-    def __init__(self, id=None, ref_id=None, is_edit=False,
-                 difficulty=1, content={"type":"one_liner","text": "Haha"}, explanation=None,
+    def __init__(self, id=None, ref_id=None, is_edit=None,
+                 difficulty=1, content={"type":"one_liner","text": "Haha"}, explanation="",
                  language="english"):
         super().__init__(id,ref_id,is_edit,language)
         self.difficulty=difficulty
@@ -80,7 +102,7 @@ class Joke(BaseRecord):
         elif not isinstance(difficulty, int):
             raise ValueError("Difficulty must be an integer")
         elif difficulty not in [1,2,3]:
-            raise ValueError("Difficulty must be either 1,2, or 3")
+            raise ValueError("Difficulty must be either 1, 2, or 3")
         else:
             self.__difficulty=difficulty
     
@@ -110,8 +132,7 @@ class Joke(BaseRecord):
                 raise ValueError("Question for joke must be a string")
             elif not isinstance(content["answer"], str):
                 raise ValueError("Answer for joke must be a string")
-        else:
-            self.__content=content
+        self.__content=content
     
     @property
     def explanation(self):
@@ -119,9 +140,9 @@ class Joke(BaseRecord):
     
     @explanation.setter
     def explanation(self, explanation):
-        if self.difficulty in [2,3]:
+        if self.difficulty in [3]:
             if explanation is None:
-                raise ValueError("Explanation cannot be none when difficulty is 2 or 3")
+                raise ValueError("Explanation cannot be none when difficulty is 3")
             elif not isinstance(explanation, str):
                 raise ValueError("Explanation must be string")
             elif len(explanation.strip()) == 0:
@@ -133,10 +154,47 @@ class Joke(BaseRecord):
     
     @staticmethod
     def from_json_object(content):
-        pass
+        requried_fields=['level', 'content']
+        error_field='mesg'
+        if not isinstance(content, dict):
+            raise ValueError("Must be dictionary input")
+        elif error_field in content:
+            raise ValueError(content[error_field])
+        elif not all(key in content for key in requried_fields):
+            raise ValueError("Missing required fields")
+        elif not isinstance(content['content'], dict):
+            raise ValueError("Content must be a dictionary")
+        else:
+            joke_object=Joke(difficulty=content['difficulty'], content=content['content'], 
+                        language=content["language"])
+            if "id" in content:
+                joke_object.id=content["id"] 
+            if "ref_id" in content:
+                joke_object.ref_id=content["ref_id"]
+            if "is_edit" in content:
+                joke_object.is_edit=content["is_edit"]
+            if "explanation" in content:
+                joke_object.explanation=content["explanation"]
+            return joke_object
+                
 
     def to_json_object(self):
-        pass
+        record_dict={"difficulty": self.difficulty, "content": self.content, "explanation": self.explanation,
+                 "language":self.language}
+        if self.id is not None:
+            record_dict["id"]= self.id
+        if self.ref_id is not None:
+            record_dict["ref_id"]=self.ref_id
+        if self.is_edit is not None:
+            record_dict["is_edit"]=self.is_edit
+
+        return record_dict
+
+
+joke=Joke()
+print(joke.to_json_object())
+
+
 
     
 class Trivia(BaseRecord):
