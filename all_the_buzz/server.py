@@ -37,7 +37,6 @@ load_dotenv(dotenv_path)
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
 def create_mongodb_connection():
-    #load_dotenv() 
     if not ATLAS_URI:
         raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
     try:
@@ -69,14 +68,18 @@ def authentication_middleware(f: Callable) -> Callable:
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
         try:
             #get user token from request
-            user_token = Token(request.headers.get('Bearer'))
+            user_token = request.headers.get('Bearer')
         except:
             #send back a credentials missing response
             missing_token_result = ResponseCode("MissingToken")
             status_code, body = missing_token_result.to_http_response()
             return jsonify(body), status_code
-        
-        authentication_result = authentication(user_token)
+        token_dict = {'token': str(user_token)}
+        try:
+            print("trying authentication")
+            authentication_result = authentication(token_dict)
+        except:
+            print("authentication error")
         #if the authentication result is an error code
         if isinstance(authentication_result, ResponseCode):
             status_code, body = authentication_result.to_http_response()
@@ -95,11 +98,9 @@ def authentication_middleware(f: Callable) -> Callable:
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
     if credentials.title:
-        public_jokes_dao.get_dao()
-        #grab the jokes public dao object
-        #all_jokes = jokes_public_dao.get_all_jokes()
-        #return jsonify(all_jokes), 200
-        pass
+        public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
+        all_jokes = public_jokes_dao.get_all_records()
+        return jsonify(all_jokes), 200
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
