@@ -145,8 +145,6 @@ class Credentials:
             raise ValueError("Department cannot be greater than 35 characters")
         elif not all(part.strip().isalpha() for part in department.strip().split()):
             raise ValueError("Department must be letters")
-        # Add code to allow for apostrophes
-        # Add code to test for SQL injection
         else:
             self.__department=department.strip()
 
@@ -178,8 +176,6 @@ class Credentials:
             raise ValueError("Title too long")
         elif not all(part.strip().isalpha() for part in title.strip().split()):
             raise ValueError("Title must be only contain letters")
-        # Add code to handle apostrophes
-        # Add code to test for SQL injection
         else:
             self.__title=title.strip().capitalize()
 
@@ -211,8 +207,6 @@ class Credentials:
             raise ValueError("Location cannot be greater than 75 characters")
         elif not all(part.strip().isalpha() for part in location.strip().split()):
             raise ValueError("Location can only be letters")
-        # Add code to allow for apostrophes
-        # Add code to test for SQL injection
         else:
             self.__location=location.strip()
 
@@ -277,7 +271,6 @@ class Token:
             raise ValueError("Token is too short")
         elif len(token) > 400:
             raise ValueError("Token is too long")
-        # Add code to test for SQL injection
         else:
             self.__token=token
 

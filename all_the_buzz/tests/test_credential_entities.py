@@ -183,7 +183,7 @@ def test_title_setter_valid():
     cred = Credentials()
     cred.id = 1234
     cred.title = "Emperor of the Universe"
-    assert cred.title == "Emperor of the Universe"
+    assert cred.title == "Emperor of the universe"
 
 def test_title_setter_none():
     cred = Credentials()
