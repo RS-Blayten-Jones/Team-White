@@ -1,2 +1,2 @@
-from entities import BaseRecord, Trivia
+from all_the_buzz.entities import BaseRecord, Trivia
 import pytest

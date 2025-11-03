@@ -1,5 +1,5 @@
 import pytest
-from entities import BaseRecord
+from all_the_buzz.entities import BaseRecord
 
 # Dummy subclass to test BaseRecord
 class DummyRecord(BaseRecord):
