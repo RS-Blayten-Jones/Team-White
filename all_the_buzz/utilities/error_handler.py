@@ -35,6 +35,7 @@ _RESPONSE_MAP = {
     "AuthenticationTimeout": (503, "Authentication server did not respond. Try again later."),
     "MalformedAuthenticationResponse": (502, "Authentication server gave a malformed object to the API. Try again later."),
     "UnauthorizedToken": (401, "Token was expired or invalid. Please send a new valid JWT."),
+    "MissingToken": (401, "Missing Authentication Token"),
         #API Request Errors
     "MalformedContent": (400, "Request content had malformed syntax. Please check your request."),
     "RateLimit": (429, "Too many requests have been sent. Please wait until you can request again."),

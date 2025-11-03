@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pathlib import Path
+from utilities.logger import LoggerFactory
 
 
 global mongo_client
@@ -66,7 +67,15 @@ def authentication_middleware(f: Callable) -> Callable:
     """
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
-        user_token = Token(request.headers.get('Bearer'))
+        try:
+            #get user token from request
+            user_token = Token(request.headers.get('Bearer'))
+        except:
+            #send back a credentials missing response
+            missing_token_result = ResponseCode("MissingToken")
+            status_code, body = missing_token_result.to_http_response()
+            return jsonify(body), status_code
+        
         authentication_result = authentication(user_token)
         #if the authentication result is an error code
         if isinstance(authentication_result, ResponseCode):
@@ -86,6 +95,7 @@ def authentication_middleware(f: Callable) -> Callable:
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
     if credentials.title:
+        public_jokes_dao.get_dao()
         #grab the jokes public dao object
         #all_jokes = jokes_public_dao.get_all_jokes()
         #return jsonify(all_jokes), 200
@@ -108,8 +118,10 @@ def establish_all_daos(client):
 
         public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
         private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
+        print("created")
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
+    
         
 
 

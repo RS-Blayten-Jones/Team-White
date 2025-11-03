@@ -1,4 +1,5 @@
-from pymongo import MongoClient, ObjectId
+from pymongo import MongoClient
+from bson.objectid import ObjectId
 from abc import ABC
 from typing import Any, Callable
 from pymongo.errors import PyMongoError
