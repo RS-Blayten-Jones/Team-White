@@ -3,6 +3,7 @@ from database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
 from database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
 from database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
 from database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
+from utilities.logger import LoggerFactory
 from typing import Optional
 from pymongo import MongoClient
 
@@ -66,11 +67,13 @@ class DAOFactory:
         '''
         #If the given type has not been registered, throw an error by testing for None type; else, check for instances
         dao_class = _DAO_REGISTRY.get(dao_class_name, "Error")
+        print(f"class: {dao_class}\ninstances: {cls._instances}\n\n")
         if(not dao_class):
             raise RuntimeError(f"This DAO type has not been registered. Try a valid identifier.")
         if dao_class in cls._instances:
             raise RuntimeError(f"{dao_class} instance already created. Use get_dao() to access it.")
         instance = dao_class(client, database_name)
+        print(f"Class instance: {instance}")
         cls._instances[dao_class] = instance
         return instance
 

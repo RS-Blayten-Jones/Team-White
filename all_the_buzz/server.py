@@ -99,7 +99,7 @@ def authentication_middleware(f: Callable) -> Callable:
 def retrieve_public_jokes_collection(credentials: Credentials):
     mongo_client = create_mongodb_connection()
     #establish_all_daos(mongo_client)
-    public_joke_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
+    public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
     if credentials.title:
         public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
         all_jokes = public_jokes_dao.get_all_records()
