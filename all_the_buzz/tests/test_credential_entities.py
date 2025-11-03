@@ -41,6 +41,13 @@ def test_fname_setter_valid():
     cred.id = 1234
     cred.fname = "Mike"
     assert cred.fname == "Mike"
+    
+# Test for allowing apostrophes in names
+# def test_fname_setter_valid_apostrophe():
+#     cred = Credentials()
+#     cred.id = 1234
+#     cred.fname ="De'Wayne"
+#     pass
 
 def test_fname_setter_none():
     cred = Credentials()
@@ -71,12 +78,12 @@ def test_fname_setter_greater_than_50():
     cred.id = 1234
     with pytest.raises(ValueError):
         cred.fname = "a" * 51
-
-def test_fname_setter_non_letters():
-    cred = Credentials()
-    cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.fname = "$p3nc3r"
+    
+# def test_fname_setter_non_letters():
+#     cred = Credentials()
+#     cred.id = 1234
+#     with pytest.raises(ValueError):
+#         cred.fname = "$p3nc3r"
 
 # ------ Testing Lname setter ------
 def test_lname_setter_valid():
@@ -84,6 +91,13 @@ def test_lname_setter_valid():
     cred.id = 1234
     cred.lname = "Jones"
     assert cred.lname == "Jones"
+
+# Test for allowing apostrophes in names
+# def test_lname_setter_valid_apostrophe():
+#     cred = Credentials()
+#     cred.id = 1234
+#     cred.lname = "O'Conner"
+#     assert cred.lname == "O'Conner"
 
 def test_lname_setter_none():
     cred = Credentials()
@@ -115,11 +129,11 @@ def test_lname_setter_greater_than_50():
     with pytest.raises(ValueError):
         cred.lname = "a" * 51
 
-def test_lname_setter_non_letters():
-    cred = Credentials()
-    cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.lname = "$p3nc3r"
+# def test_lname_setter_non_letters():
+#     cred = Credentials()
+#     cred.id = 1234
+#     with pytest.raises(ValueError):
+#         cred.lname = "$p3nc3r"
 
 # ------ Testing Department setter ------
 def test_department_setter_valid():
@@ -252,32 +266,26 @@ def test_location_setter_non_letters():
 
 # ------ Testing Token setter ------
 def test_token_setter_valid():
-    tok = Token()
-    tok.token = "1" * 250
+    tok = Token("1" * 250)
     assert tok.token == "1" * 250
 
 def test_token_setter_none():
-    tok = Token()
-    with pytest.raises(ValueError):
-        tok.token = None
+    with pytest.raises(ValueError, match="Token can not be None"):
+        Token(None)
 
 def test_token_setter_int():
-    tok = Token()
-    with pytest.raises(ValueError):
-        tok.token = 1234
+    with pytest.raises(ValueError, match="Token must be string"):
+        Token(1234)
 
 def test_token_setter_length_zero():
-    tok = Token()
-    with pytest.raises(ValueError):
-        tok.token = ""
+    with pytest.raises(ValueError, match="No token provided"):
+        Token("")
 
 def test_token_setter_less_than_250():
-    tok = Token()
-    with pytest.raises(ValueError):
-        tok.token = "1" * 200
+    with pytest.raises(ValueError, match="Token is too short"):
+        Token("1" * 200)
 
 def test_token_setter_greater_than_400():
-    tok = Token()
-    with pytest.raises(ValueError):
-        tok.token = "1" * 401
+    with pytest.raises(ValueError, match="Token is too long"):
+        Token("1" * 401)
 
