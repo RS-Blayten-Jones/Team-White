@@ -36,14 +36,109 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="entities-credentials-entity-module">
-<h2>entities.credentials_entity module<a class="headerlink" href="#entities-credentials-entity-module" title="Link to this heading">¶</a></h2>
+<section id="module-entities.credentials_entity">
+<span id="entities-credentials-entity-module"></span><h2>entities.credentials_entity module<a class="headerlink" href="#module-entities.credentials_entity" title="Link to this heading">¶</a></h2>
+<p>credentials_entity.py</p>
+<p>This module contains entity classes for data related to authentication.</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Credentials: An entity class for storing and validating credential information.
+Token: An entity class for storing and validating the token</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.credentials_entity.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mike'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Tiger'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">department</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Sales'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manager'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'United</span> <span class="pre">States'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.credentials_entity.Credentials" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Validates credential data passed to it.
+This class includes the id, first name, last name, department,
+title, and location information for the user.</p>
+<p>To initialize this class, the from_json_object method can be used.
+To do this just pass in a dict in form:
+{‘id’: &lt;id&gt;, ‘fname’ : &lt;fname&gt;, ‘lname’: &lt;lname&gt;,
+‘department’: &lt;department&gt;, ‘title’:&lt;title&gt;,
+‘location’:&lt;location&gt;}</p>
+<p>All fields are required.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.department">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">department</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.department" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.fname">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fname</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.fname" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.from_json_object">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.credentials_entity.Credentials.from_json_object" title="Link to this definition">¶</a></dt>
+<dd><p>Method for initializing Credential object with dictionary. This
+method will also ensure the dictionary has the required feilds.</p>
+<dl class="simple">
+<dt>Exception:</dt><dd><p>ValueError: Must be a dictionary
+ValueError: Authentication Server Response
+ValueError: Required fields are missing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.lname">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lname</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.lname" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.location">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">location</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.location" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Credentials.title">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#entities.credentials_entity.Credentials.title" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.credentials_entity.Token">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.credentials_entity.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ABC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.credentials_entity.Token" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Entity class for the json web tokens.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.credentials_entity.Token.from_json_object">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.credentials_entity.Token.from_json_object" title="Link to this definition">¶</a></dt>
+<dd><p>Method for initializing Token object from a dictionary.
+This method also validates the format of the dictionary and ensures
+the token field is present.</p>
+<dl class="simple">
+<dt>Exceptions:</dt><dd><p>ValueError: Must be a dictionary
+ValueError: Missing Required fields</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.credentials_entity.Token.to_json_object">
+<span class="sig-name descname"><span class="pre">to_json_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.credentials_entity.Token.to_json_object" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.credentials_entity.Token.token">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="#entities.credentials_entity.Token.token" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="entities-record-entities-module">
 <h2>entities.record_entities module<a class="headerlink" href="#entities-record-entities-module" title="Link to this heading">¶</a></h2>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="module-entities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-entities" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 

@@ -36,26 +36,131 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 </section>
-<section id="utilities-authentication-module">
-<h2>utilities.authentication module<a class="headerlink" href="#utilities-authentication-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.authentication">
+<span id="utilities-authentication-module"></span><h2>utilities.authentication module<a class="headerlink" href="#module-utilities.authentication" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="utilities.authentication.authentication">
+<span class="sig-prename descclassname"><span class="pre">utilities.authentication.</span></span><span class="sig-name descname"><span class="pre">authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="entities.html#entities.credentials_entity.Credentials" title="entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></span><a class="headerlink" href="#utilities.authentication.authentication" title="Link to this definition">¶</a></dt>
+<dd><p>Authenticates users credentials given generated json web token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> – a dictionary in format {‘token’: &lt;token string&gt;}</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a Credential object initialized from returned credentials.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cred</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="utilities-checksum-module">
-<h2>utilities.checksum module<a class="headerlink" href="#utilities-checksum-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.checksum">
+<span id="utilities-checksum-module"></span><h2>utilities.checksum module<a class="headerlink" href="#module-utilities.checksum" title="Link to this heading">¶</a></h2>
 </section>
-<section id="utilities-config-module">
-<h2>utilities.config module<a class="headerlink" href="#utilities-config-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.config">
+<span id="utilities-config-module"></span><h2>utilities.config module<a class="headerlink" href="#module-utilities.config" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utilities.config.YamlReader">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utilities.config.</span></span><span class="sig-name descname"><span class="pre">YamlReader</span></span><a class="headerlink" href="#utilities.config.YamlReader" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.config.YamlReader.read_yaml">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.config.YamlReader.read_yaml" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utilities.config.config_file_reader">
+<span class="sig-prename descclassname"><span class="pre">utilities.config.</span></span><span class="sig-name descname"><span class="pre">config_file_reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.config.config_file_reader" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
-<section id="utilities-error-handler-module">
-<h2>utilities.error_handler module<a class="headerlink" href="#utilities-error-handler-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.error_handler">
+<span id="utilities-error-handler-module"></span><h2>utilities.error_handler module<a class="headerlink" href="#module-utilities.error_handler" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utilities.error_handler.</span></span><span class="sig-name descname"><span class="pre">ResponseCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.error_handler.ResponseCode" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.get_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.get_error_code">
+<span class="sig-name descname"><span class="pre">get_error_code</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.get_error_code" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.get_error_tag">
+<span class="sig-name descname"><span class="pre">get_error_tag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.get_error_tag" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.get_message">
+<span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.get_message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.get_success">
+<span class="sig-name descname"><span class="pre">get_success</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.get_success" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.error_handler.ResponseCode.to_http_response">
+<span class="sig-name descname"><span class="pre">to_http_response</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#utilities.error_handler.ResponseCode.to_http_response" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="utilities-logger-module">
-<h2>utilities.logger module<a class="headerlink" href="#utilities-logger-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.logger">
+<span id="utilities-logger-module"></span><h2>utilities.logger module<a class="headerlink" href="#module-utilities.logger" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utilities.logger.LoggerFactory">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utilities.logger.</span></span><span class="sig-name descname"><span class="pre">LoggerFactory</span></span><a class="headerlink" href="#utilities.logger.LoggerFactory" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.logger.LoggerFactory.get_general_logger">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_general_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="headerlink" href="#utilities.logger.LoggerFactory.get_general_logger" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.logger.LoggerFactory.get_security_logger">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_security_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Logger</span></span></span><a class="headerlink" href="#utilities.logger.LoggerFactory.get_security_logger" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utilities.logger.LoggerFactory.initialize">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utilities.logger.LoggerFactory.initialize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="utilities-sanitize-module">
-<h2>utilities.sanitize module<a class="headerlink" href="#utilities-sanitize-module" title="Link to this heading">¶</a></h2>
+<section id="module-utilities.sanitize">
+<span id="utilities-sanitize-module"></span><h2>utilities.sanitize module<a class="headerlink" href="#module-utilities.sanitize" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="utilities.sanitize.sanitize_json">
+<span class="sig-prename descclassname"><span class="pre">utilities.sanitize.</span></span><span class="sig-name descname"><span class="pre">sanitize_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utilities.sanitize.sanitize_json" title="Link to this definition">¶</a></dt>
+<dd><p>This function uses the nh3 library to clean inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content</strong> – this is either a dictionary, list, or string that needs to be
+sanitized (if it’s not of this type it will be just returned)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>either cleaned content if proper format or the original content input</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="module-utilities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utilities" title="Link to this heading">¶</a></h2>
 </section>
 </section>
 
