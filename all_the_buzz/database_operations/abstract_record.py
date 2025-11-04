@@ -250,7 +250,7 @@ class DatabaseAccessObject(ABC):
         result = self.__collection.update_one({"_id": ID}, update_op)
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
-        return {"matched_count": result.matched_count, "modified_count": result.modified_count}
+        return ID
     
     @rbac_action("create")
     @mongo_safe
@@ -270,7 +270,7 @@ class DatabaseAccessObject(ABC):
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         #print(f"Created! New ID {str(result.inserted_id)}")
-        return ResponseCode("PostSuccess", result)
+        return ResponseCode("PostSuccess", result.inserted_id)
 
     @rbac_action("delete")
     @mongo_safe

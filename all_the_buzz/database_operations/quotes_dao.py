@@ -20,22 +20,22 @@ class PublicQuoteDAO(DatabaseAccessObject):
         '''
         super().__init__("quotes_public", client, database_name)
 
-    #used_status should default to none when added!
+    #used_date should default to none when added!
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
-        entry["used_status"] = "None"
+        entry["used_date"] = "None"
         return entry
     
     @mongo_safe
     def _reset_quotes(self) -> ResponseCode:
         '''
-        Sets all quotes "used_status" to "None"
+        Sets all quotes "used_date" to "None"
 
         Returns:
             ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the 
             UpdateResult object
         '''
         self.__logger.debug(f"Reseting all quotes...")
-        result = self.__collection.update_many({}, {"$set": {"used_status": "None"}})
+        result = self.__collection.update_many({}, {"$set": {"used_date": "None"}})
         return result
     
     @DatabaseAccessObject.rbac_action("read")
@@ -50,25 +50,25 @@ class PublicQuoteDAO(DatabaseAccessObject):
             JSON document
         '''
         #Check to see if there are any unused quotes
-        num_unused_quotes = self.__collection.count_documents({"used_status": "None"})
+        num_unused_quotes = self.__collection.count_documents({"used_date": "None"})
         today = date.today()
         today_string = today.strftime("%m/%d/%Y")
-        existing_record = self.__collection.find({"used_status": today_string})
+        existing_record = self.__collection.find({"used_date": today_string})
         #if there is a quote being used for today, just return that one
         if(existing_record is not None):
             return existing_record
         #If it is a new year OR all of the quotes have been used, reset and get total number of quotes
         if((today.month == 1 and today.day == 1) or (num_unused_quotes == 0)):
             self._reset_quotes()
-            num_unused_quotes = self.__collection.count_documents({"used_status": "None"})
+            num_unused_quotes = self.__collection.count_documents({"used_date": "None"})
         #Knuth multiplication method; reduced to 32 bit hash-space; spreads out values well
         #Unique value for each day...
         seed = 10000*today.year + 100*today.month + today.day
         hashed = (seed * 2654435761) % 2**32
-        unused_list = list(self.__collection.find({"used_status": "None"}))
+        unused_list = list(self.__collection.find({"used_date": "None"}))
         #Obtain a record using a hashed value so that it is unified across users and not random per session
         record = unused_list[hashed % num_unused_quotes]
-        self.update_record(record["_id"], {"used_status": today_string})
+        self.update_record(record["_id"], {"used_date": today_string})
         return record
     
 class PrivateQuoteDAO(DatabaseAccessObject):
@@ -87,7 +87,7 @@ class PrivateQuoteDAO(DatabaseAccessObject):
         '''
         super().__init__("quotes_private", client, database_name)
 
-    #used_status should default to none when added!    
+    #used_date should default to none when added!    
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
-        entry["used_status"] = "None"
+        entry["used_date"] = "None"
         return entry
