@@ -1,0 +1,32 @@
+name: Continuous Testing Workflow
+
+on:
+  push:
+    branches:
+      - christy
+  pull_request:
+    branches:
+      - christy
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r all_the_buzz/requirements.txt
+
+      - name: Generate Documentation
+        run: |
+          sphinx-apidoc -f -o source/docs/ --separate --module-first all_the_buzz
+          sphinx-build -b html source/docs ./source/docs/build
