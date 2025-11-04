@@ -421,7 +421,7 @@ class Quotes(BaseRecord):
 
     The fields: 'content','author', 'language' are all required.
     """
-    def __init__(self, id=None, ref_id=None, is_edit=None, category=None,
+    def __init__(self, id=None, ref_id=None, is_edit=None, category="category",
                  content="stuff",author="Joe", used_date="03/15/2020", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
