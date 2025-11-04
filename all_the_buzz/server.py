@@ -220,6 +220,72 @@ def retrieve_public_quotes_collection(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+
+#trivia
+@authentication_middleware
+def retrieve_public_trivia_collection(credentials: Credentials):
+    """
+    Retrieves the public trivia collection and returns it as a http response
+
+    This endpoint is accessible to any authenticated user (employee or manager)
+    and returns all records stored in the PublicTriviaDAO collection. It handles
+    serialization of MongoDB records (including BSON types like ObjectId) to a 
+    valid JSON string.
+
+    Args:
+        credentials: The authenticated user's credentials object, injected by
+        the authentication_middleware.
+
+    Returns:
+        A tuple containing:
+        * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+    """
+    if credentials.title == 'Employee' or credentials.title == 'Manager':
+        public_trivia_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        all_trivia = public_trivia_dao.get_all_records()
+        public_trivia_dao.clear_credentials()
+        json_string = dumps(all_trivia)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
+#bios
+@authentication_middleware
+def retrieve_public_bios_collection(credentials: Credentials):
+    """
+    Retrieves the public bios collection and returns it as a http response
+
+    This endpoint is accessible to any authenticated user (employee or manager)
+    and returns all records stored in the PublicBiosDAO collection. It handles
+    serialization of MongoDB records (including BSON types like ObjectId) to a 
+    valid JSON string.
+
+    Args:
+        credentials: The authenticated user's credentials object, injected by
+        the authentication_middleware.
+
+    Returns:
+        A tuple containing:
+        * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+    """
+    if credentials.title == 'Employee' or credentials.title == 'Manager':
+        public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
+        all_bios = public_bios_dao.get_all_records()
+        public_bios_dao.clear_credentials()
+        json_string = dumps(all_bios)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
+
 def establish_all_daos(client):
 
     global public_jokes_dao
@@ -300,7 +366,24 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
-    # Add other routes (e.g., /proposals, /quotes) here using the same pattern
+    app.add_url_rule(
+        "/quotes",
+        view_func=retrieve_public_quotes_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/trivias",
+        view_func=retrieve_public_trivia_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/bios",
+        view_func=retrieve_public_bios_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
 
     return app
 
