@@ -1,4 +1,6 @@
 import nh3
+import re
+
 '''
 sanitize.py
 
@@ -25,7 +27,10 @@ def sanitize_json(content):
     elif isinstance(content, list):
         return [sanitize_json(value) for value in content]
     elif isinstance(content, str):
-        return nh3.clean(content)
+        text = nh3.clean(content)
+        text = re.sub(r"\{[^{}]*\}", "", text)
+        text = re.sub(r"\$[a-zA-Z]+", "", text)
+        return text
     else:
         return content
     
