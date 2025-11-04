@@ -181,6 +181,45 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
 #do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
     #for managers 
 
+
+
+
+
+
+
+
+
+#quotes
+@authentication_middleware
+def retrieve_public_quotes_collection(credentials: Credentials):
+    """
+    Retrieves the public joke collection and returns it as a http response
+
+    This endpoint is accessible to any authenticated user (employee or manager)
+    and returns all records stored in the PublicQuotesDAO collection. It handles
+    serialization of MongoDB records (including BSON types like ObjectId) to a 
+    valid JSON string.
+
+    Args:
+        credentials: The authenticated user's credentials object, injected by
+        the authentication_middleware.
+
+    Returns:
+        A tuple containing:
+        * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+    """
+    if credentials.title == 'Employee' or credentials.title == 'Manager':
+        public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        all_quotes = public_quotes_dao.get_all_records()
+        public_quotes_dao.clear_credentials()
+        json_string = dumps(all_quotes)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
 def establish_all_daos(client):
 
     global public_jokes_dao
