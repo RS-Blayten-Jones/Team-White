@@ -421,7 +421,7 @@ class Quotes(BaseRecord):
 
     The fields: 'content','author', 'language' are all required.
     """
-    def __init__(self, id=None, ref_id=None, is_edit=None, category=None, author="Joe", used_date="03/15/2020", language="english" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, category="category", author="Joe", used_date="03/15/2020", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
         self.author=author
@@ -468,7 +468,8 @@ class Quotes(BaseRecord):
     @used_date.setter
     def used_date(self, used_date):
         """
-        Validates used_date is in correct format.
+        Validates used_date is in correct format. 
+        Dates passed will be reformatted to mm/dd/yyyy for consistency
         
         Exceptions:
             ValueError: Used date must be a string date
