@@ -1,10 +1,10 @@
 import requests
-from utilities.config import config_file_reader
-from entities.credentials_entity import Credentials, Token
-from utilities.sanitize import sanitize_json
+from all_the_buzz.utilities.config import config_file_reader
+from all_the_buzz.entities.credentials_entity import Credentials, Token
+from all_the_buzz.utilities.sanitize import sanitize_json
 import json
-from utilities.error_handler import ResponseCode
-from utilities.logger import LoggerFactory
+from all_the_buzz.utilities.error_handler import ResponseCode
+from all_the_buzz.utilities.logger import LoggerFactory
 from requests.exceptions import ConnectionError
 
 '''

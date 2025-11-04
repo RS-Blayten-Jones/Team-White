@@ -1,5 +1,5 @@
-from database_operations.abstract_record import DatabaseAccessObject
-from utilities.error_handler import ResponseCode
+from all_the_buzz.database_operations.abstract_record import DatabaseAccessObject
+from all_the_buzz.utilities.error_handler import ResponseCode
 from pymongo import MongoClient
 
 class PublicBioDAO(DatabaseAccessObject):

@@ -1,6 +1,6 @@
-from utilities.error_handler import ResponseCode
+from all_the_buzz.utilities.error_handler import ResponseCode
 from pymongo import MongoClient
-from abstract_record import mongo_safe
+from all_the_buzz.database_operations.abstract_record import mongo_safe
 
 class ChecksumDAO:
     '''
