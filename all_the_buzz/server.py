@@ -3,6 +3,7 @@ from all_the_buzz.utilities.authentication import authentication
 from typing import Callable, Any
 from functools import wraps
 from all_the_buzz.entities.credentials_entity import Credentials, Token
+from all_the_buzz.entities.record_entities import Joke
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from pymongo.errors import PyMongoError
@@ -51,11 +52,14 @@ def create_mongodb_connection():
         raise ResponseCode(str(PyMongoError))
 
 
+# class MyFlask(Flask):
+#     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
+#         return super().add_url_rule(rule, endpoint, view_func, provide_automatic_options=False, **options)
 class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-        return super().add_url_rule(rule, endpoint, view_func, provide_automatic_options=False, **options)
+        return super().add_url_rule(rule, endpoint, view_func, **options)
 
-app = MyFlask(__name__)
+#app = MyFlask(__name__)
 #CORS Preflight necessary only when we integrate with front end 
 
 #middleware 
@@ -97,30 +101,85 @@ def authentication_middleware(f: Callable) -> Callable:
         return jsonify(body), status_code
     return decorated_function
 
+def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
+    """
+    A helper function that returns a dao object after
+    setting it's credentials 
 
-@ app.route("/jokes", methods=["GET"])
+    Args:
+        credentials: The authenticated user's credentials object, injected by
+        the authentication_middleware.
+    Returns:
+        A (DatabaseAccessObject): a DatabaseAccessObject of the given dao_class_name string
+    """
+    dao = DAOFactory.get_dao(dao_classname)
+    dao.set_credentials(credentials)
+    return dao
+
+
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
-    mongo_client = create_mongodb_connection()
-    establish_all_daos(mongo_client)
-    #public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", mongo_client, DATABASE_NAME)
-    if credentials.title:
-        print("creating the dao")
-        public_jokes_dao = DAOFactory.get_dao("PublicJokeDAO")
-        public_jokes_dao.set_credentials(credentials)
+    """
+    Retrieves the public joke collection and returns it as a http response
+
+    This endpoint is accessible to any authenticated user (employee or manager)
+    and returns all records stored in the PublicJokeDAO collection. It handles
+    serialization of MongoDB records (including BSON types like ObjectId) to a 
+    valid JSON string.
+
+    Args:
+        credentials: The authenticated user's credentials object, injected by
+        the authentication_middleware.
+
+    Returns:
+        A tuple containing:
+        * The JSON string representation of all public jokes and a 200 HTTP status code, if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+    """
+    if credentials.title == 'Employee' or credentials.title == 'Manager':
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         all_jokes = public_jokes_dao.get_all_records()
+        public_jokes_dao.clear_credentials()
         json_string = dumps(all_jokes)
+        ResponseCode("GeneralSuccess", json_string)
         return json_string, 200
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-@ app.route("/jokes", methods=["POST"])
 @authentication_middleware
 def create_a_new_joke(credentials: Credentials): #employee credentials create in private, manager's create in public
-    pass
-
-
+    #need to find out first if the credentials are for a manager or not 
+    # joke_object = request.get_json()
+    # print(joke_object)
+    # return "Ok", 200
+    if credentials.title == 'Employee':
+        private_jokes_dao = DAOFactory.get_dao("PrivateJokeDAO")
+        private_jokes_dao.set_credentials(credentials)
+        request_body = request.get_json()
+        request_body["is_edit"] = False
+        try:
+            new_joke = Joke.from_json_object(request_body)
+            print(new_joke)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_joke, Joke):
+            try:
+                print(request_body)
+                json_joke = new_joke.to_json_
+                dao_response = private_jokes_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode) == True
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            private_jokes_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            return "Error", 400
+#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
+    #for managers 
 
 def establish_all_daos(client):
 
@@ -154,13 +213,63 @@ def establish_all_daos(client):
         
 
 
+# def run(): 
+#     #establish_all_daos(mongo_client)
+#     port = 8080
+#     print(f"Server running on port {port}")
+#     app.run(host='0.0.0.0', port=port)
+    # global mongo_client
+    # mongo_client = create_mongodb_connection()
+    # establish_all_daos(mongo_client)
+
+# if __name__ == '__main__':
+#     run()
+
+# def create_app():
+#     app = MyFlask(__name__)
+
+#     # Code to run before the first request (during app initialization)
+#     with app.app_context():
+#         # Example: Initialize database, load configuration, etc.
+#         print("Initializing application resources...")
+#         # init_db() 
+#         # load_config()
+#         global mongo_client
+#         mongo_client = create_mongodb_connection()
+#         establish_all_daos(mongo_client)
+
+#     return app
+def create_app():
+    """Application factory: initializes Flask app and external resources."""
+    app = MyFlask(__name__)
+    try:
+        mongo_client = create_mongodb_connection()
+        establish_all_daos(mongo_client)
+    except Exception as e:
+        print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
+        raise
+
+    app.add_url_rule(
+        "/jokes", 
+        view_func=retrieve_public_jokes_collection, 
+        methods=["GET"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/jokes", 
+        view_func=create_a_new_joke, 
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    # Add other routes (e.g., /proposals, /quotes) here using the same pattern
+
+    return app
+
 def run(): 
-    #mongo_client = create_mongodb_connection()
-    #establish_all_daos(mongo_client)
     port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
-    #establish_all_daos(mongo_client)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    app = create_app()
     run()

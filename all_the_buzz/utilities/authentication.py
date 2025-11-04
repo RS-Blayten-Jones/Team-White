@@ -102,7 +102,8 @@ def authentication(token) -> Credentials:
     except ValueError as e:
         #print(e)
         logger.error(e)
-        return ResponseCode('InvalidOperation') # returns ResponseCode object which logs to general log
+        #return ResponseCode('InvalidOperation')
+        return ResponseCode('UnauthorizedToken') # returns ResponseCode object which logs to general log
         
     
 

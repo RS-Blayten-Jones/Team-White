@@ -30,7 +30,7 @@ quotes_private_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "is_edit", "content", "category", "author", "language"], #ADD THE OG ID FIELD 
+                "required": ["_id", "is_edit", "content", "category", "author", "language" ,"used_date"], #ADD THE OG ID FIELD 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "is_edit": {"bsonType": "bool"},
@@ -38,7 +38,7 @@ quotes_private_schema = {
                     "content": {"bsonType": "string"},
                     "category": {"bsonType": "string"},
                     "author": {"bsonType": "string"},
-                    "used_status": {"bsonType": "string"},
+                    "used_date": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined

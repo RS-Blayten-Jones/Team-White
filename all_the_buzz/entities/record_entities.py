@@ -213,6 +213,8 @@ class Joke(BaseRecord):
             raise ValueError("Content must be a dictionary")
         elif "type" not in content:
             raise ValueError("Joke content missing required fields")
+        
+        # Content type One liners
         elif content["type"] not in ["one_liner", "qa"]:
             raise ValueError("Not a valid type")
         elif content["type"]=="one_liner":
@@ -222,13 +224,19 @@ class Joke(BaseRecord):
                 raise ValueError("One liner joke text field cannot be none")
             elif not isinstance(content["text"], str):
                 raise ValueError("One liner joke text must be a string")
+            
+        # Content type QA
         elif content["type"]=="qa":
             if not all(key in content for key in ["question", "answer"]):
                 raise ValueError("Missing required fields")
             elif not isinstance(content["question"],str):
                 raise ValueError("Question for joke must be a string")
+            elif len((content["question"].strip())) == 0:
+                raise ValueError("Joke must have a question")
             elif not isinstance(content["answer"], str):
                 raise ValueError("Answer for joke must be a string")
+            elif len((content["answer"].strip())) == 0:
+                raise ValueError("Joke must have an answer")
         self.__content=content
     
     @property

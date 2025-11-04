@@ -29,13 +29,13 @@ quotes_public_schema = {
         {
             "$jsonSchema": {
                 "bsonType": "object",
-                "required": ["_id", "content", "category", "author", "language"], 
+                "required": ["_id", "content", "category", "author", "language", "used_date"], 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "content": {"bsonType": "string"},
                     "category": {"bsonType": "string"},
                     "author": {"bsonType": "string"},
-                    "used_status": {"bsonType": "string"},
+                    "used_date": {"bsonType": "string"},
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined

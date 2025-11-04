@@ -1,14 +1,14 @@
 """
-This file runs unit tests on setter methods for credentials entities
+This file runs unit tests on setter methods for Credentials and Token entities in: all_the_buzz/entities/credentials_entity.py
 
 To unit test:
-(.venv)...\all_the_buzz> pip install pytest
-(.venv)...\all_the_buzz> python -m pytest
+(.venv)...\project-folder> pip install pytest
+(.venv)...\project-folder> python -m pytest
 
 To test coverage:
-(.venv)...\all_the_buzz> pip install pytest-cov
-(.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term
-(.venv)...\all_the_buzz> python -m pytest --cov=entities --cov-report=term-missing
+(.venv)...\project-folder> pip install pytest-cov
+(.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term
+(.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term-missing
 """  
 
 from all_the_buzz.entities import Credentials, Token
