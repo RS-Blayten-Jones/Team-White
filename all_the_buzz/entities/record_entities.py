@@ -319,9 +319,9 @@ class Trivia(BaseRecord):
     To initilize this class, the from_json_object method can 
     be used. 
 
-    The fields: 'question', 'answer','language' are all required.
+    The fields: 'question', 'answer', 'language' are all required.
     """
-    def __init__(self, id, ref_id, is_edit, question, answer, language ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, question="Question", answer="Answer", language="english"):
         super().__init__(id,ref_id,is_edit,language)
         self.question=question
         self.answer=answer
@@ -340,8 +340,11 @@ class Trivia(BaseRecord):
             """
         if not isinstance(question, str):
             raise ValueError("Trivia question must be a string")
-        else: 
-            self.__question=question
+        elif len(question.strip()) == 0:
+            raise ValueError("Trivia question cannot be blank")
+        elif len(question) > 1000:
+            raise ValueError("Trivia question too long")
+        self.__question=question
     
     @property
     def answer(self):
@@ -357,8 +360,9 @@ class Trivia(BaseRecord):
             """
         if not isinstance(answer, str):
             raise ValueError("Trivia answer must be a string")
-        else:
-            self.__answer=answer
+        elif len(answer) > 1000:
+            raise ValueError("Trivia answer too long")
+        self.__answer=answer
 
     @staticmethod
     def from_json_object(content):
