@@ -1,9 +1,9 @@
-from database_operations.abstract_record import DatabaseAccessObject
-from database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
-from database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
-from database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
-from database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
-from utilities.logger import LoggerFactory
+from all_the_buzz.database_operations.abstract_record import DatabaseAccessObject
+from all_the_buzz.database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
+from all_the_buzz.database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
+from all_the_buzz.database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
+from all_the_buzz.database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
+from all_the_buzz.utilities.logger import LoggerFactory
 from typing import Optional
 from pymongo import MongoClient
 

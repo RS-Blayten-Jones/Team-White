@@ -17,3 +17,11 @@ def test_valid_quote():
     assert quote.content == "Hello World!"
     assert quote.author == "Billy Bob"
     assert quote.used_date == "04/20/2025"
+
+# ----- Test category setters -----
+
+# ----- Test content setters -----
+
+# ----- Test author setters -----
+
+# ----- Test used_date setters -----
