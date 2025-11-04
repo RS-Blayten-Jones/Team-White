@@ -50,7 +50,13 @@ _RESPONSE_MAP = {
     #Success Codes
     "GeneralSuccess": (200, "OK! Success!"),
     "PostSuccess": (201, "POST succeeded. Here is your database ID."),
-    "PendingSuccess": (202, "Your edit or suggested file creation is being processed. It will be denied or approved by a moderator at a later time.")
+    "PendingSuccess": (202, "Your edit or suggested file creation is being processed. It will be denied or approved by a moderator at a later time."),
+    
+    #Authentication Codes
+    "InvalidToken": (401, "Authentication failed. Please verify your credentials and try again."),
+    "ConfigLoadError": (500, "The configuration could not be loaded. Please verify the file and try again."),
+    "ServerConnectionError": (503, "The operation could not be completed due to a lost connection. Please retry."),
+    "AuthServerError": (502, "The request could not be completed due to a temporary issue with the authentication service. Please retry.")
 }
 
 class ResponseCode:
