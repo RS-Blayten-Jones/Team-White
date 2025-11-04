@@ -50,14 +50,14 @@ class BaseRecord(ABC):
         else:
             self.__language=language
 
-    @staticmethod
-    @abstractmethod
-    def from_json_object(content):
-        pass
+    # @staticmethod
+    # @abstractmethod
+    # def from_json_object(content):
+    #     pass
 
-    @abstractmethod
-    def to_json_object(self):
-        pass
+    # @abstractmethod
+    # def to_json_object(self):
+    #     pass
 
 
 class Joke(BaseRecord):
