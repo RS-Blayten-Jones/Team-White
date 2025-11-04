@@ -270,7 +270,7 @@ class DatabaseAccessObject(ABC):
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         #print(f"Created! New ID {str(result.inserted_id)}")
-        return ResponseCode("PostSuccess", result.inserted_id)
+        return ResponseCode("PostSuccess", str(result.inserted_id))
 
     @rbac_action("delete")
     @mongo_safe
