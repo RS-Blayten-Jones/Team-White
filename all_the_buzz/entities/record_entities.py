@@ -10,7 +10,7 @@ class BaseRecord(ABC):
         self.is_edit=is_edit
         self.language=language
 
-    def hexadecimal_test(s):
+    def hexadecimal_test(self, s):
         try:
             int(s,16)
             return True
@@ -40,7 +40,7 @@ class BaseRecord(ABC):
     @ref_id.setter 
     def ref_id(self,ref_id):
         if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
-            raise ValueError("Record ID must be either string or None")
+            raise ValueError("Reference ID must be either string or None")
         elif isinstance(ref_id, str) and len(ref_id) != 24:
             raise ValueError("Invalid Record ID")
         elif isinstance(ref_id, str) and not self.hexadecimal_test(ref_id):
@@ -72,14 +72,14 @@ class BaseRecord(ABC):
         else:
             self.__language=language
 
-    # @staticmethod
-    # @abstractmethod
-    # def from_json_object(content):
-    #     pass
+    @staticmethod
+    @abstractmethod
+    def from_json_object(content):
+        pass
 
-    # @abstractmethod
-    # def to_json_object(self):
-    #     pass
+    @abstractmethod
+    def to_json_object(self):
+        pass
 
 
 class Joke(BaseRecord):
@@ -103,8 +103,8 @@ class Joke(BaseRecord):
             raise ValueError("Difficulty must be an integer")
         elif difficulty not in [1,2,3]:
             raise ValueError("Difficulty must be either 1, 2, or 3")
-        else:
-            self.__difficulty=difficulty
+        
+        self.__difficulty=difficulty
     
     @property
     def content(self):
@@ -140,17 +140,17 @@ class Joke(BaseRecord):
     
     @explanation.setter
     def explanation(self, explanation):
-        if self.difficulty in [3]:
-            if explanation is None:
-                raise ValueError("Explanation cannot be none when difficulty is 3")
-            elif not isinstance(explanation, str):
-                raise ValueError("Explanation must be string")
-            elif len(explanation.strip()) == 0:
-                raise ValueError("Explanation cannot be empty")
-        elif not isinstance(explanation, str) and not isinstance(explanation, type(None)):
+        if not isinstance(explanation, str) and not isinstance(explanation, type(None)):
             raise ValueError("Not the proper explanation type")
-        else:
-            self.__explanation=explanation
+        if self.difficulty in [1, 2, 3]:
+            if (explanation is None or len(explanation.strip()) == 0) and self.difficulty == 3:
+                raise ValueError("Jokes must have an explanation when difficulty is 3")
+            # elif explanation is not None and not isinstance(explanation, str):
+            #     raise ValueError("Explanation must be string")
+            # elif len(explanation.strip()) == 0:
+            #     raise ValueError("Explanation cannot be empty")
+        
+        self.__explanation=explanation
     
     @staticmethod
     def from_json_object(content):
