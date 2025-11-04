@@ -1,4 +1,4 @@
-name: Continuous Testing Workflow
+name: Continuous Document Workflow
 
 on:
   push:
