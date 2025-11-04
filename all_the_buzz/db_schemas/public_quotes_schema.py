@@ -18,7 +18,7 @@ COLLECTION_NAME = "quotes_public"
 
 # except Exception as e:
 #     print(f"An error occurred during connection or command execution: {e}")
-#valid_catagories =["computing", "knowldge", "users", "internet", "professionals", "programming"]
+# valid_catagories =["computing", "knowldge", "users", "internet", "professionals", "programming"]
 
 #the mongo db schema with the validation criteria
 quotes_public_schema = {
@@ -29,7 +29,7 @@ quotes_public_schema = {
         {
             "$jsonSchema": {
                 "bsonType": "object",
-                "required": ["_id", "content", "category", "author", "language", "used_date"], 
+                "required": ["_id", "content", "author", "language", "used_date"], 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "content": {"bsonType": "string"},
