@@ -10,35 +10,79 @@ class DummyRecord(BaseRecord):
     def from_json_object(content):
         return DummyRecord()
 
-# --- Tests ---
-
+# ----- Test for valid BaseRecord initialization -----
 def test_valid_base_record_initialization():
-    record = DummyRecord(id=1, ref_id=2, is_edit=False, language="english")
-    assert record.id == 1
-    assert record.ref_id == 2
+    id_hex_str = ("1" * 24)
+    ref_id_hex_str = ("2" * 24)
+    record = DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+    assert record.id == id_hex_str
+    assert record.ref_id == ref_id_hex_str
     assert record.is_edit is False
     assert record.language == "english"
 
+# ----- Test id setters -----
+def test_invalid_base_record_id_type():
+    id_hex_str = (1234)
+    ref_id_hex_str = ("2" * 24)
+    with pytest.raises(ValueError, match="Record ID must be either string or None"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+
+def test_invalid_base_record_id_length():
+    id_hex_str = ("1" * 23)
+    ref_id_hex_str = ("2" * 24)
+    with pytest.raises(ValueError, match="Invalid Record ID"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+    
+def test_invalid_base_record_id_hex_value():
+    id_hex_str = ("$" * 24)
+    ref_id_hex_str = ("2" * 24)
+    with pytest.raises(ValueError, match="Invalid Record ID"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+
+# ----- Tests ref_id setters -----
+def test_invalid_base_record_ref_id_type():
+    id_hex_str = ("1" * 24)
+    ref_id_hex_str = (1234)
+    with pytest.raises(ValueError, match="Reference ID must be either string or None"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+
+def test_invalid_base_record_ref_id_length():
+    id_hex_str = ("1" * 24)
+    ref_id_hex_str = ("2" * 23)
+    with pytest.raises(ValueError, match="Invalid Record ID"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+    
+def test_invalid_base_record_ref_id_hex_value():
+    id_hex_str = ("1" * 24)
+    ref_id_hex_str = ("$" * 24)
+    with pytest.raises(ValueError, match="Invalid Record ID"):
+        DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
+
+# ----- Tests is_edit setters -----
 def test_is_edit_requires_ref_id():
+    id_hex_str = ("1" * 24)
     with pytest.raises(ValueError, match="Reference ID is required for edits"):
-        DummyRecord(id=1, ref_id=None, is_edit=True)
+        DummyRecord(id=id_hex_str, ref_id=None, is_edit=True, language="english")
 
-def test_language_none_raises():
+# ----- Tests language setters -----
+def test_invalid_language_None():
+    id_hex_str = ("1" * 24)
     with pytest.raises(ValueError, match="Language can not be none"):
-        DummyRecord(language=None)
+        DummyRecord(id= id_hex_str, ref_id=None, is_edit=False, language=None)
 
-def test_language_not_string_raises():
+def test_invalid_language_type():
+    id_hex_str = ("1" * 24)
     with pytest.raises(ValueError, match="Language must be a string"):
-        DummyRecord(language=123)
+        DummyRecord(id= id_hex_str, ref_id=None, is_edit=False, language=123)
 
 def test_setters_work_as_expected():
     record = DummyRecord()
-    record.id = 10
-    record.ref_id = 20
+    record.id = "1" * 24
+    record.ref_id = None
     record.language = "french"
     record.is_edit = False
 
-    assert record.id == 10
-    assert record.ref_id == 20
+    assert record.id == "1" * 24
+    assert record.ref_id == None
     assert record.language == "french"
     assert record.is_edit is False
