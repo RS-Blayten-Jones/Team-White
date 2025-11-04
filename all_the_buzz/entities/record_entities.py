@@ -1,8 +1,26 @@
 # house all entity classes
 from abc import ABC, abstractmethod
 from datetime import date
+import validators
+"""
+record_entities.py
 
+This module contains entity classes for records.
+
+Classes:
+    BaseRecord: An abstract class that all other record entities inherit from
+    Joke: An entity class for storing and validating joke records
+    Trivia: An entity class for storing and validating trivia records
+    Quotes: An entity class for storing and validating quotes
+    Bios: An entity class for storing and validating bio records
+    """
 class BaseRecord(ABC):
+    """
+    Abstract record entity class. All other classes
+    inherit from it. This class includes all shared
+    fields and methods include id, ref_id, is_edit, and
+    language. 
+    """
     def __init__(self, id=None, ref_id=None, is_edit=None,
                   language="english"):
         self.id=id
@@ -11,6 +29,21 @@ class BaseRecord(ABC):
         self.language=language
 
     def hexadecimal_test(self, s):
+        """
+        Method for validating a string is 
+        hexadecimal.This will be used for 
+        validating mongodb ids.
+        
+        Args:
+            s: a string 
+
+        Returns:
+            True if s is hexadecimal
+            False if s is not hexadecimal
+
+        Exceptions:
+            ValueError: String is not hexadecimal
+        """
         try:
             int(s,16)
             return True
@@ -23,6 +56,15 @@ class BaseRecord(ABC):
     
     @id.setter
     def id(self, id):
+        """
+        Validates the document ID is proper format 
+        based on mongodb ID.
+        
+        Exceptions:
+            ValueError: ID is not stirng or None
+            ValueError: ID is a string but not equal to 24 characters
+            ValueError: ID is a string but not hexadecimal
+            """
         #only hexadecimal characters and only 24 characters
         if not isinstance(id, str) and not isinstance(id, type(None)):
             raise ValueError("Record ID must be either string or None")
@@ -39,6 +81,15 @@ class BaseRecord(ABC):
     
     @ref_id.setter 
     def ref_id(self,ref_id):
+        """
+        Validates the reference ID is in the proper
+        format. 
+        
+        Exceptions:
+            ValueError: Ref ID is not stirng or None
+            ValueError: Ref ID is a string but not equal to 24 characters
+            ValueError: Ref ID is a string but not hexadecimal
+            """
         if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
             raise ValueError("Reference ID must be either string or None")
         elif isinstance(ref_id, str) and len(ref_id) != 24:
@@ -54,6 +105,13 @@ class BaseRecord(ABC):
     
     @is_edit.setter
     def is_edit(self, is_edit):
+        """
+        Validates proper fields are not missing if
+        record is a proposed edit.
+        
+        Exception:
+            ValueError: Reference ID is None
+            """
         if is_edit==True and self.ref_id == None:
             raise ValueError("Reference ID is required for edits")
         else:
@@ -65,6 +123,13 @@ class BaseRecord(ABC):
     
     @language.setter
     def language(self, language):
+        """
+        Validates the language is in the proper format.
+        
+        Exceptions:
+            ValueError: Language cannot be None
+            ValueError: Language must be a string
+            """
         if language is None:
             raise ValueError("Language can not be none")
         elif not isinstance(language, str):
@@ -83,6 +148,16 @@ class BaseRecord(ABC):
 
 
 class Joke(BaseRecord):
+    """
+    Validates joke record data passed to it. This class
+    includes id, ref_id, is_edit, difficulty, content,
+    explanation, language
+    
+    To initilize this class, the from_json_object method can 
+    be used. 
+
+    The fields: 'level', 'content', 'language' are all required.
+    """
     def __init__(self, id=None, ref_id=None, is_edit=None,
                  difficulty=1, content={"type":"one_liner","text": "Haha"}, explanation="",
                  language="english"):
@@ -97,6 +172,14 @@ class Joke(BaseRecord):
     
     @difficulty.setter
     def difficulty(self, difficulty):
+        """
+        Validates the difficulty is in the correct format.
+        
+        Exceptions:
+            ValueError: Difficulty level is required
+            ValueError: Difficulty must be an integer
+            ValueError: Difficulty must be either 1,2, or 3
+            """
         if difficulty is None:
             raise ValueError("Difficulty level is required")
         elif not isinstance(difficulty, int):
@@ -112,10 +195,24 @@ class Joke(BaseRecord):
     
     @content.setter
     def content(self, content):
+        """
+        Validates content follows the correct format
+        
+        Exceptions:
+            ValueError: Content must be a dictionary
+            ValueError: Type key must be in content
+            ValueError: Type must either be one_liner or qa
+            ValueError: If type one_liner, text must be in content
+            ValueError: Text must not be none
+            ValueError: Text must be a string
+            ValueError: If type qa, question and answer must be in content
+            ValueError: Question must be a string
+            ValueError: Answer must be a string
+            """
         if not isinstance(content, dict):
             raise ValueError("Content must be a dictionary")
         elif "type" not in content:
-            raise ValueError("Missing required fields")
+            raise ValueError("Joke content missing required fields")
         elif content["type"] not in ["one_liner", "qa"]:
             raise ValueError("Not a valid type")
         elif content["type"]=="one_liner":
@@ -140,20 +237,29 @@ class Joke(BaseRecord):
     
     @explanation.setter
     def explanation(self, explanation):
+        """
+        Validates explanation is in the proper format.
+        
+        Exceptions:
+            ValueError: Explaination is not the proper type
+            ValueError: Joke must have explanation when difficulty 3
+            """
         if not isinstance(explanation, str) and not isinstance(explanation, type(None)):
             raise ValueError("Not the proper explanation type")
-        if self.difficulty in [1, 2, 3]:
-            if (explanation is None or len(explanation.strip()) == 0) and self.difficulty == 3:
-                raise ValueError("Jokes must have an explanation when difficulty is 3")
-            # elif explanation is not None and not isinstance(explanation, str):
-            #     raise ValueError("Explanation must be string")
-            # elif len(explanation.strip()) == 0:
-            #     raise ValueError("Explanation cannot be empty")
-        
+        elif (explanation is None or len(explanation.strip()) == 0) and self.difficulty == 3:
+            raise ValueError("Jokes must have an explanation when difficulty is 3")
         self.__explanation=explanation
     
     @staticmethod
     def from_json_object(content):
+        """
+        Method for converting json string to Joke object.
+        
+        Excpetions: 
+            ValueError: Not proper format
+            ValueError: Missing required fields
+            ValueError: Content not in dictionary format
+            """
         requried_fields=['level', 'content', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -179,6 +285,9 @@ class Joke(BaseRecord):
                 
 
     def to_json_object(self):
+        """"
+        Method for converting Joke object to dict.
+        """
         record_dict={"difficulty": self.difficulty, "content": self.content, "explanation": self.explanation,
                  "language":self.language}
         if self.id is not None:
@@ -195,6 +304,15 @@ class Joke(BaseRecord):
 
 
 class Trivia(BaseRecord):
+    """
+    Validates trivia record data passed to it. This class
+    includes id, ref_id, is_edit, question, answer, language
+    
+    To initilize this class, the from_json_object method can 
+    be used. 
+
+    The fields: 'question', 'answer','language' are all required.
+    """
     def __init__(self, id, ref_id, is_edit, question, answer, language ):
         super().__init__(id,ref_id,is_edit,language)
         self.question=question
@@ -206,6 +324,12 @@ class Trivia(BaseRecord):
     
     @question.setter
     def question(self,question):
+        """
+        Validates question is in the proper format.
+        
+        Exceptions:
+            ValueError: Question must be a string
+            """
         if not isinstance(question, str):
             raise ValueError("Trivia question must be a string")
         else: 
@@ -217,6 +341,12 @@ class Trivia(BaseRecord):
     
     @answer.setter
     def answer(self,answer):
+        """
+        Validates answer is in the proper format.
+        
+        Exceptions:
+            ValueError: Answer must be a string
+            """
         if not isinstance(answer, str):
             raise ValueError("Trivia answer must be a string")
         else:
@@ -224,6 +354,13 @@ class Trivia(BaseRecord):
 
     @staticmethod
     def from_json_object(content):
+        """
+        Method for converting json string to Trivia object.
+        
+        Excpetions: 
+            ValueError: Not proper format
+            ValueError: Missing required fields
+            """
         requried_fields=['question', 'answer','language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -245,6 +382,9 @@ class Trivia(BaseRecord):
                 
 
     def to_json_object(self):
+        """"
+        Method for converting Trivia object to dict.
+        """
         record_dict={"question": self.question, "answer": self.answer, 
                  "language":self.language}
         if self.id is not None:
@@ -258,6 +398,16 @@ class Trivia(BaseRecord):
 
     
 class Quotes(BaseRecord):
+    """
+    Validates quotes record data passed to it. This class
+    includes id, ref_id, is_edit, category, author, used_status,
+    language
+    
+    To initilize this class, the from_json_object method can 
+    be used. 
+
+    The fields: 'content', 'category','author', 'language' are all required.
+    """
     def __init__(self, id, ref_id, is_edit, category, author, used_status="hey", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
@@ -270,6 +420,12 @@ class Quotes(BaseRecord):
     
     @category.setter
     def category(self, category):
+        """
+        Validates category is proper format.
+        
+        Exceptions:
+            ValueError: Category must be a string
+            """
         if not isinstance(category, str):
             raise ValueError("Category must be a string")
         else:
@@ -281,6 +437,12 @@ class Quotes(BaseRecord):
     
     @author.setter
     def author(self, author):
+        """
+        Validates author is in proper format.
+        
+        Exceptions:
+            ValueError: Author must be a string
+            """
         if not isinstance(author, str):
             raise ValueError("Author must be a string")
         else:
@@ -292,6 +454,12 @@ class Quotes(BaseRecord):
     
     @used_status.setter
     def used_status(self, used_status):
+        """
+        Validates used_status is in correct format.
+        
+        Exceptions:
+            ValueError: Used status must be a string
+            """
         if not isinstance(used_status, str):
             raise ValueError("Used Status variable must be a string")
         else:
@@ -299,6 +467,13 @@ class Quotes(BaseRecord):
     
     @staticmethod
     def from_json_object(content):
+        """
+        Method for converting json string to Quotes object.
+        
+        Excpetions: 
+            ValueError: Not proper format
+            ValueError: Missing required fields
+            """
         requried_fields=['content', 'category','author', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -320,6 +495,9 @@ class Quotes(BaseRecord):
                 
 
     def to_json_object(self):
+        """"
+        Method for converting Trivia object to dict.
+        """
         record_dict={"content": self.content, "category": self.category, 
                  "author":self.author, "language":self.language}
         if self.id is not None:
@@ -332,7 +510,19 @@ class Quotes(BaseRecord):
         return record_dict
 
 class Bios(BaseRecord):
-    def __init__(self, id, ref_id, is_edit, language, birth_year, death_year, name, paragraph, summary, source_url ):
+    """
+    Validates bios record data passed to it. This class
+    includes id, ref_id, is_edit, birth_year, death_year,
+    paragraph, summary, source_url, language
+    
+    To initilize this class, the from_json_object method can 
+    be used. 
+
+    The fields: 'name','paragraph','language','source_url' are all required.
+    """
+    def __init__(self, id=None, ref_id=None, is_edit=None,
+                    language="English", birth_year=None, death_year=None, name="Bob", 
+                    paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
         super().__init__(id,ref_id,is_edit,language)
         self.birth_year=birth_year
         self.death_year=death_year
@@ -347,6 +537,13 @@ class Bios(BaseRecord):
     
     @birth_year.setter
     def birth_year(self, birth_year):
+        """
+        Validates that birth year is in the proper format.
+        
+        Exceptions:
+            ValueError: Birth year must be integer or None
+            ValueError: Invalid year (future year)
+            """
         if not isinstance(birth_year, int) and not isinstance(birth_year,type(None)):
             raise ValueError("Birth year must be integer or None")
         if isinstance(birth_year, int):
@@ -361,10 +558,17 @@ class Bios(BaseRecord):
     
     @death_year.setter
     def death_year(self, death_year):
+        """
+        Validates death year is in proper format.
+        
+        Exception: 
+            ValueError: Death year must be integer or None
+            ValueError: Death year is invalid
+            """
         if not isinstance(death_year, int) and not isinstance(death_year,type(None)):
-            raise ValueError("Birth year must be integer or None")
+            raise ValueError("Death year must be integer or None")
         if isinstance(death_year, int):
-            if death_year > date.today().year:
+            if death_year > date.today().year: # check if year is in the past
                 raise ValueError("Invalid year")
         else:
             self.__death_year=death_year
@@ -375,6 +579,12 @@ class Bios(BaseRecord):
     
     @name.setter
     def name(self, name):
+        """"
+        Validates name is in proper format.
+        
+        Exceptions:
+            ValueError: Author name must be a string.
+            """
         if not isinstance(name, str):
             raise ValueError("Author of bio's name must be a string")
         else:
@@ -385,11 +595,65 @@ class Bios(BaseRecord):
         return self.__paragraph
     
     @paragraph.setter
-    def pragraph(self, paragraph):
-        self.__paragraph=paragraph
+    def paragraph(self, paragraph):
+        """
+        Validates paragraph is in proper format.
         
+        Exceptions:
+            ValueError: Paragraph must be a string
+            """
+        if not isinstance(paragraph, str):
+            raise ValueError("Bios paragraph must be a string")
+        self.__paragraph=paragraph
+    
+    @property
+    def summary(self):
+        return self.__summary
+    
+    @summary.setter
+    def summary(self, summary):
+        """
+        Validates summary is in the proper format.
+        
+        Exception:
+            ValueError: Summary must be a string
+            """
+        if not isinstance(summary, str):
+            raise ValueError("Bios summary must be a string")
+        self.__summary=summary
+
+    @property
+    def source_url(self):
+        return self.__source_url
+    
+    @source_url.setter
+    def source_url(self, source_url):
+        """"
+        Validates source url is in proper format.
+        
+        Exception:
+            ValueError: Source url cannot be none
+            ValueError: Source url must be a string
+            ValueError: URL is invalid
+            """
+        if source_url is None:
+            raise ValueError("Source URL cannot be none")
+        elif not isinstance(source_url, str):
+            raise ValueError("Source URL must be a string")
+        elif not validators.url(source_url):
+            raise ValueError("Invalid url")
+        else:
+            self.__source_url=source_url
+
     @staticmethod
     def from_json_object(content):
+        """
+        Method for converting json string to Bios object.
+        
+        Excpetions: 
+            ValueError: Not proper format
+            ValueError: Missing required fields
+            """
         requried_fields=['name','paragraph','language','source_url']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -415,8 +679,10 @@ class Bios(BaseRecord):
                 bios_object.summary=content["summary"]
             return bios_object
                 
-#TODO: add setter and property methods finish to json method
     def to_json_object(self):
+        """"
+        Method for converting Bios object to dict.
+        """
         record_dict={"name":self.name, "paragraph": self.paragraph,
                      "source_url": self.source_url, "language":self.language}
         if self.id is not None:
@@ -432,3 +698,4 @@ class Bios(BaseRecord):
         if self.summary is not None:
             record_dict["summary"]=self.summary
         return record_dict
+    
