@@ -51,6 +51,9 @@ _RESPONSE_MAP = {
     "GeneralSuccess": (200, "OK! Success!"),
     "PostSuccess": (201, "POST succeeded. Here is your database ID."),
     "PendingSuccess": (202, "Your edit or suggested file creation is being processed. It will be denied or approved by a moderator at a later time."),
+
+    #employee title error
+    "InvalidEmployee": (400, "Employee title invalid"),
     
     #Authentication Codes
     "InvalidToken": (401, "Authentication failed. Please verify your credentials and try again."),
