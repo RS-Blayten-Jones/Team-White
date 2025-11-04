@@ -16,3 +16,4 @@ Pygments==2.19.2
 style==1.1.0
 update==0.0.1
 validators
+sphinx_rtd_theme

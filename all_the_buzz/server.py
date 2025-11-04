@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify, make_response
-from utilities.authentication import authentication
+from all_the_buzz.utilities.authentication import authentication
 from typing import Callable, Any
 from functools import wraps
-from entities.credentials_entity import Credentials, Token
-from utilities.error_handler import ResponseCode
-from database_operations.dao_factory import DAOFactory
+from all_the_buzz.entities.credentials_entity import Credentials, Token
+from all_the_buzz.utilities.error_handler import ResponseCode
+from all_the_buzz.database_operations.dao_factory import DAOFactory
 from pymongo.errors import PyMongoError
 import os
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pathlib import Path
-from utilities.logger import LoggerFactory
+from all_the_buzz.utilities.logger import LoggerFactory
 from bson.json_util import dumps
 
 
