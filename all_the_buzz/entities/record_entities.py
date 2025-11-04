@@ -461,7 +461,9 @@ class Quotes(BaseRecord):
         """
         if not isinstance(content, str):
             raise ValueError("Quote content must be a string")
-        elif len(content.strip()) > 1000:
+        elif len(content.strip()) == 0:
+            raise ValueError("Quote content cannot be empty")
+        elif len(content) > 1000:
             raise ValueError("Quote content is too many characters")
         else:
             self.__content=content
