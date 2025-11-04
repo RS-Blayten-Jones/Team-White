@@ -28,7 +28,7 @@ class BaseRecord(ABC):
         self.is_edit=is_edit
         self.language=language
 
-    def hexadecimal_test(s):
+    def hexadecimal_test(self, s):
         """
         Method for validating a string is 
         hexadecimal.This will be used for 
@@ -91,7 +91,7 @@ class BaseRecord(ABC):
             ValueError: Ref ID is a string but not hexadecimal
             """
         if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
-            raise ValueError("Record ID must be either string or None")
+            raise ValueError("Reference ID must be either string or None")
         elif isinstance(ref_id, str) and len(ref_id) != 24:
             raise ValueError("Invalid Record ID")
         elif isinstance(ref_id, str) and not self.hexadecimal_test(ref_id):
@@ -186,8 +186,8 @@ class Joke(BaseRecord):
             raise ValueError("Difficulty must be an integer")
         elif difficulty not in [1,2,3]:
             raise ValueError("Difficulty must be either 1, 2, or 3")
-        else:
-            self.__difficulty=difficulty
+        
+        self.__difficulty=difficulty
     
     @property
     def content(self):
