@@ -26,7 +26,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r all_the_buzz/requirements.txt
 
-      - name: Generate Documentation
+      - name: Generate rst files
         run: |
           sphinx-apidoc -f -o source/docs/ --separate --module-first all_the_buzz
+
+      - name: Generate html Documentation
+        run: |
           sphinx-build -b html source/docs ./source/docs/build
+
+      - name: Upload HTML docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: sphinx-docs
+          path: docs/build/html
