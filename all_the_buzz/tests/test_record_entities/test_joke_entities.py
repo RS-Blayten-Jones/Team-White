@@ -43,7 +43,7 @@ def test_invalid_content_type():
 
 def test_content_missing_type():
     joke = Joke(id="1" * 24, ref_id="2" * 24, is_edit=False, language="english")
-    with pytest.raises(ValueError, match="Missing required fields"):
+    with pytest.raises(ValueError, match="Joke content missing required fields"):
         joke.content = {"question": "Why?", "answer": "Because"}
 
 def test_content_invalid_type():
