@@ -421,9 +421,11 @@ class Quotes(BaseRecord):
 
     The fields: 'content','author', 'language' are all required.
     """
-    def __init__(self, id=None, ref_id=None, is_edit=None, category=None, author="Joe", used_date="03/15/2020", language="english" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, category=None,
+                 content="stuff",author="Joe", used_date="03/15/2020", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
+        self.content=content
         self.author=author
         self.used_date=used_date
 
@@ -443,7 +445,27 @@ class Quotes(BaseRecord):
             raise ValueError("Category must be a string")
         else:
             self.__category=category.lower()
-    
+
+    @property
+    def content(self):
+        return self.__content
+
+    @content.setter
+    def content(self,content):
+        """
+        Validates content is proper format
+
+        Exceptions:
+            ValueError: Content must be a string
+            ValueError: Content is too many characters
+        """
+        if not isinstance(content, str):
+            raise ValueError("Quote content must be a string")
+        elif len(content.strip()) > 1000:
+            raise ValueError("Quote content is too many characters")
+        else:
+            self.__content=content
+            
     @property
     def author(self):
         return self.__author
@@ -513,7 +535,7 @@ class Quotes(BaseRecord):
             ValueError: Not proper format
             ValueError: Missing required fields
             """
-        requried_fields=['content', 'category','author', 'language']
+        requried_fields=['content', 'author', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
             raise ValueError("Must be dictionary input")
@@ -530,6 +552,8 @@ class Quotes(BaseRecord):
                 quotes_object.ref_id=content["original_id"]
             if "is_edit" in content:
                 quotes_object.is_edit=content["is_edit"]
+            if "category" in content:
+                quotes_object.category=content["category"]
             return quotes_object
                 
 
@@ -537,15 +561,16 @@ class Quotes(BaseRecord):
         """"
         Method for converting Trivia object to dict.
         """
-        record_dict={"content": self.content, "category": self.category, 
-                 "author":self.author, "language":self.language}
+        record_dict={"content": self.content, "author":self.author, 
+                     "language":self.language}
         if self.id is not None:
             record_dict["id"]= self.id
         if self.ref_id is not None:
             record_dict["original_id"]=self.ref_id
         if self.is_edit is not None:
             record_dict["is_edit"]=self.is_edit
-
+        if self.category is not None:
+            record_dict["category"]=self.category
         return record_dict
 
 class Bios(BaseRecord):
