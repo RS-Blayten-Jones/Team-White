@@ -1,5 +1,5 @@
-from database_operations.abstract_record import DatabaseAccessObject, mongo_safe
-from utilities.error_handler import ResponseCode
+from all_the_buzz.database_operations.abstract_record import DatabaseAccessObject, mongo_safe
+from all_the_buzz.utilities.error_handler import ResponseCode
 from typing import Any
 from datetime import date
 from pymongo import MongoClient

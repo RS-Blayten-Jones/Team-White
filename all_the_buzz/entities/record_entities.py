@@ -279,7 +279,7 @@ class Joke(BaseRecord):
         elif not isinstance(content['content'], dict):
             raise ValueError("Content must be a dictionary")
         else:
-            joke_object=Joke(difficulty=content['difficulty'], content=content['content'], 
+            joke_object=Joke(difficulty=content['level'], content=content['content'], 
                         language=content["language"])
             if "id" in content:
                 joke_object.id=content["id"] 
@@ -296,7 +296,7 @@ class Joke(BaseRecord):
         """"
         Method for converting Joke object to dict.
         """
-        record_dict={"difficulty": self.difficulty, "content": self.content, "explanation": self.explanation,
+        record_dict={"level": self.difficulty, "content": self.content, "explanation": self.explanation,
                  "language":self.language}
         if self.id is not None:
             record_dict["id"]= self.id
@@ -416,12 +416,12 @@ class Quotes(BaseRecord):
 
     The fields: 'content', 'category','author', 'language' are all required.
     """
-    def __init__(self, id, ref_id, is_edit, category, author, used_status="hey", language="english" ):
+    def __init__(self, id, ref_id, is_edit, category, author, used_date="01-02-23", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
         self.author=author
-        self.used_status=used_status
-
+        self.used_date=used_date
+#TODO: fix used date string mm-dd-yyyy
     @property
     def category(self):
         return self.__category

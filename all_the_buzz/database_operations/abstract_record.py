@@ -4,9 +4,9 @@ from abc import ABC
 from typing import Any, Callable
 from pymongo.errors import PyMongoError
 from functools import wraps
-from utilities.logger import LoggerFactory
-from utilities.error_handler import ResponseCode
-from entities.credentials_entity import Credentials
+from all_the_buzz.utilities.logger import LoggerFactory
+from all_the_buzz.utilities.error_handler import ResponseCode
+from all_the_buzz.entities.credentials_entity import Credentials
 
 def mongo_safe(func):
     '''
