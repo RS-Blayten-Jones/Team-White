@@ -1,6 +1,7 @@
 # house all entity classes
 from abc import ABC, abstractmethod
 from datetime import date
+from datetime import datetime
 import validators
 """
 record_entities.py
@@ -418,13 +419,13 @@ class Quotes(BaseRecord):
     To initilize this class, the from_json_object method can 
     be used. 
 
-    The fields: 'content', 'category','author', 'language' are all required.
+    The fields: 'content','author', 'language' are all required.
     """
-    def __init__(self, id, ref_id, is_edit, category, author, used_status="hey", language="english" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, category=None, author="Joe", used_date="03/15/2020", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
         self.author=author
-        self.used_status=used_status
+        self.used_date=used_date
 
     @property
     def category(self):
@@ -441,7 +442,7 @@ class Quotes(BaseRecord):
         if not isinstance(category, str):
             raise ValueError("Category must be a string")
         else:
-            self.__category=category
+            self.__category=category.lower()
     
     @property
     def author(self):
@@ -461,22 +462,48 @@ class Quotes(BaseRecord):
             self.__author=author
     
     @property
-    def used_status(self):
-        return self.__used_status
+    def used_date(self):
+        return self.__used_date
     
-    @used_status.setter
-    def used_status(self, used_status):
+    @used_date.setter
+    def used_date(self, used_date):
         """
-        Validates used_status is in correct format.
+        Validates used_date is in correct format.
         
         Exceptions:
-            ValueError: Used status must be a string
+            ValueError: Used date must be a string date
+            in one of the possible formats
             """
-        if not isinstance(used_status, str):
+        
+        possible_formats = [
+                "%Y-%m-%d",    # 2025-11-04
+                "%m-%d-%Y",    # 11-04-2025
+                "%m/%d/%Y",    # 11/04/2025
+                "%d-%m-%Y",    # 04-11-2025
+                "%d/%m/%Y",    # 04/11/2025
+                "%m-%d-%y",    # 11-04-25
+                "%d-%m-%y",    # 04-11-25
+                "%m/%d/%y",    # 11/04/25
+                "%d/%m/%y"     # 04/11/25
+            ]
+
+        if not isinstance(used_date, str):
             raise ValueError("Used Status variable must be a string")
-        else:
-            self.__used_status=used_status
-    
+        
+        parsed_date = None
+        for fmt in possible_formats:
+            try:
+                parsed_date = datetime.strptime(used_date.strip(), fmt)
+                break
+            except ValueError:
+                continue
+        
+        if parsed_date is None:
+            raise ValueError("Used Status must be a valid date string in a recognized format")
+
+        self.__used_date = parsed_date.strftime("%m/%d/%Y")
+        
+    # Refactor to make category not required
     @staticmethod
     def from_json_object(content):
         """
