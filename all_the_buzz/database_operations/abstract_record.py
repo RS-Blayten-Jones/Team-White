@@ -4,9 +4,9 @@ from abc import ABC
 from typing import Any, Callable
 from pymongo.errors import PyMongoError
 from functools import wraps
-from utilities.logger import LoggerFactory
-from utilities.error_handler import ResponseCode
-from entities.credentials_entity import Credentials
+from all_the_buzz.utilities.logger import LoggerFactory
+from all_the_buzz.utilities.error_handler import ResponseCode
+from all_the_buzz.entities.credentials_entity import Credentials
 
 def mongo_safe(func):
     '''
@@ -250,7 +250,7 @@ class DatabaseAccessObject(ABC):
         result = self.__collection.update_one({"_id": ID}, update_op)
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
-        return {"matched_count": result.matched_count, "modified_count": result.modified_count}
+        return ID
     
     @rbac_action("create")
     @mongo_safe

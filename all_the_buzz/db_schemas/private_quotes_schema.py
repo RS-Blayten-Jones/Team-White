@@ -18,7 +18,7 @@ COLLECTION_NAME = "quotes_private"
 
 # except Exception as e:
 #     print(f"An error occurred during connection or command execution: {e}")
-#valid_catagories =["computing", "knowldge", "users", "internet", "professionals", "programming"]
+# valid_catagories =["computing", "knowldge", "users", "internet", "professionals", "programming"]
 
 #the mongo db schema with the validation criteria
 quotes_private_schema = {
@@ -30,7 +30,7 @@ quotes_private_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "is_edit", "content", "category", "author", "language" ,"used_date"], #ADD THE OG ID FIELD 
+                "required": ["_id", "is_edit", "content", "author", "language" ,"used_date"], #ADD THE OG ID FIELD 
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "is_edit": {"bsonType": "bool"},

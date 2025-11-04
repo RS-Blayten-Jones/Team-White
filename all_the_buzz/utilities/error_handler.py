@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from utilities.logger import LoggerFactory
+from all_the_buzz.utilities.logger import LoggerFactory
 
 _RESPONSE_MAP = {
     #PyMongo Errors

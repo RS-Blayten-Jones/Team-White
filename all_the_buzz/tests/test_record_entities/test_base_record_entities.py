@@ -1,6 +1,10 @@
 import pytest
 from all_the_buzz.entities import BaseRecord
 
+"""
+This file runs unit tests on setter methods for BaseRecord entities in: all_the_buzz/entities/record_entities.py
+"""
+
 # Dummy subclass to test BaseRecord
 class DummyRecord(BaseRecord):
     def to_json_object(self):
