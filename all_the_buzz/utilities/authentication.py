@@ -50,7 +50,7 @@ def authentication(token) -> Credentials:
     # load authenication server uris
     logger.debug("Begin read in config file")
     try:
-        data=config_file_reader("./configs/authentication_params.yaml")
+        data=config_file_reader("./all_the_buzz/configs/authentication_params.yaml")
         uri=data["uri"]
         ping_uri=data["ping_uri"]
         logger.debug("Successfully loaded config file")

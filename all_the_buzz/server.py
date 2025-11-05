@@ -232,9 +232,35 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
 #do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
     #for managers 
 
-
-
-
+@authentication_middleware
+def approve_jokes(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        record=private_jokes_dao.get_by_key(id)
+        try:
+            pending_joke=Joke.from_json_object(record)
+        except:
+            return "issue"
+        # load joke based on ID from database
+        # convert to joke object
+        # If edit
+        if pending_joke.is_edit == True:
+            original_id=pending_joke.ref_id
+            pending_joke.is_edit=None
+            pending_joke.ref_id=None
+            public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
+            #update existing public table
+        # if additionation
+        elif pending_joke.is_edit == False:
+            pending_joke.is_edit=None
+            public_bios_dao.create_record(pending_joke.to_json_object())
+            #add to table
+        #delete record in private table
+        private_bios_dao.delete_record(id)
+    else:
+        return "not manager"
 
 
 
@@ -336,7 +362,6 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-
 def establish_all_daos(client):
 
     global public_jokes_dao
@@ -414,6 +439,18 @@ def create_app():
     app.add_url_rule(
         "/jokes", 
         view_func=create_a_new_joke, 
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "joke/<string:id>/approve"
+        view_func=approve_joke,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "joke/<string:id>/deny"
+        view_func=deny_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
