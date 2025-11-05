@@ -549,7 +549,8 @@ def retrieve_daily_quote(credentials: Credentials):
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_quotes_dao=get_dao_set_credentials(credentials, "PublicQuoteDAO")
         try:
-            random_quote=public_quotes_dao.
+            random_quote=public_quotes_dao.get_quote_of_day()
+            print(f"HERE IS THE TYPE: {random_quote.get_data()}")
             json_string=dumps(random_quote)
             ResponseCode("GeneralSuccess", json_string)
             public_bios_dao.clear_credentials()
@@ -779,7 +780,7 @@ def create_app():
         provide_automatic_options=False
     )
     app.add_url_rule(
-        "/random_quotes",
+        "/daily_quotes",
         view_func=retrieve_daily_quote,
         methods=["GET"],
         provide_automatic_options=False        
