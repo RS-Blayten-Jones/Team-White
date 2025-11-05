@@ -101,7 +101,7 @@ def authentication(token) -> Credentials:
         logger.debug("Credentials successfully validated.")
         logger.debug("Successfully loaded credentials.")
         # return credentials object
-        secure_logger.info(f"{creds.fname} {creds.lname} credentials successfully validated")
+        secure_logger.info(f"{creds.fName} {creds.lName} credentials successfully validated")
         return creds
     except ValueError as e:
         #print(e)

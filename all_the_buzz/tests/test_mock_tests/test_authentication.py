@@ -25,16 +25,16 @@ def test_authentication_success(mocker):
 
     # Mock requests.post (auth server)
     mock_post_response = mocker.Mock()
-    mock_post_response.text = '{"id":1,"fname":"Alice","lname":"Smith","department":"IT","title":"Manager","location":"HQ"}'
+    mock_post_response.text = '{"id":1,"fName":"Alice","lName":"Smith","dept":"IT","title":"Manager","loc":"HQ"}'
     mocker.patch("all_the_buzz.utilities.authentication.requests.post", return_value=mock_post_response)
 
     # Mock Credentials.from_json_object
-    mock_creds = Credentials(id=1, fname="Alice", lname="Smith", department="IT", title="Manager", location="HQ")
+    mock_creds = Credentials(id=1, fName="Alice", lName="Smith", dept="IT", title="Manager", loc="HQ")
     mocker.patch("all_the_buzz.utilities.authentication.Credentials.from_json_object", return_value=mock_creds)
 
     result = authentication({"token": "abc123"})
     assert isinstance(result, Credentials)
-    assert result.fname == "Alice"
+    assert result.fName == "Alice"
     assert result.title == "Manager"
 
 
@@ -107,7 +107,7 @@ def test_authentication_unauthorized_token(mocker):
     mocker.patch("all_the_buzz.utilities.authentication.requests.get", return_value=mocker.Mock(status_code=200))
 
     mock_post_response = mocker.Mock()
-    mock_post_response.text = '{"id":1,"fname":"Alice"}'  # incomplete data
+    mock_post_response.text = '{"id":1,"fName":"Alice"}'  # incomplete data
     mocker.patch("all_the_buzz.utilities.authentication.requests.post", return_value=mock_post_response)
 
     # Simulate Credentials validation failure
