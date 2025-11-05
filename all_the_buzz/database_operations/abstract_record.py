@@ -247,7 +247,7 @@ class DatabaseAccessObject(ABC):
             return ResponseCode("MalformedContent", "Update payload must not be empty.")
         self.__logger.debug(f"Updating {self.__class__.__name__} with ID {ID}: {updates}.")
         update_op = {"$set": updates}
-        result = self.__collection.update_one({"_id": ID}, update_op)
+        result = self.__collection.update_one({"_id": ObjectId(ID)}, update_op)
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return ID
@@ -270,7 +270,7 @@ class DatabaseAccessObject(ABC):
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         #print(f"Created! New ID {str(result.inserted_id)}")
-        return ResponseCode("PostSuccess", result.inserted_id)
+        return ResponseCode("PostSuccess", str(result.inserted_id))
 
     @rbac_action("delete")
     @mongo_safe
