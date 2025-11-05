@@ -34,8 +34,6 @@ from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from all_the_buzz.utilities.logger import LoggerFactory
 
-global mongo_client
-
 global public_jokes_dao
 global private_jokes_dao
 
@@ -522,7 +520,7 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-def establish_all_daos(client):
+def establish_all_daos():
 
     global public_jokes_dao
     global private_jokes_dao
@@ -536,17 +534,17 @@ def establish_all_daos(client):
     global public_bios_dao
     global private_bios_dao
     try:
-        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
-        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", DATABASE_NAME)
 
-        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", client, DATABASE_NAME)
-        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", client, DATABASE_NAME)
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", DATABASE_NAME)
 
-        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", client, DATABASE_NAME)
-        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", client, DATABASE_NAME)
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", DATABASE_NAME)
 
-        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
-        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", DATABASE_NAME)
         print("created")
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
@@ -557,8 +555,8 @@ def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
     try:
-        mongo_client = create_client_connection()
-        establish_all_daos(mongo_client)
+        create_client_connection()
+        establish_all_daos()
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise

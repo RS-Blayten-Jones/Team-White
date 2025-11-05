@@ -60,6 +60,16 @@ class DAOFactory:
     
     @classmethod
     def set_client(cls, uri: str, server_version: str) -> MongoClient:
+        '''
+        Sets the shared client for all DAOs using the URI and the given server version.
+        
+        Args:
+            uri (str): a string that connects the client to the hosted database
+            server_version (str): the server version that is used for the server API
+
+        Returns:
+            client (MongoClient): a MongoClient shared amongst DAOs
+        '''
         if not uri:
             raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
         try:
