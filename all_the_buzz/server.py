@@ -781,7 +781,7 @@ def create_app():
         provide_automatic_options=False
     )
     app.add_url_rule(
-        "./short-jokes/<int:amount>"
+        "/short-jokes/<int:amount>",
         view_func=retrieve_short_joke,
         methods=['GET'],
         provide_automatic_options=False

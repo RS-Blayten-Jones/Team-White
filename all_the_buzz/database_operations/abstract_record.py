@@ -219,7 +219,7 @@ class DatabaseAccessObject(ABC):
                     {
                         #return only files whose content is less than max_length
                         "$expr": {
-                            "$lt": [{ "$strLenCP": "$content" }, max_length]
+                            "$lt": [{ "$strLenCP": "$content" }, str(max_length)]
                         }
                     }
                 ]
