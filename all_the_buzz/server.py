@@ -19,6 +19,7 @@ from pathlib import Path
 #from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
 from bson.json_util import dumps
+from bson.objectid import ObjectId
 
 # --- PACKAGE PATH FIX FOR DIRECT EXECUTION ---
 # This ensures that absolute imports like 'from all_the_buzz.utilities' work
@@ -137,14 +138,10 @@ def create_client_connection(server_version: str = SERVER_VER) -> ResponseCode:
         return ResponseCode(e, f"Failed to connect to MongoDB: {str(e)}")
 
 
-# class MyFlask(Flask):
-#     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
-#         return super().add_url_rule(rule, endpoint, view_func, provide_automatic_options=False, **options)
 class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
         return super().add_url_rule(rule, endpoint, view_func, **options)
 
-#app = MyFlask(__name__)
 #CORS Preflight necessary only when we integrate with front end 
 
 #middleware 
@@ -387,12 +384,16 @@ def update_joke(joke_id: str, credentials: Credentials):
         try:
             new_edit = Joke.from_json_object(request_body)
         except Exception as e:
+            private_jokes_dao.clear_credentials()
             status_code, body = ResponseCode(e).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Joke):
             try:
                 #calling create record on the private database 
+                print(new_edit)
+                request_body["original_id"] = ObjectId(joke_id)
                 dao_response = private_jokes_dao.create_record(request_body)
+                print(dao_response.get_data())
                 private_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode("PendingSuccess").to_http_response()
                 return jsonify(body), status_code 
@@ -406,7 +407,38 @@ def update_joke(joke_id: str, credentials: Credentials):
 
 @authentication_middleware
 def retrieve_private_jokes_collection(credentials: Credentials):
-    pass
+    """
+    Retrieves the collection of private (pending) joke proposals (GET /pending_jokes).
+
+    This endpoint provides access to the private database collection, which stores
+    all proposed jokes and edits submitted by Employees that are pending review
+    by a Manager. Access is strictly controlled.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the PrivateJokeDAO collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+
+    if credentials.title == 'Manager':
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        all_private_jokes = private_jokes_dao.get_all_records()
+        private_jokes_dao.clear_credentials()
+        json_string = dumps(all_private_jokes)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+#get a list of records by fields 
+@authentication_middleware
 
 
 
@@ -715,6 +747,12 @@ def create_app():
         Adds joke to public table if manager and adds to private
         table if employee.
         """
+    app.add_url_rule(
+        "/pending-jokes",
+        view_func=retrieve_private_jokes_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
     app.add_url_rule(
         "/jokes", 
         view_func=create_a_new_joke, 
