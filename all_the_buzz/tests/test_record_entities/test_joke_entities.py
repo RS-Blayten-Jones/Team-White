@@ -133,3 +133,75 @@ def test_None_explanation_for_difficulty_3():
     
     with pytest.raises(ValueError, match="Jokes must have an explanation when difficulty is 3"):
         joke.explanation = None
+
+# ----- Tests for Json Method Objects -----
+
+class TestJokeJsonMethods:
+
+    # --- Tests for from_json_object ---
+    def test_from_json_object_valid(self):
+        content = {
+            "level": 2,
+            "content": {"type": "one_liner", "text": "Funny joke"},
+            "language": "english",
+            "id": "1" * 24,
+            "original_id": "2" * 24,
+            "is_edit": True,
+            "explanation": "Because it's clever"
+        }
+        joke = Joke.from_json_object(content)
+        assert isinstance(joke, Joke)
+        assert joke.difficulty == 2
+        assert joke.content == {"type": "one_liner", "text": "Funny joke"}
+        assert joke.language == "english"
+        assert joke.id == "1" * 24
+        assert joke.ref_id == "2" * 24
+        assert joke.is_edit is True
+        assert joke.explanation == "Because it's clever"
+
+    @pytest.mark.parametrize("invalid_content", [
+        "not a dict",  # Not a dictionary
+        {"mesg": "Error message"},  # Contains error_field
+        {"level": 1, "language": "english"},  # Missing 'content'
+        {"level": 1, "content": "not a dict", "language": "english"}  # Content not dict
+    ])
+    def test_from_json_object_invalid(self, invalid_content):
+        with pytest.raises(ValueError):
+            Joke.from_json_object(invalid_content)
+
+    def test_from_json_object_missing_optional_fields(self):
+        content = {
+            "level": 1,
+            "content": {"type": "one_liner", "text": "Simple joke"},
+            "language": "english"
+        }
+        joke = Joke.from_json_object(content)
+        assert joke.id is None
+        assert joke.ref_id is None
+        assert joke.is_edit is None
+        assert joke.explanation == ""  # Default from __init__
+
+
+    # ---- Tests for to_json_object ----
+    def test_to_json_object_valid(self):
+        joke = Joke(difficulty=3, content={"type": "qa", "question": "Why?", "answer": "Because"},explanation = "Hard joke explanation", language="english")
+        joke.id = "1" * 24
+        joke.ref_id = "2" * 24
+        joke.is_edit = False
+
+        result = joke.to_json_object()
+        assert isinstance(result, dict)
+        assert result["level"] == 3
+        assert result["content"] == {"type": "qa", "question": "Why?", "answer": "Because"}
+        assert result["language"] == "english"
+        assert result["explanation"] == "Hard joke explanation"
+        assert result["id"] == "1" * 24
+        assert result["original_id"] == "2" * 24
+        assert result["is_edit"] is False
+
+    def test_to_json_object_missing_optional_fields(self):
+        joke = Joke(difficulty=1, content={"type": "one_liner", "text": "Quick joke"}, language="english")
+        result = joke.to_json_object()
+        assert "id" not in result
+        assert "original_id" not in result
+        assert "is_edit" not in result

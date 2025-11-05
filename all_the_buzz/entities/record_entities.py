@@ -579,16 +579,16 @@ class Bios(BaseRecord):
     """
     Validates bios record data passed to it. This class
     includes id, ref_id, is_edit, birth_year, death_year,
-    paragraph, summary, source_url, language
+    paragraph, summary, source_url, language.
     
     To initilize this class, the from_json_object method can 
-    be used. 
+    be used.
 
     The fields: 'name','paragraph','language','source_url' are all required.
     """
-    def __init__(self, id=None, ref_id=None, is_edit=None,
-                    language="English", birth_year=0000, death_year=0000, name="Bob", 
-                    paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, language="English", 
+                 birth_year=1900, death_year=2020, name="Bob Lastname", 
+                 paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
         super().__init__(id,ref_id,is_edit,language)
         self.birth_year=birth_year
         self.death_year=death_year
@@ -615,8 +615,7 @@ class Bios(BaseRecord):
         if isinstance(birth_year, int):
             if birth_year > date.today().year:
                 raise ValueError("Invalid year")
-        else:
-            self.__birth_year=birth_year
+        self.__birth_year=birth_year
 
     @property
     def death_year(self):
@@ -636,8 +635,7 @@ class Bios(BaseRecord):
         if isinstance(death_year, int):
             if death_year > date.today().year: # check if year is in the past
                 raise ValueError("Invalid year")
-        else:
-            self.__death_year=death_year
+        self.__death_year=death_year
 
     @property
     def name(self):

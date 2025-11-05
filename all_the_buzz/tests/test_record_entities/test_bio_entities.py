@@ -9,15 +9,15 @@ Unit tests for Bios entity setter methods.
 # ----- Test valid initialization -----
 def test_valid_bios():
     bio = Bios(id="1"*24, ref_id="2"*24, is_edit=False, language="English")
-    bio.birth_year = 1990
-    bio.death_year = 2020
+    bio.birth_year = 1879
+    bio.death_year = 1955
     bio.name = "Albert Einstein"
     bio.paragraph = "A famous physicist."
     bio.summary = "Developed the theory of relativity."
     bio.source_url = "https://example.com"
 
-    assert bio.birth_year == 1990
-    assert bio.death_year == 2020
+    assert bio.birth_year == 1879
+    assert bio.death_year == 1955
     assert bio.name == "Albert Einstein"
     assert bio.paragraph == "A famous physicist."
     assert bio.summary == "Developed the theory of relativity."
