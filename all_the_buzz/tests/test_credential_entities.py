@@ -35,7 +35,7 @@ def test_id_setter_negative():
     with pytest.raises(ValueError):
         cred.id = -1
     
-# ------ Testing Fname setter ------
+# ------ Testing fname setter ------
 def test_fname_setter_valid():
     cred = Credentials()
     cred.id = 1234
@@ -85,7 +85,7 @@ def test_fname_setter_greater_than_50():
 #     with pytest.raises(ValueError):
 #         cred.fname = "$p3nc3r"
 
-# ------ Testing Lname setter ------
+# ------ Testing lname setter ------
 def test_lname_setter_valid():
     cred = Credentials()
     cred.id = 1234
@@ -264,6 +264,48 @@ def test_location_setter_non_letters():
     with pytest.raises(ValueError):
         cred.location = "4ndr0m3d4 G414xy"
 
+# ----- Test Credentials Json Methods -----
+class TestCredentialsJsonMethods:
+
+    def test_from_json_object_valid_manager(self):
+        content = {
+            "id": 1,
+            "fname": "Alice",
+            "lname": "Smith",
+            "department": "Engineering",
+            "title": "Manager",
+            "location": "HQ"
+        }
+        cred = Credentials.from_json_object(content)
+        assert isinstance(cred, Credentials)
+        assert cred.title == "Manager"  # stays Manager
+        assert cred.fname == "Alice"
+        assert cred.lname == "Smith"
+        assert cred.department == "Engineering"
+        assert cred.location == "HQ"
+
+    def test_from_json_object_valid_non_manager(self):
+        content = {
+            "id": 2,
+            "fname": "Bob",
+            "lname": "Jones",
+            "department": "Sales",
+            "title": "Intern",  # should be converted
+            "location": "Remote"
+        }
+        cred = Credentials.from_json_object(content)
+        assert cred.title == "Employee"  # converted
+        assert cred.department == "Sales"
+
+    @pytest.mark.parametrize("invalid_content", [
+        "not a dict",  # Not a dictionary
+        {"mesg": "Authentication failed"},  # Contains error_field
+        {"id": 1, "fname": "Alice"}  # Missing required fields
+    ])
+    def test_from_json_object_invalid(self, invalid_content):
+        with pytest.raises(ValueError):
+            Credentials.from_json_object(invalid_content)
+
 # ------ Testing Token setter ------
 def test_token_setter_valid():
     tok = Token("1" * 250)
@@ -289,3 +331,35 @@ def test_token_setter_greater_than_400():
     with pytest.raises(ValueError, match="Token is too long"):
         Token("1" * 401)
 
+
+class TestTokenJsonMethods:
+
+    # --- Tests for from_json_object ---
+    def test_from_json_object_valid(self):
+        content = {"token": "A" * 300}  # valid token length
+        token_obj = Token.from_json_object(content)
+        assert isinstance(token_obj, Token)
+        assert token_obj.token == "A" * 300
+
+    @pytest.mark.parametrize("invalid_content", [
+        "not a dict",  # Not a dictionary
+        {},  # Missing token field
+        {"key": "value"}  # Wrong key
+    ])
+    def test_from_json_object_invalid(self, invalid_content):
+        with pytest.raises(ValueError):
+            Token.from_json_object(invalid_content)
+
+    # --- Tests for to_json_object ---
+    def test_to_json_object_returns_correct_dict(self):
+        token_obj = Token("B" * 300)
+        result = token_obj.to_json_object()
+        assert isinstance(result, dict)
+        assert result == {"token": "B" * 300}
+
+    # --- Round-trip test ---
+    def test_round_trip_json_methods(self):
+        original_dict = {"token": "C" * 300}
+        token_obj = Token.from_json_object(original_dict)
+        new_dict = token_obj.to_json_object()
+        assert new_dict == original_dict

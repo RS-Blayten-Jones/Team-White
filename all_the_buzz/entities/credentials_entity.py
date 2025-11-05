@@ -219,14 +219,14 @@ class Credentials:
     def from_json_object(content):
         """
         Method for initializing Credential object with dictionary. This
-        method will also ensure the dictionary has the required feilds.
+        method will also ensure the dictionary has the required fields.
         
         Exception:
             ValueError: Must be a dictionary
             ValueError: Authentication Server Response
             ValueError: Required fields are missing
             """
-        requried_fields=['id','fName','lName','dept','title','loc']
+        requried_fields=['id','fname','lname','department','title','location']
         error_field='mesg'
         if not isinstance(content, dict):
             raise ValueError("Must be dictionary input")
@@ -238,9 +238,9 @@ class Credentials:
             if content['title'].capitalize() != 'Manager':
                 content['title']='Employee'
         
-            return Credentials(content["id"], content["fName"], 
-                            content["lName"], content["dept"], 
-                            content["title"], content["loc"])
+            return Credentials(content["id"], content["fname"], 
+                            content["lname"], content["department"], 
+                            content["title"], content["location"])
     
     
 

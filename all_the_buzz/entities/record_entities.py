@@ -410,7 +410,7 @@ class Trivia(BaseRecord):
         return record_dict
 
     
-class Quotes(BaseRecord):
+class Quote(BaseRecord):
     """
     Validates quotes record data passed to it. This class
     includes id, ref_id, is_edit, category, author, used_status,
@@ -428,7 +428,7 @@ class Quotes(BaseRecord):
         self.content=content
         self.author=author
         self.used_date=used_date
-#TODO: fix used date string mm-dd-yyyy
+
     @property
     def category(self):
         return self.__category
@@ -546,7 +546,7 @@ class Quotes(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            quotes_object=Quotes(content=content["content"], category=content["category"],
+            quotes_object=Quote(content=content["content"],
                                  author=content["author"],language=content["language"])
             if "id" in content:
                 quotes_object.id=content["id"] 
@@ -575,7 +575,7 @@ class Quotes(BaseRecord):
             record_dict["category"]=self.category
         return record_dict
 
-class Bios(BaseRecord):
+class Bio(BaseRecord):
     """
     Validates bios record data passed to it. This class
     includes id, ref_id, is_edit, birth_year, death_year,
@@ -667,7 +667,7 @@ class Bios(BaseRecord):
             ValueError: Paragraph must be a string
             """
         if not isinstance(paragraph, str):
-            raise ValueError("Bios paragraph must be a string")
+            raise ValueError("Bio paragraph must be a string")
         self.__paragraph=paragraph
     
     @property
@@ -683,7 +683,7 @@ class Bios(BaseRecord):
             ValueError: Summary must be a string
             """
         if not isinstance(summary, str):
-            raise ValueError("Bios summary must be a string")
+            raise ValueError("Bio summary must be a string")
         self.__summary=summary
 
     @property
@@ -727,7 +727,7 @@ class Bios(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            bios_object=Bios(name=content["name"], paragraph=content["paragraph"],
+            bios_object=Bio(name=content["name"], paragraph=content["paragraph"],
                              source_url=content["source_url"],language=content["language"])
             if "id" in content:
                 bios_object.id=content["id"] 
