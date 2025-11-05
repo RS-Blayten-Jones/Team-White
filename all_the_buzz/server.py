@@ -684,6 +684,267 @@ def update_joke(joke_id: str, credentials: Credentials):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+    
+
+
+@authentication_middleware #this does not work yet
+def update_trivia(trivia_id: str, credentials: Credentials):
+    """
+    (PUT /trivia/<trivia_id>) for updating or proposing an edit.
+    
+    The function validates the incoming JSON request body against the Trivia entity 
+    schema for all users. The target action is strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** Executes a direct `update_record` on the specified 
+        public trivia ID within the PublicTriviaDAO collection.
+    2.  **Employee ('Employee'):** Executes a `create_record` (submission) in the 
+        PrivateTriviaDAO collection. The request body is tagged with the original 
+        `trivia_id` (as 'original_id') and flagged as an edit (`is_edit=True`).
+
+    Args:
+        trivia_id: The unique identifier (ID) of the public trivia targeted for update.
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to determine write authority.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200): Successful **direct update** by a Manager.
+        * (JSON body, 202): Successful submission of a **pending edit proposal** by an Employee.
+        * (JSON body, 400): If the request body fails entity validation 
+        (`Trivia.from_json_object`) or is an otherwise invalid record.
+        * (JSON body, 401/500): If the user is unauthorized or if a database 
+        exception occurs during the DAO operation (translated via ResponseCode).
+    """
+    request_body = request.get_json()
+    if credentials.title == 'Manager':
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        #entity validation
+        try:
+            updated_trivia = Trivia.from_json_object(request_body)
+        except Exception as e:
+            #entity validation fails
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        #actual database update
+        if isinstance(updated_trivia, Trivia):
+            try:
+                print(trivia_id)
+                get_response = public_trivias_dao.get_by_fields({'_id': str(trivia_id)})
+                print(get_response)
+                dao_response = public_trivias_dao.update_record(str(trivia_id), request_body)
+                public_trivias_dao.clear_credentials()
+                status_code, body = dao_response.to_http_response()
+                return jsonify(body), status_code
+            except Exception as e:
+                public_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+        else:
+            public_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    elif credentials.title == 'Employee':
+        private_trivias_dao = DAOFactory.get_dao('PrivateTriviaDAO')
+        private_trivias_dao.set_credentials(credentials)
+        #setting the OG id of the record to edit and setting is edit to true
+        request_body["original_id"] = trivia_id
+        request_body["is_edit"] = True
+        try:
+            new_edit = Trivia.from_json_object(request_body)
+        except Exception as e:
+            private_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_edit, Trivia):
+            try:
+                #calling create record on the private database 
+                print(new_edit)
+                request_body["original_id"] = ObjectId(trivia_id)
+                dao_response = private_trivias_dao.create_record(request_body)
+                print(dao_response.get_data())
+                private_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode("PendingSuccess").to_http_response()
+                return jsonify(body), status_code 
+            except Exception as e:
+                private_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+
+
+@authentication_middleware #this does not work yet
+def update_quote(quote_id: str, credentials: Credentials):
+    """
+    (PUT /quote/<quote_id>) for updating or proposing an edit.
+    
+    The function validates the incoming JSON request body against the quote entity 
+    schema for all users. The target action is strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** Executes a direct `update_record` on the specified 
+        public quote ID within the PublicQuoteDAO collection.
+    2.  **Employee ('Employee'):** Executes a `create_record` (submission) in the 
+        PrivateQuoteDAO collection. The request body is tagged with the original 
+        `quote_id` (as 'original_id') and flagged as an edit (`is_edit=True`).
+
+    Args:
+        quote_id: The unique identifier (ID) of the public quote targeted for update.
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to determine write authority.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200): Successful **direct update** by a Manager.
+        * (JSON body, 202): Successful submission of a **pending edit proposal** by an Employee.
+        * (JSON body, 400): If the request body fails entity validation 
+        (`quote.from_json_object`) or is an otherwise invalid record.
+        * (JSON body, 401/500): If the user is unauthorized or if a database 
+        exception occurs during the DAO operation (translated via ResponseCode).
+    """
+    request_body = request.get_json()
+    if credentials.title == 'Manager':
+        public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        #entity validation
+        try:
+            updated_quote = Quote.from_json_object(request_body)
+        except Exception as e:
+            #entity validation fails
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        #actual database update
+        if isinstance(updated_quote, Quote):
+            try:
+                print(quote_id)
+                get_response = public_quotes_dao.get_by_fields({'_id': str(quote_id)})
+                print(get_response)
+                dao_response = public_quotes_dao.update_record(str(quote_id), request_body)
+                public_quotes_dao.clear_credentials()
+                status_code, body = dao_response.to_http_response()
+                return jsonify(body), status_code
+            except Exception as e:
+                public_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+        else:
+            public_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    elif credentials.title == 'Employee':
+        private_quotes_dao = DAOFactory.get_dao('PrivateQuoteDAO')
+        private_quotes_dao.set_credentials(credentials)
+        #setting the OG id of the record to edit and setting is edit to true
+        request_body["original_id"] = quote_id
+        request_body["is_edit"] = True
+        try:
+            new_edit = Quote.from_json_object(request_body)
+        except Exception as e:
+            private_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_edit, Quote):
+            try:
+                #calling create record on the private database 
+                print(new_edit)
+                request_body["original_id"] = ObjectId(quote_id)
+                dao_response = private_quotes_dao.create_record(request_body)
+                print(dao_response.get_data())
+                private_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode("PendingSuccess").to_http_response()
+                return jsonify(body), status_code 
+            except Exception as e:
+                private_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+            
+
+@authentication_middleware #this does not work yet
+def update_bio(bio_id: str, credentials: Credentials):
+    """
+    (PUT /bio/<bio_id>) for updating or proposing an edit.
+    
+    The function validates the incoming JSON request body against the bio entity 
+    schema for all users. The target action is strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** Executes a direct `update_record` on the specified 
+        public bio ID within the PublicBioDAO collection.
+    2.  **Employee ('Employee'):** Executes a `create_record` (submission) in the 
+        PrivateBioDAO collection. The request body is tagged with the original 
+        `bio_id` (as 'original_id') and flagged as an edit (`is_edit=True`).
+
+    Args:
+        bio_id: The unique identifier (ID) of the public bio targeted for update.
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to determine write authority.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200): Successful **direct update** by a Manager.
+        * (JSON body, 202): Successful submission of a **pending edit proposal** by an Employee.
+        * (JSON body, 400): If the request body fails entity validation 
+        (`bio.from_json_object`) or is an otherwise invalid record.
+        * (JSON body, 401/500): If the user is unauthorized or if a database 
+        exception occurs during the DAO operation (translated via ResponseCode).
+    """
+    request_body = request.get_json()
+    if credentials.title == 'Manager':
+        public_bios_dao = get_dao_set_credentials(credentials, "B")
+        #entity validation
+        try:
+            updated_bio = Bio.from_json_object(request_body)
+        except Exception as e:
+            #entity validation fails
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        #actual database update
+        if isinstance(updated_bio, Bio):
+            try:
+                print(bio_id)
+                get_response = public_bios_dao.get_by_fields({'_id': str(bio_id)})
+                print(get_response)
+                dao_response = public_bios_dao.update_record(str(bio_id), request_body)
+                public_bios_dao.clear_credentials()
+                status_code, body = dao_response.to_http_response()
+                return jsonify(body), status_code
+            except Exception as e:
+                public_bios_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+        else:
+            public_bios_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    elif credentials.title == 'Employee':
+        private_bios_dao = DAOFactory.get_dao('B')
+        private_bios_dao.set_credentials(credentials)
+        #setting the OG id of the record to edit and setting is edit to true
+        request_body["original_id"] = bio_id
+        request_body["is_edit"] = True
+        try:
+            new_edit = bio.from_json_object(request_body)
+        except Exception as e:
+            private_bios_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_edit, Bio):
+            try:
+                #calling create record on the private database 
+                print(new_edit)
+                request_body["original_id"] = ObjectId(bio_id)
+                dao_response = private_bios_dao.create_record(request_body)
+                print(dao_response.get_data())
+                private_bios_dao.clear_credentials()
+                status_code, body = ResponseCode("PendingSuccess").to_http_response()
+                return jsonify(body), status_code 
+            except Exception as e:
+                private_bios_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
+            
+
+
+            
+            
 
 @authentication_middleware
 def retrieve_private_jokes_collection(credentials: Credentials):
@@ -1019,7 +1280,7 @@ def create_app():
         Deletes joke from private table 
         """
     app.add_url_rule(
-        "/joke/<string:id>/approve",
+        "/jokes/<string:id>/approve",
         view_func=approve_joke,
         methods=["POST"],
         provide_automatic_options=False
@@ -1036,7 +1297,7 @@ def create_app():
         If manager, deletes joke from private table
         """
     app.add_url_rule(
-        "/joke/<string:id>/deny",
+        "/jokes/<string:id>/deny",
         view_func=deny_joke,
         methods=["POST"],
         provide_automatic_options=False
@@ -1067,6 +1328,14 @@ def create_app():
     )
 
     app.add_url_rule(
+        "/quotes/<string:quote_id>", 
+        view_func=update_quote, 
+        methods=["PUT"],
+        provide_automatic_options=False
+    )
+
+
+    app.add_url_rule(
         "/trivias",
         view_func=retrieve_public_trivia_collection,
         methods=["GET"],
@@ -1079,6 +1348,14 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/trivias/<string:trivia_id>", 
+        view_func=update_trivia, 
+        methods=["PUT"],
+        provide_automatic_options=False
+    )
+
     app.add_url_rule(
         "/bios",
         view_func=retrieve_public_bios_collection,
@@ -1092,6 +1369,16 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/bios/<string:bio_id>", 
+        view_func=update_bio, 
+        methods=["PUT"],
+        provide_automatic_options=False
+    )
+
+    
+
 
     return app
 
