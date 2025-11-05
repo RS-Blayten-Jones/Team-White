@@ -73,10 +73,10 @@ class DAOFactory:
         if not uri:
             raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
         try:
-            client = MongoClient(uri, server_api=ServerApi(server_version))
-            client.admin.command('ping')
+            cls._client = MongoClient(uri, server_api=ServerApi(server_version))
+            cls._client.admin.command('ping')
             print("MongoDB client initialized successfully.")
-            return client
+            return cls._client
         except PyMongoError as e:
             raise e
 
