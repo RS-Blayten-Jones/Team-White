@@ -1,20 +1,40 @@
 from flask import Flask, request, jsonify, make_response
-from all_the_buzz.utilities.authentication import authentication
+# from all_the_buzz.utilities.authentication import authentication
+# from all_the_buzz.utilities.authentication import authentication
 from typing import Callable, Any
 from functools import wraps
-from all_the_buzz.entities.credentials_entity import Credentials, Token
-from all_the_buzz.entities.record_entities import Joke
-from all_the_buzz.utilities.error_handler import ResponseCode
-from all_the_buzz.database_operations.dao_factory import DAOFactory
+# from all_the_buzz.entities.credentials_entity import Credentials, Token
+# from all_the_buzz.entities.record_entities import Joke
+# from all_the_buzz.utilities.error_handler import ResponseCode
+# from all_the_buzz.database_operations.dao_factory import DAOFactory
+# from entities.credentials_entity import Credentials, Token
+# from entities.record_entities import Joke
+# from utilities.error_handler import ResponseCode
+# from database_operations.dao_factory import DAOFactory
 from pymongo.errors import PyMongoError
 import os
+import sys
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from pathlib import Path
-from all_the_buzz.utilities.logger import LoggerFactory
+#from all_the_buzz.utilities.logger import LoggerFactory
+#from utilities.logger import LoggerFactory
 from bson.json_util import dumps
 
+# --- PACKAGE PATH FIX FOR DIRECT EXECUTION ---
+# This ensures that absolute imports like 'from all_the_buzz.utilities' work
+# when the script is run directly (e.g., 'python server.py' or 'python all_the_buzz/server.py').
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from all_the_buzz.utilities.authentication import authentication
+from all_the_buzz.entities.credentials_entity import Credentials, Token
+from all_the_buzz.entities.record_entities import Joke
+from all_the_buzz.utilities.error_handler import ResponseCode
+from all_the_buzz.database_operations.dao_factory import DAOFactory
+from all_the_buzz.utilities.logger import LoggerFactory
 
 global mongo_client
 
@@ -188,6 +208,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
         try:
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
+            private_jokes_dao.clear_credentials()
             status_code, body = ResponseCode(e).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
@@ -195,6 +216,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
                 dao_response = private_jokes_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
+                private_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode(e).to_http_response()
                 return jsonify(body), status_code
             private_jokes_dao.clear_credentials()
@@ -211,6 +233,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
         try:
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
+            private_jokes_dao.clear_credentials()
             status_code, body = ResponseCode(e).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
@@ -218,19 +241,22 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
                 dao_response = public_jokes_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
+                private_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode(e).to_http_response()
                 return jsonify(body), status_code
             public_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
+            private_jokes_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
+        private_jokes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
         
-@authentication_middleware
+@authentication_middleware #this does not work yet
 def update_joke(joke_id: str, credentials: Credentials):
     """
     (PUT /jokes/<joke_id>) for updating or proposing an edit.
@@ -272,7 +298,10 @@ def update_joke(joke_id: str, credentials: Credentials):
         #actual database update
         if isinstance(updated_joke, Joke):
             try:
-                dao_response = public_jokes_dao.update_record(joke_id, request_body)
+                print(joke_id)
+                get_response = public_jokes_dao.get_by_fields({'_id': str(joke_id)})
+                print(get_response)
+                dao_response = public_jokes_dao.update_record(str(joke_id), request_body)
                 public_jokes_dao.clear_credentials()
                 status_code, body = dao_response.to_http_response()
                 return jsonify(body), status_code

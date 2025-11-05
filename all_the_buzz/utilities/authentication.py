@@ -2,9 +2,14 @@ import requests
 from all_the_buzz.utilities.config import config_file_reader
 from all_the_buzz.entities.credentials_entity import Credentials, Token
 from all_the_buzz.utilities.sanitize import sanitize_json
+# from utilities.config import config_file_reader
+# from entities.credentials_entity import Credentials, Token
+# from utilities.sanitize import sanitize_json
 import json
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.utilities.logger import LoggerFactory
+# from utilities.error_handler import ResponseCode
+# from utilities.logger import LoggerFactory
 from requests.exceptions import ConnectionError
 
 '''
@@ -50,7 +55,7 @@ def authentication(token) -> Credentials:
     # load authenication server uris
     secure_logger.debug("Begin read in config file")
     try:
-        data=config_file_reader("./configs/authentication_params.yaml")
+        data=config_file_reader("./all_the_buzz/configs/authentication_params.yaml")
         uri=data["uri"]
         ping_uri=data["ping_uri"]
         logger.debug("Successfully loaded config file")
