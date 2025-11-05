@@ -494,11 +494,11 @@ def deny_joke(credentials: Credentials, id: str):
         return jsonify(body), status_code
 
 @authentication_middleware
-def retrieve_random_joke(credentials: Credentials, amt: int):
+def retrieve_random_joke(credentials: Credentials, amount: int):
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         try:
-            random_jokes=public_jokes_dao.get_random(amt)
+            random_jokes=public_jokes_dao.get_random(amount)
             json_string = dumps(random_jokes)
             ResponseCode("GeneralSuccess", json_string)
             public_jokes_dao.clear_credentials()
