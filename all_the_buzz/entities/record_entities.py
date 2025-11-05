@@ -69,7 +69,7 @@ class BaseRecord(ABC):
             """
         #only hexadecimal characters and only 24 characters
         if isinstance(id, ObjectId):
-            id=id.toString()
+            id=str(id)
         if not isinstance(id, str) and not isinstance(id, type(None)):
             raise ValueError("Record ID must be either string or None")
         elif isinstance(id, str) and len(id) != 24:
@@ -95,7 +95,7 @@ class BaseRecord(ABC):
             ValueError: Ref ID is a string but not hexadecimal
             """
         if isinstance(ref_id, ObjectId):
-            ref_id=ref_id.toString()
+            ref_id=str(ref_id)
         if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
             raise ValueError("Reference ID must be either string or None")
         elif isinstance(ref_id, str) and len(ref_id) != 24:
