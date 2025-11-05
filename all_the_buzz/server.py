@@ -234,45 +234,64 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
 
 @authentication_middleware
 def approve_joke(credentials: Credentials, id: str):
-    print(f"THIS IS THE OUTOUT: {credentials.title}, {id}")
     if credentials.title == "Manager":
         # set credentials and database
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
-        print(f"made it here: {private_jokes_dao.get_credentials().title} and {type(private_jokes_dao.get_credentials())}")
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        print("made it here 2")
-        record=private_jokes_dao.get_by_key(id)
-        print(f"made it here 3 {public_jokes_dao.get_credentials().title} and {type(public_jokes_dao.get_credentials())}")
+        try:
+            record=private_jokes_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid joke
         try:
             pending_joke=Joke.from_json_object(record)
-            print("made it here 4")
-        except:
-            return "issue"
-        # load joke based on ID from database
-        # convert to joke object
-        # If edit
-        
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending joke is an edit
         if pending_joke.is_edit == True:
             original_id=pending_joke.ref_id
-            
             pending_joke.is_edit=None
             pending_joke.ref_id=None
-            public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
-            print("made it here edit")
-            #update existing public table
-        # if additionation
+            try:
+                public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending joke isn't and edit
         elif pending_joke.is_edit == False:
             pending_joke.is_edit=None
-            print(f"made it here 3000 {public_jokes_dao.get_credentials().title} and {type(public_jokes_dao.get_credentials())}")
-            public_jokes_dao.create_record(pending_joke.to_json_object())
-            print("made it here no edit")
-
-            #add to table
-        #delete record in private table
-        private_jokes_dao.delete_record(id)
-        print("success")
+            try:
+                public_jokes_dao.create_record(pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
     else:
-        return "not manager"
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_jokes_dao.clear_credentials()
+        private_jokes_dao.clear_credentials()
+        return jsonify(body), status_code
 
 
 def deny_joke(id):
