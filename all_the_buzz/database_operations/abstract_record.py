@@ -56,7 +56,7 @@ class DatabaseAccessObject(ABC):
             database_name (str): the name of the actual database that all of the collections are held in
         '''
         self.__db = client[database_name]
-        self.__collection = self.__db[table_name]
+        self._collection = self.__db[table_name]
         self.__logger = LoggerFactory.get_general_logger()
         self.__credentials = None
 
@@ -130,7 +130,7 @@ class DatabaseAccessObject(ABC):
             with the JSON document as data
         '''
         self.__logger.debug(f"Getting {self.__class__.__name__} record by ID {ID}.")
-        document = self.__collection.find_one({"_id": ObjectId(ID)})
+        document = self._collection.find_one({"_id": ObjectId(ID)})
         if document is None:
             return ResponseCode(error_tag="ResourceNotFound")
         return document
@@ -148,7 +148,7 @@ class DatabaseAccessObject(ABC):
             documents as data
         '''
         self.__logger.debug(f"Getting {self.__class__.__name__} record by fields {filter}.")
-        document_list = list(self.__collection.find(filter))
+        document_list = list(self._collection.find(filter))
         return document_list
     
     @rbac_action("read")
@@ -164,7 +164,7 @@ class DatabaseAccessObject(ABC):
             documents from the collection as data
         '''
         self.__logger.debug(f"Getting all {self.__class__.__name__} records with limit {limit}.")
-        cursor = self.__collection.find({})
+        cursor = self._collection.find({})
         if limit is not None:
             cursor = cursor.limit(limit)
         documents = list(cursor)
@@ -186,7 +186,7 @@ class DatabaseAccessObject(ABC):
         '''
         filter = filter or {}
         self.__logger.debug(f"Getting {numReturned} random {self.__class__.__name__} record by fields {filter}.")
-        random_documents = list(self.__collection.aggregate([
+        random_documents = list(self._collection.aggregate([
             {"$match": filter},
             {"$sample": {"size": numReturned}}
         ]))
@@ -227,7 +227,7 @@ class DatabaseAccessObject(ABC):
         },
         { "$sample": { "size": numReturned } }
         ]
-        result = list(self.__collection.aggregate(pipeline))
+        result = list(self._collection.aggregate(pipeline))
         if len(result) < numReturned:
             self.__logger.warning(f"Requested {numReturned}, but only returned {len(result)} records.")
         return result
@@ -250,7 +250,7 @@ class DatabaseAccessObject(ABC):
             return ResponseCode("MalformedContent", "Update payload must not be empty.")
         self.__logger.debug(f"Updating {self.__class__.__name__} with ID {ID}: {updates}.")
         update_op = {"$set": updates}
-        result = self.__collection.update_one({"_id": ObjectId(ID)}, update_op)
+        result = self._collection.update_one({"_id": ObjectId(ID)}, update_op)
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return ID
@@ -270,7 +270,7 @@ class DatabaseAccessObject(ABC):
         entry = self._prepare_entry(entry) #Determines if there should be default field values; override in subclass
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
         #print(f"Creating {self.__class__.__name__} record: {entry}.")
-        result = self.__collection.insert_one(entry)
+        result = self._collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
         #print(f"Created! New ID {str(result.inserted_id)}")
         return ResponseCode("PostSuccess", str(result.inserted_id))
@@ -289,7 +289,7 @@ class DatabaseAccessObject(ABC):
             deleted_count ({1}) as data
         '''
         self.__logger.debug(f"Deleting {self.__class__.__name__} record.")
-        result = self.__collection.delete_one({"_id": ObjectId(ID)})
+        result = self._collection.delete_one({"_id": ObjectId(ID)})
         if result.deleted_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return {"deleted_count": result.deleted_count}
@@ -312,5 +312,5 @@ class DatabaseAccessObject(ABC):
         if len(filter) > 1:
             return ResponseCode("MalformedContent", "Delete filter must contain only one field.")
         self.__logger.debug(f"Deleting {self.__class__.__name__} record by filter {filter}.")
-        result = self.__collection.delete_many(filter)
+        result = self._collection.delete_many(filter)
         return {"deleted_count": result.deleted_count}
