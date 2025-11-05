@@ -415,8 +415,7 @@ class Trivia(BaseRecord):
 
         return record_dict
 
-    
-class Quote(BaseRecord):
+
 class Quote(BaseRecord):
     """
     Validates quotes record data passed to it. This class
@@ -582,7 +581,7 @@ class Quote(BaseRecord):
             record_dict["category"]=self.category
         return record_dict
 
-class Bio(BaseRecord):
+
 class Bio(BaseRecord):
     """
     Validates bios record data passed to it. This class
@@ -735,7 +734,6 @@ class Bio(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            bios_object=Bio(name=content["name"], paragraph=content["paragraph"],
             bios_object=Bio(name=content["name"], paragraph=content["paragraph"],
                              source_url=content["source_url"],language=content["language"])
             if "id" in content:
