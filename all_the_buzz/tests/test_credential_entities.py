@@ -35,148 +35,148 @@ def test_id_setter_negative():
     with pytest.raises(ValueError):
         cred.id = -1
     
-# ------ Testing fname setter ------
-def test_fname_setter_valid():
+# ------ Testing fName setter ------
+def test_fName_setter_valid():
     cred = Credentials()
     cred.id = 1234
-    cred.fname = "Mike"
-    assert cred.fname == "Mike"
+    cred.fName = "Mike"
+    assert cred.fName == "Mike"
     
 # Test for allowing apostrophes in names
-# def test_fname_setter_valid_apostrophe():
+# def test_fName_setter_valid_apostrophe():
 #     cred = Credentials()
 #     cred.id = 1234
-#     cred.fname ="De'Wayne"
+#     cred.fName ="De'Wayne"
 #     pass
 
-def test_fname_setter_none():
+def test_fName_setter_none():
     cred = Credentials()
     cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.fname = None
+    with pytest.raises(ValueError, match="First name must be provided"):
+        cred.fName = None
 
-def test_fname_setter_int():
+def test_fName_setter_int():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.fname = 1234
+        cred.fName = 1234
 
-def test_fname_setter_length_zero():
+def test_fName_setter_length_zero():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.fname = ""
+        cred.fName = ""
 
-def test_fname_setter_spaces():
+def test_fName_setter_spaces():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.fname = "           "
+        cred.fName = "           "
 
-def test_fname_setter_greater_than_50():
+def test_fName_setter_greater_than_50():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.fname = "a" * 51
+        cred.fName = "a" * 51
     
-# def test_fname_setter_non_letters():
+# def test_fName_setter_non_letters():
 #     cred = Credentials()
 #     cred.id = 1234
 #     with pytest.raises(ValueError):
-#         cred.fname = "$p3nc3r"
+#         cred.fName = "$p3nc3r"
 
-# ------ Testing lname setter ------
-def test_lname_setter_valid():
+# ------ Testing lName setter ------
+def test_lName_setter_valid():
     cred = Credentials()
     cred.id = 1234
-    cred.lname = "Jones"
-    assert cred.lname == "Jones"
+    cred.lName = "Jones"
+    assert cred.lName == "Jones"
 
 # Test for allowing apostrophes in names
-# def test_lname_setter_valid_apostrophe():
+# def test_lName_setter_valid_apostrophe():
 #     cred = Credentials()
 #     cred.id = 1234
-#     cred.lname = "O'Conner"
-#     assert cred.lname == "O'Conner"
+#     cred.lName = "O'Conner"
+#     assert cred.lName == "O'Conner"
 
-def test_lname_setter_none():
+def test_lName_setter_none():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.lname = None
+        cred.lName = None
 
-def test_lname_setter_int():
+def test_lName_setter_int():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.lname = 1234
+        cred.lName = 1234
 
-def test_lname_setter_length_zero():
+def test_lName_setter_length_zero():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.lname = ""
+        cred.lName = ""
 
-def test_lname_setter_spaces():
+def test_lName_setter_spaces():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.lname = "           "
+        cred.lName = "           "
 
-def test_lname_setter_greater_than_50():
+def test_lName_setter_greater_than_50():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.lname = "a" * 51
+        cred.lName = "a" * 51
 
-# def test_lname_setter_non_letters():
+# def test_lName_setter_non_letters():
 #     cred = Credentials()
 #     cred.id = 1234
 #     with pytest.raises(ValueError):
-#         cred.lname = "$p3nc3r"
+#         cred.lName = "$p3nc3r"
 
-# ------ Testing Department setter ------
-def test_department_setter_valid():
+# ------ Testing dept setter ------
+def test_dept_setter_valid():
     cred = Credentials()
     cred.id = 1234
-    cred.department = "Sales"
-    assert cred.department == "Sales"
+    cred.dept = "Sales"
+    assert cred.dept == "Sales"
 
-def test_department_setter_none():
-    cred = Credentials()
-    cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.department = None
-
-def test_department_setter_int():
+def test_dept_setter_none():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.department = 1234
+        cred.dept = None
 
-def test_department_setter_length_zero():
+def test_dept_setter_int():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.department = ""
+        cred.dept = 1234
 
-def test_department_setter_spaces():
+def test_dept_setter_length_zero():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.department = "       "
+        cred.dept = ""
 
-def test_department_setter_greater_than_35():
+def test_dept_setter_spaces():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.department = "a" * 36
+        cred.dept = "       "
 
-def test_department_setter_non_letters():
+def test_dept_setter_greater_than_35():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.department = "$4l3$"
+        cred.dept = "a" * 36
+
+def test_dept_setter_non_letters():
+    cred = Credentials()
+    cred.id = 1234
+    with pytest.raises(ValueError):
+        cred.dept = "$4l3$"
 
 # ------ Testing Title setter ------
 def test_title_setter_valid():
@@ -221,48 +221,48 @@ def test_title_setter_non_letters():
     with pytest.raises(ValueError):
         cred.title = "3mp3r0r 0f th3 Un1v3r$3"
 
-# ------ Testing Location setter ------
-def test_location_setter_valid():
+# ------ Testing loc setter ------
+def test_loc_setter_valid():
     cred = Credentials()
     cred.id = 1234
-    cred.location = "Andromeda Galaxy"
-    assert cred.location == "Andromeda Galaxy"
+    cred.loc = "Andromeda Galaxy"
+    assert cred.loc == "Andromeda Galaxy"
 
-def test_location_setter_none():
+def test_loc_setter_none():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = None
+        cred.loc = None
 
-def test_location_setter_int():
+def test_loc_setter_int():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = 1234
+        cred.loc = 1234
 
-def test_location_setter_length_zero():
+def test_loc_setter_length_zero():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = ""
+        cred.loc = ""
 
-def test_location_setter_spaces():
+def test_loc_setter_spaces():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = "       "
+        cred.loc = "       "
     
-def test_location_setter_greater_than_75():
+def test_loc_setter_greater_than_75():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = "a" *76
+        cred.loc = "a" *76
 
-def test_location_setter_non_letters():
+def test_loc_setter_non_letters():
     cred = Credentials()
     cred.id = 1234
     with pytest.raises(ValueError):
-        cred.location = "4ndr0m3d4 G414xy"
+        cred.loc = "4ndr0m3d4 G414xy"
 
 # ----- Test Credentials Json Methods -----
 class TestCredentialsJsonMethods:
@@ -270,37 +270,37 @@ class TestCredentialsJsonMethods:
     def test_from_json_object_valid_manager(self):
         content = {
             "id": 1,
-            "fname": "Alice",
-            "lname": "Smith",
-            "department": "Engineering",
+            "fName": "Alice",
+            "lName": "Smith",
+            "dept": "Engineering",
             "title": "Manager",
-            "location": "HQ"
+            "loc": "HQ"
         }
         cred = Credentials.from_json_object(content)
         assert isinstance(cred, Credentials)
         assert cred.title == "Manager"  # stays Manager
-        assert cred.fname == "Alice"
-        assert cred.lname == "Smith"
-        assert cred.department == "Engineering"
-        assert cred.location == "HQ"
+        assert cred.fName == "Alice"
+        assert cred.lName == "Smith"
+        assert cred.dept == "Engineering"
+        assert cred.loc == "HQ"
 
     def test_from_json_object_valid_non_manager(self):
         content = {
             "id": 2,
-            "fname": "Bob",
-            "lname": "Jones",
-            "department": "Sales",
+            "fName": "Bob",
+            "lName": "Jones",
+            "dept": "Sales",
             "title": "Intern",  # should be converted
-            "location": "Remote"
+            "loc": "Remote"
         }
         cred = Credentials.from_json_object(content)
         assert cred.title == "Employee"  # converted
-        assert cred.department == "Sales"
+        assert cred.dept == "Sales"
 
     @pytest.mark.parametrize("invalid_content", [
         "not a dict",  # Not a dictionary
         {"mesg": "Authentication failed"},  # Contains error_field
-        {"id": 1, "fname": "Alice"}  # Missing required fields
+        {"id": 1, "fName": "Alice"}  # Missing required fields
     ])
     def test_from_json_object_invalid(self, invalid_content):
         with pytest.raises(ValueError):
