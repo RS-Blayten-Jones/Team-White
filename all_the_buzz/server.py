@@ -233,37 +233,50 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
     #for managers 
 
 @authentication_middleware
-def approve_jokes(credentials: Credentials, id: str):
+def approve_joke(credentials: Credentials, id: str):
+    print(f"THIS IS THE OUTOUT: {credentials.title}, {id}")
     if credentials.title == "Manager":
         # set credentials and database
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        print(f"made it here: {private_jokes_dao.get_credentials().title} and {type(private_jokes_dao.get_credentials())}")
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        print("made it here 2")
         record=private_jokes_dao.get_by_key(id)
+        print(f"made it here 3 {public_jokes_dao.get_credentials().title} and {type(public_jokes_dao.get_credentials())}")
         try:
             pending_joke=Joke.from_json_object(record)
+            print("made it here 4")
         except:
             return "issue"
         # load joke based on ID from database
         # convert to joke object
         # If edit
+        
         if pending_joke.is_edit == True:
             original_id=pending_joke.ref_id
+            
             pending_joke.is_edit=None
             pending_joke.ref_id=None
             public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
+            print("made it here edit")
             #update existing public table
         # if additionation
         elif pending_joke.is_edit == False:
             pending_joke.is_edit=None
-            public_bios_dao.create_record(pending_joke.to_json_object())
+            print(f"made it here 3000 {public_jokes_dao.get_credentials().title} and {type(public_jokes_dao.get_credentials())}")
+            public_jokes_dao.create_record(pending_joke.to_json_object())
+            print("made it here no edit")
+
             #add to table
         #delete record in private table
-        private_bios_dao.delete_record(id)
+        private_jokes_dao.delete_record(id)
+        print("success")
     else:
         return "not manager"
 
 
-
+def deny_joke(id):
+    print("hey")
 
 
 #quotes
@@ -443,13 +456,13 @@ def create_app():
         provide_automatic_options=False
     )
     app.add_url_rule(
-        "joke/<string:id>/approve"
+        "/joke/<string:id>/approve",
         view_func=approve_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
     app.add_url_rule(
-        "joke/<string:id>/deny"
+        "/joke/<string:id>/deny",
         view_func=deny_joke,
         methods=["POST"],
         provide_automatic_options=False

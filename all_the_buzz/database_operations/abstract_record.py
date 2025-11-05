@@ -60,6 +60,9 @@ class DatabaseAccessObject(ABC):
         self.__logger = LoggerFactory.get_general_logger()
         self.__credentials = None
 
+    def get_credentials(self):
+        return self.__credentials
+    
     #Checks the current credential's role against the ROLE_MATRIX which holds compatible roles with a given action
     @staticmethod
     def rbac_action(action: str):
@@ -247,7 +250,7 @@ class DatabaseAccessObject(ABC):
             return ResponseCode("MalformedContent", "Update payload must not be empty.")
         self.__logger.debug(f"Updating {self.__class__.__name__} with ID {ID}: {updates}.")
         update_op = {"$set": updates}
-        result = self.__collection.update_one({"_id": ID}, update_op)
+        result = self.__collection.update_one({"_id": ObjectId(ID)}, update_op)
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return ID
