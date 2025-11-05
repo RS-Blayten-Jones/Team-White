@@ -1,6 +1,7 @@
 # house all entity classes
 from abc import ABC, abstractmethod
 from datetime import date
+from datetime import datetime
 import validators
 """
 record_entities.py
@@ -319,9 +320,9 @@ class Trivia(BaseRecord):
     To initilize this class, the from_json_object method can 
     be used. 
 
-    The fields: 'question', 'answer','language' are all required.
+    The fields: 'question', 'answer', 'language' are all required.
     """
-    def __init__(self, id, ref_id, is_edit, question, answer, language ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, question="Question", answer="Answer", language="english"):
         super().__init__(id,ref_id,is_edit,language)
         self.question=question
         self.answer=answer
@@ -340,8 +341,11 @@ class Trivia(BaseRecord):
             """
         if not isinstance(question, str):
             raise ValueError("Trivia question must be a string")
-        else: 
-            self.__question=question
+        elif len(question.strip()) == 0:
+            raise ValueError("Trivia question cannot be blank")
+        elif len(question) > 1000:
+            raise ValueError("Trivia question too long")
+        self.__question=question
     
     @property
     def answer(self):
@@ -357,8 +361,9 @@ class Trivia(BaseRecord):
             """
         if not isinstance(answer, str):
             raise ValueError("Trivia answer must be a string")
-        else:
-            self.__answer=answer
+        elif len(answer) > 1000:
+            raise ValueError("Trivia answer too long")
+        self.__answer=answer
 
     @staticmethod
     def from_json_object(content):
@@ -405,7 +410,7 @@ class Trivia(BaseRecord):
         return record_dict
 
     
-class Quotes(BaseRecord):
+class Quote(BaseRecord):
     """
     Validates quotes record data passed to it. This class
     includes id, ref_id, is_edit, category, author, used_status,
@@ -414,11 +419,13 @@ class Quotes(BaseRecord):
     To initilize this class, the from_json_object method can 
     be used. 
 
-    The fields: 'content', 'category','author', 'language' are all required.
+    The fields: 'content','author', 'language' are all required.
     """
-    def __init__(self, id, ref_id, is_edit, category, author, used_date="01-02-23", language="english" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, category="category",
+                 content="stuff",author="Joe", used_date="03/15/2020", language="english" ):
         super().__init__(id,ref_id,is_edit,language)
         self.category=category
+        self.content=content
         self.author=author
         self.used_date=used_date
 #TODO: fix used date string mm-dd-yyyy
@@ -437,8 +444,30 @@ class Quotes(BaseRecord):
         if not isinstance(category, str):
             raise ValueError("Category must be a string")
         else:
-            self.__category=category
-    
+            self.__category=category.lower()
+
+    @property
+    def content(self):
+        return self.__content
+
+    @content.setter
+    def content(self,content):
+        """
+        Validates content is proper format
+
+        Exceptions:
+            ValueError: Content must be a string
+            ValueError: Content is too many characters
+        """
+        if not isinstance(content, str):
+            raise ValueError("Quote content must be a string")
+        elif len(content.strip()) == 0:
+            raise ValueError("Quote content cannot be empty")
+        elif len(content) > 1000:
+            raise ValueError("Quote content is too many characters")
+        else:
+            self.__content=content
+            
     @property
     def author(self):
         return self.__author
@@ -457,22 +486,48 @@ class Quotes(BaseRecord):
             self.__author=author
     
     @property
-    def used_status(self):
-        return self.__used_status
+    def used_date(self):
+        return self.__used_date
     
-    @used_status.setter
-    def used_status(self, used_status):
+    @used_date.setter
+    def used_date(self, used_date):
         """
-        Validates used_status is in correct format.
+        Validates used_date is in correct format. 
+        Dates passed will be reformatted to mm/dd/yyyy for consistency
         
         Exceptions:
-            ValueError: Used status must be a string
+            ValueError: Used date must be a string date
+            in one of the possible formats
             """
-        if not isinstance(used_status, str):
+        
+        possible_formats = [
+                "%Y-%m-%d",    # 2025-11-04
+                "%m-%d-%Y",    # 11-04-2025
+                "%m/%d/%Y",    # 11/04/2025
+                "%d-%m-%Y",    # 04-11-2025
+                "%d/%m/%Y",    # 04/11/2025
+                "%m-%d-%y",    # 11-04-25
+                "%d-%m-%y",    # 04-11-25
+                "%m/%d/%y",    # 11/04/25
+                "%d/%m/%y"     # 04/11/25
+            ]
+
+        if not isinstance(used_date, str):
             raise ValueError("Used Status variable must be a string")
-        else:
-            self.__used_status=used_status
-    
+        
+        parsed_date = None
+        for fmt in possible_formats:
+            try:
+                parsed_date = datetime.strptime(used_date.strip(), fmt)
+                break
+            except ValueError:
+                continue
+        
+        if parsed_date is None:
+            raise ValueError("Used Status must be a valid date string in a recognized format")
+
+        self.__used_date = parsed_date.strftime("%m/%d/%Y")
+        
     @staticmethod
     def from_json_object(content):
         """
@@ -482,7 +537,7 @@ class Quotes(BaseRecord):
             ValueError: Not proper format
             ValueError: Missing required fields
             """
-        requried_fields=['content', 'category','author', 'language']
+        requried_fields=['content', 'author', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
             raise ValueError("Must be dictionary input")
@@ -491,7 +546,7 @@ class Quotes(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            quotes_object=Quotes(content=content["content"], category=content["category"],
+            quotes_object=Quote(content=content["content"], category=content["category"],
                                  author=content["author"],language=content["language"])
             if "id" in content:
                 quotes_object.id=content["id"] 
@@ -499,6 +554,8 @@ class Quotes(BaseRecord):
                 quotes_object.ref_id=content["original_id"]
             if "is_edit" in content:
                 quotes_object.is_edit=content["is_edit"]
+            if "category" in content:
+                quotes_object.category=content["category"]
             return quotes_object
                 
 
@@ -506,31 +563,32 @@ class Quotes(BaseRecord):
         """"
         Method for converting Trivia object to dict.
         """
-        record_dict={"content": self.content, "category": self.category, 
-                 "author":self.author, "language":self.language}
+        record_dict={"content": self.content, "author":self.author, 
+                     "language":self.language}
         if self.id is not None:
             record_dict["id"]= self.id
         if self.ref_id is not None:
             record_dict["original_id"]=self.ref_id
         if self.is_edit is not None:
             record_dict["is_edit"]=self.is_edit
-
+        if self.category is not None:
+            record_dict["category"]=self.category
         return record_dict
 
-class Bios(BaseRecord):
+class Bio(BaseRecord):
     """
     Validates bios record data passed to it. This class
     includes id, ref_id, is_edit, birth_year, death_year,
-    paragraph, summary, source_url, language
+    paragraph, summary, source_url, language.
     
     To initilize this class, the from_json_object method can 
-    be used. 
+    be used.
 
     The fields: 'name','paragraph','language','source_url' are all required.
     """
-    def __init__(self, id=None, ref_id=None, is_edit=None,
-                    language="English", birth_year=None, death_year=None, name="Bob", 
-                    paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
+    def __init__(self, id=None, ref_id=None, is_edit=None, language="English", 
+                 birth_year=1900, death_year=2020, name="Bob Lastname", 
+                 paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
         super().__init__(id,ref_id,is_edit,language)
         self.birth_year=birth_year
         self.death_year=death_year
@@ -557,8 +615,7 @@ class Bios(BaseRecord):
         if isinstance(birth_year, int):
             if birth_year > date.today().year:
                 raise ValueError("Invalid year")
-        else:
-            self.__birth_year=birth_year
+        self.__birth_year=birth_year
 
     @property
     def death_year(self):
@@ -578,8 +635,7 @@ class Bios(BaseRecord):
         if isinstance(death_year, int):
             if death_year > date.today().year: # check if year is in the past
                 raise ValueError("Invalid year")
-        else:
-            self.__death_year=death_year
+        self.__death_year=death_year
 
     @property
     def name(self):
@@ -671,7 +727,7 @@ class Bios(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            bios_object=Bios(name=content["name"], paragraph=content["paragraph"],
+            bios_object=Bio(name=content["name"], paragraph=content["paragraph"],
                              source_url=content["source_url"],language=content["language"])
             if "id" in content:
                 bios_object.id=content["id"] 

@@ -535,6 +535,88 @@ def retrieve_private_jokes_collection(credentials: Credentials):
 
 
 
+#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
+    #for managers 
+
+@authentication_middleware
+def approve_joke(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        try:
+            record=private_jokes_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid joke
+        try:
+            pending_joke=Joke.from_json_object(record)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending joke is an edit
+        if pending_joke.is_edit == True:
+            original_id=pending_joke.ref_id
+            pending_joke.is_edit=None
+            pending_joke.ref_id=None
+            try:
+                public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending joke isn't and edit
+        elif pending_joke.is_edit == False:
+            pending_joke.is_edit=None
+            try:
+                public_jokes_dao.create_record(pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_jokes_dao.clear_credentials()
+        private_jokes_dao.clear_credentials()
+        return jsonify(body), status_code
+
+@authentication_middleware
+def deny_joke(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        try:
+            dao_response=private_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
 #quotes
 @authentication_middleware
 def retrieve_public_quotes_collection(credentials: Credentials):
@@ -635,7 +717,6 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-
 def establish_all_daos(client):
 
     global public_jokes_dao
@@ -676,25 +757,113 @@ def create_app():
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
+    """
+    Get All Jokes
+    -------------
+    (GET) http://localhost:8080/jokes/
 
+    Included:
+        Include Bearer header with token
+    Returns:
+        Dictonary of all public jokes
+    """
     app.add_url_rule(
         "/jokes", 
         view_func=retrieve_public_jokes_collection, 
         methods=["GET"],
         provide_automatic_options=False
     )
+    """
+    Create New Joke
+    ---------------
+    (POST) http://localhost:8080/jokes
+    
+    Include:
+        Include Bearer header with token
+        In body include json object in this format:
+        {
+            "level": int,
+            "language": str,
+            "content": {
+                "type": <either "one_liner" or "qa">,
+                "text": str (required if "one_liner"),
+                "question": str (required if "qa"),
+                "answer": str (required if "qa")
+                }
+            }
+    Returns:
+        Adds joke to public table if manager and adds to private
+        table if employee.
+        """
     app.add_url_rule(
         "/jokes", 
         view_func=create_a_new_joke, 
         methods=["POST"],
         provide_automatic_options=False
     )
+    """"
+    Update Joke
+    -----------
+    (PUT) http://localhost:8080/jokes/<string:joke_id>/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in uri
+    Returns:
+        If present returns a json object of the specifed joke
+        in the public table
+    """
     app.add_url_rule(
         "/jokes/<string:joke_id>", 
         view_func=update_joke, 
         methods=["PUT"],
         provide_automatic_options=False
     )
+    """
+    Approve Joke
+    ------------
+    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in private table
+    Returns:
+        If manager updates or adds joke to public table
+        Deletes joke from private table 
+        """
+    app.add_url_rule(
+        "/joke/<string:id>/approve",
+        view_func=approve_joke,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    """
+    Deny Joke
+    ---------
+    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
+    
+    Include:
+        Token in bearer header
+        ID of joke in private table
+    Returns:
+        If manager, deletes joke from private table
+        """
+    app.add_url_rule(
+        "/joke/<string:id>/deny",
+        view_func=deny_joke,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    """
+    Get All Quotes
+    --------------
+    (GET) http//localhost:8080/quotes/
+
+    Include:
+        Token in bearer header
+    Returns:
+        Returns all quotes from public table
+    """
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
