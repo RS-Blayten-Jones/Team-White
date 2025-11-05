@@ -1066,7 +1066,41 @@ def deny_joke(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+@authentication_middleware
+def retrieve_random_joke(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        try:
+            random_jokes=public_jokes_dao.get_random(amount)
+            json_string = dumps(random_jokes)
+            ResponseCode("GeneralSuccess", json_string)
+            public_jokes_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
+@authentication_middleware
+def retrieve_short_quote(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_quote_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            short_quotes=public_quote_dao.get_short_record(amount)
+            json_string = dumps(short_quotes)
+            ResponseCode("GeneralSuccess", json_string)
+            public_quotes_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 #quotes
 @authentication_middleware
 def retrieve_public_quotes_collection(credentials: Credentials):
@@ -1100,6 +1134,24 @@ def retrieve_public_quotes_collection(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+@authentication_middleware
+def retrieve_daily_quote(credentials: Credentials):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_quotes_dao=get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            random_quote=public_quotes_dao.get_quote_of_day()
+            print(f"HERE IS THE TYPE: {type(random_quote.get_data())}")
+            json_string=dumps(random_quote.get_data())
+            ResponseCode("GeneralSuccess", json_string)
+            public_bios_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 #trivia
 @authentication_middleware
@@ -1302,6 +1354,18 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
+    app.add_url_rule(
+        "/random-jokes/<int:amount>",
+        view_func=retrieve_random_joke,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/short-quotes/<int:amount>",
+        view_func=retrieve_short_quote,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
     """
     Get All Quotes
     --------------
@@ -1335,6 +1399,12 @@ def create_app():
     )
 
 
+    app.add_url_rule(
+        "/daily_quotes",
+        view_func=retrieve_daily_quote,
+        methods=["GET"],
+        provide_automatic_options=False        
+    )
     app.add_url_rule(
         "/trivias",
         view_func=retrieve_public_trivia_collection,

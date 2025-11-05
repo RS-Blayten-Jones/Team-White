@@ -35,7 +35,7 @@ class PublicQuoteDAO(DatabaseAccessObject):
             UpdateResult object
         '''
         self.__logger.debug(f"Reseting all quotes...")
-        result = self.__collection.update_many({}, {"$set": {"used_date": "None"}})
+        result = self._collection.update_many({}, {"$set": {"used_date": "None"}})
         return result
     
     @DatabaseAccessObject.rbac_action("read")
@@ -44,28 +44,30 @@ class PublicQuoteDAO(DatabaseAccessObject):
         '''
         Gets the quote of the day using today's date. After that date is used, it is marked. On New Year's
         all of the quotes are unmarked back to being "unused"
-
+ 
         Returns:
-            ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the 
+            ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the
             JSON document
         '''
         #Check to see if there are any unused quotes
-        num_unused_quotes = self.__collection.count_documents({"used_date": "None"})
+        num_unused_quotes = self._collection.count_documents({"used_date": ""})
         today = date.today()
         today_string = today.strftime("%m/%d/%Y")
-        existing_record = self.__collection.find({"used_date": today_string})
+        existing_record = self._collection.find_one({"used_date": today_string})
         #if there is a quote being used for today, just return that one
         if(existing_record is not None):
             return existing_record
         #If it is a new year OR all of the quotes have been used, reset and get total number of quotes
         if((today.month == 1 and today.day == 1) or (num_unused_quotes == 0)):
             self._reset_quotes()
-            num_unused_quotes = self.__collection.count_documents({"used_date": "None"})
+            num_unused_quotes = self._collection.count_documents({"used_date": ""})
         #Knuth multiplication method; reduced to 32 bit hash-space; spreads out values well
         #Unique value for each day...
         seed = 10000*today.year + 100*today.month + today.day
         hashed = (seed * 2654435761) % 2**32
-        unused_list = list(self.__collection.find({"used_date": "None"}))
+        unused_list = list(self._collection.find({"used_date": ""}))
+        if num_unused_quotes == 0 or not unused_list:
+            return ResponseCode("ResourceNotFound", "No unused quotes found in the database and reset failed.", data=[])
         #Obtain a record using a hashed value so that it is unified across users and not random per session
         record = unused_list[hashed % num_unused_quotes]
         self.update_record(record["_id"], {"used_date": today_string})
