@@ -544,6 +544,23 @@ def retrieve_public_quotes_collection(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+@authentication_middleware
+def retrieve_daily_quote(credentials: Credentials):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_quotes_dao=get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            random_quote=public_quotes_dao.
+            json_string=dumps(random_quote)
+            ResponseCode("GeneralSuccess", json_string)
+            public_bios_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 #trivia
 @authentication_middleware
@@ -760,6 +777,12 @@ def create_app():
         view_func=retrieve_public_quotes_collection,
         methods=["GET"],
         provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/random_quotes",
+        view_func=retrieve_daily_quote,
+        methods=["GET"],
+        provide_automatic_options=False        
     )
     app.add_url_rule(
         "/trivias",
