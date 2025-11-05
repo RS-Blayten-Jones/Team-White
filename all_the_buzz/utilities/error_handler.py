@@ -53,6 +53,13 @@ _RESPONSE_MAP = {
     "PendingSuccess": (202, "Your edit or suggested file creation is being processed. It will be denied or approved by a moderator at a later time."),
 
     #employee title error
+    "InvalidEmployee": (400, "Employee title invalid"),
+    
+    #Authentication Codes
+    "InvalidToken": (401, "Authentication failed. Please verify your credentials and try again."),
+    "ConfigLoadError": (500, "The configuration could not be loaded. Please verify the file and try again."),
+    "ServerConnectionError": (503, "The operation could not be completed due to a lost connection. Please retry."),
+    "AuthServerError": (502, "The request could not be completed due to a temporary issue with the authentication service. Please retry."),
     "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used 
     #record validation error
     "InvalidRecord": (400, "Record is either invalid or not in valid format")
