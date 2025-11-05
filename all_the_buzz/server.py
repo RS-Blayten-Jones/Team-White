@@ -419,13 +419,13 @@ def deny_joke(credentials: Credentials, id: str):
             dao_response=private_jokes_dao.delete_record(id)
             status_code, body = dao_response.to_http_response()
             private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
         except Exception as e:
             status_code, body = ResponseCode(e).to_http_response()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
-        private_jokes_dao.clear_credentials()
         return jsonify(body), status_code
 
 
