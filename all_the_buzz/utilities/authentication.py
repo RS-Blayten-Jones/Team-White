@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 authentication.py
 
 This module provides functions for interacting with the authentication server. It is primarily
-for obtaining creditionals based on a passed token.
+for obtaining credentials based on a passed token.
 
 Functions:
     - authentication: recieved a token and returns a credential object or error response.
