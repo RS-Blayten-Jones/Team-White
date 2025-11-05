@@ -569,37 +569,113 @@ def create_app():
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
+    """
+    Get All Jokes
+    -------------
+    (GET) http://localhost:8080/jokes/
 
+    Included:
+        Include Bearer header with token
+    Returns:
+        Dictonary of all public jokes
+    """
     app.add_url_rule(
         "/jokes", 
         view_func=retrieve_public_jokes_collection, 
         methods=["GET"],
         provide_automatic_options=False
     )
+    """
+    Create New Joke
+    ---------------
+    (POST) http://localhost:8080/jokes
+    
+    Include:
+        Include Bearer header with token
+        In body include json object in this format:
+        {
+            "level": int,
+            "language": str,
+            "content": {
+                "type": <either "one_liner" or "qa">,
+                "text": str (required if "one_liner"),
+                "question": str (required if "qa"),
+                "answer": str (required if "qa")
+                }
+            }
+    Returns:
+        Adds joke to public table if manager and adds to private
+        table if employee.
+        """
     app.add_url_rule(
         "/jokes", 
         view_func=create_a_new_joke, 
         methods=["POST"],
         provide_automatic_options=False
     )
+    """"
+    Update Joke
+    -----------
+    (PUT) http://localhost:8080/jokes/<string:joke_id>/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in uri
+    Returns:
+        If present returns a json object of the specifed joke
+        in the public table
+    """
     app.add_url_rule(
         "/jokes/<string:joke_id>", 
         view_func=update_joke, 
         methods=["PUT"],
         provide_automatic_options=False
     )
+    """
+    Approve Joke
+    ------------
+    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in private table
+    Returns:
+        If manager updates or adds joke to public table
+        Deletes joke from private table 
+        """
     app.add_url_rule(
         "/joke/<string:id>/approve",
         view_func=approve_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
+    """
+    Deny Joke
+    ---------
+    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
+    
+    Include:
+        Token in bearer header
+        ID of joke in private table
+    Returns:
+        If manager, deletes joke from private table
+        """
     app.add_url_rule(
         "/joke/<string:id>/deny",
         view_func=deny_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
+    """
+    Get All Quotes
+    --------------
+    (GET) http//localhost:8080/quotes/
+
+    Include:
+        Token in bearer header
+    Returns:
+        Returns all quotes from public table
+    """
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
