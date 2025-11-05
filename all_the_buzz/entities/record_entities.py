@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import date
 from datetime import datetime
 import validators
+from bson.objectid import ObjectId
 """
 record_entities.py
 
@@ -67,6 +68,8 @@ class BaseRecord(ABC):
             ValueError: ID is a string but not hexadecimal
             """
         #only hexadecimal characters and only 24 characters
+        if isinstance(id, ObjectId):
+            id=str(id)
         if not isinstance(id, str) and not isinstance(id, type(None)):
             raise ValueError("Record ID must be either string or None")
         elif isinstance(id, str) and len(id) != 24:
@@ -91,6 +94,8 @@ class BaseRecord(ABC):
             ValueError: Ref ID is a string but not equal to 24 characters
             ValueError: Ref ID is a string but not hexadecimal
             """
+        if isinstance(ref_id, ObjectId):
+            ref_id=str(ref_id)
         if not isinstance(ref_id, str) and not isinstance(ref_id, type(None)):
             raise ValueError("Reference ID must be either string or None")
         elif isinstance(ref_id, str) and len(ref_id) != 24:
@@ -283,6 +288,7 @@ class Joke(BaseRecord):
             joke_object=Joke(difficulty=content['level'], content=content['content'], 
                         language=content["language"])
             if "id" in content:
+
                 joke_object.id=content["id"] 
             if "original_id" in content:
                 joke_object.ref_id=content["original_id"]
@@ -409,7 +415,7 @@ class Trivia(BaseRecord):
 
         return record_dict
 
-    
+
 class Quote(BaseRecord):
     """
     Validates quotes record data passed to it. This class
@@ -428,7 +434,7 @@ class Quote(BaseRecord):
         self.content=content
         self.author=author
         self.used_date=used_date
-#TODO: fix used date string mm-dd-yyyy
+
     @property
     def category(self):
         return self.__category
@@ -546,7 +552,7 @@ class Quote(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            quotes_object=Quote(content=content["content"], category=content["category"],
+            quotes_object=Quote(content=content["content"],
                                  author=content["author"],language=content["language"])
             if "id" in content:
                 quotes_object.id=content["id"] 
@@ -574,6 +580,7 @@ class Quote(BaseRecord):
         if self.category is not None:
             record_dict["category"]=self.category
         return record_dict
+
 
 class Bio(BaseRecord):
     """
@@ -667,7 +674,7 @@ class Bio(BaseRecord):
             ValueError: Paragraph must be a string
             """
         if not isinstance(paragraph, str):
-            raise ValueError("Bios paragraph must be a string")
+            raise ValueError("Bio paragraph must be a string")
         self.__paragraph=paragraph
     
     @property
@@ -683,7 +690,7 @@ class Bio(BaseRecord):
             ValueError: Summary must be a string
             """
         if not isinstance(summary, str):
-            raise ValueError("Bios summary must be a string")
+            raise ValueError("Bio summary must be a string")
         self.__summary=summary
 
     @property
