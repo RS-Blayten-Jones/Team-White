@@ -15,8 +15,6 @@ from pymongo.errors import PyMongoError
 import os
 import sys
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from pathlib import Path
 #from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
@@ -130,18 +128,13 @@ load_dotenv(dotenv_path)
 
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
-def create_mongodb_connection():
-    if not ATLAS_URI:
-        raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+SERVER_VER = '1'
+def create_client_connection(server_version: str = SERVER_VER) -> ResponseCode:
     try:
-        client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-        client.admin.command('ping')
-        print("MongoDB client initialized successfully.")
-        return client
-
-    except Exception as PyMongoError:
-        print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
-        raise ResponseCode(str(PyMongoError))
+        client = DAOFactory.set_client(ATLAS_URI, server_version)
+        return ResponseCode("GeneralSuccess", data=client)
+    except Exception as e:
+        return ResponseCode(e, f"Failed to connect to MongoDB: {str(e)}")
 
 
 # class MyFlask(Flask):
@@ -601,7 +594,7 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-def establish_all_daos(client):
+def establish_all_daos():
 
     global public_jokes_dao
     global private_jokes_dao
@@ -615,17 +608,17 @@ def establish_all_daos(client):
     global public_bios_dao
     global private_bios_dao
     try:
-        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
-        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", DATABASE_NAME)
 
-        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", client, DATABASE_NAME)
-        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", client, DATABASE_NAME)
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", DATABASE_NAME)
 
-        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", client, DATABASE_NAME)
-        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", client, DATABASE_NAME)
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", DATABASE_NAME)
 
-        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
-        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", DATABASE_NAME)
         print("created")
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
@@ -636,8 +629,8 @@ def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
     try:
-        mongo_client = create_mongodb_connection()
-        establish_all_daos(mongo_client)
+        create_client_connection()
+        establish_all_daos()
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
