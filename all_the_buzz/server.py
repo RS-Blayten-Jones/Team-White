@@ -915,16 +915,16 @@ def update_bio(bio_id: str, credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
-        private_bios_dao = DAOFactory.get_dao('B')
+        private_bios_dao = DAOFactory.get_dao('PrivateBioDAO')
         private_bios_dao.set_credentials(credentials)
         #setting the OG id of the record to edit and setting is edit to true
         request_body["original_id"] = bio_id
         request_body["is_edit"] = True
         try:
-            new_edit = bio.from_json_object(request_body)
+            new_edit = Bio.from_json_object(request_body)
         except Exception as e:
             private_bios_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Bio):
             try:
