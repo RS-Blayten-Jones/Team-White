@@ -266,10 +266,8 @@ class DatabaseAccessObject(ABC):
         '''
         entry = self._prepare_entry(entry) #Determines if there should be default field values; override in subclass
         self.__logger.debug(f"Creating {self.__class__.__name__} record: {entry}.")
-        #print(f"Creating {self.__class__.__name__} record: {entry}.")
         result = self.__collection.insert_one(entry)
         self.__logger.debug(f"Created! New ID {str(result.inserted_id)}")
-        #print(f"Created! New ID {str(result.inserted_id)}")
         return ResponseCode("PostSuccess", str(result.inserted_id))
 
     @rbac_action("delete")
