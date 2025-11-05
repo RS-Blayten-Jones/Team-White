@@ -15,8 +15,6 @@ from pymongo.errors import PyMongoError
 import os
 import sys
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from pathlib import Path
 #from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
@@ -58,18 +56,13 @@ load_dotenv(dotenv_path)
 
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
-def create_mongodb_connection():
-    if not ATLAS_URI:
-        raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+SERVER_VER = '1'
+def create_client_connection(server_version: str = SERVER_VER) -> ResponseCode:
     try:
-        client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-        client.admin.command('ping')
-        print("MongoDB client initialized successfully.")
-        return client
-
-    except Exception as PyMongoError:
-        print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
-        raise ResponseCode(str(PyMongoError))
+        client = DAOFactory.set_client(ATLAS_URI, server_version)
+        return ResponseCode("GeneralSuccess", data=client)
+    except Exception as e:
+        return ResponseCode(e, f"Failed to connect to MongoDB: {str(e)}")
 
 
 # class MyFlask(Flask):
@@ -564,7 +557,7 @@ def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
     try:
-        mongo_client = create_mongodb_connection()
+        mongo_client = create_client_connection()
         establish_all_daos(mongo_client)
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
