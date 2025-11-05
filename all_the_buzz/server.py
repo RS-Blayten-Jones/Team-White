@@ -550,7 +550,7 @@ def retrieve_daily_quote(credentials: Credentials):
         public_quotes_dao=get_dao_set_credentials(credentials, "PublicQuoteDAO")
         try:
             random_quote=public_quotes_dao.get_quote_of_day()
-            print(f"HERE IS THE TYPE: {random_quote.get_data()}")
+            print(f"HERE IS THE TYPE: {type(random_quote.get_data())}")
             json_string=dumps(random_quote)
             ResponseCode("GeneralSuccess", json_string)
             public_bios_dao.clear_credentials()

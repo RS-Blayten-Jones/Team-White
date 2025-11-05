@@ -59,7 +59,7 @@ class PublicQuoteDAO(DatabaseAccessObject):
         print("Got here 1")
         today = date.today()
         today_string = today.strftime("%m/%d/%Y")
-        existing_record = self._collection.find({"used_date": today_string})
+        existing_record = self._collection.find_one({"used_date": today_string})
         print("Got here 2")
         #if there is a quote being used for today, just return that one
         if(existing_record is not None):
