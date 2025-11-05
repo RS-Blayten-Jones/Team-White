@@ -60,6 +60,9 @@ class DatabaseAccessObject(ABC):
         self.__logger = LoggerFactory.get_general_logger()
         self.__credentials = None
 
+    def get_credentials(self):
+        return self.__credentials
+    
     #Checks the current credential's role against the ROLE_MATRIX which holds compatible roles with a given action
     @staticmethod
     def rbac_action(action: str):
