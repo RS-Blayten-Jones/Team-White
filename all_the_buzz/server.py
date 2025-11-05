@@ -299,45 +299,45 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
         request_body = request.get_json()
         request_body["is_edit"] = False
         try:
+            new_quote = Quote.from_json_object(request_body)
+        except Exception as e:
+            private_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_quote, Quote):
+            try:
+                dao_response = private_quotes_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode) == True
+            except Exception as e:
+                private_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            private_quotes_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+        
+    elif credentials.title == 'Manager':
+        public_quotes_dao = get_dao_set_credentials(credentials, 'PublicQuoteDAO')
+        request_body = request.get_json()
+        try:
             new_joke = Quote.from_json_object(request_body)
         except Exception as e:
             private_quotes_dao.clear_credentials()
             status_code, body = ResponseCode(e).to_http_response()
             return jsonify(body), status_code
-        if isinstance(new_joke, Quote):
+        if isinstance(new_quote, Quote):
             try:
-                dao_response = private_quotes_dao.create_record(request_body)
-                assert isinstance(dao_response, ResponseCode) == True
-            except Exception as e:
-                private_jokes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
-                return jsonify(body), status_code
-            private_jokes_dao.clear_credentials()
-            status_code, body = dao_response.to_http_response()
-            return jsonify(body), status_code
-        else:
-            private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode("InvalidRecord").to_http_response()
-            return jsonify(body), status_code
-        
-    elif credentials.title == 'Manager':
-        public_jokes_dao = get_dao_set_credentials(credentials, 'PublicJokeDAO')
-        request_body = request.get_json()
-        try:
-            new_joke = Joke.from_json_object(request_body)
-        except Exception as e:
-            private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
-            return jsonify(body), status_code
-        if isinstance(new_joke, Joke):
-            try:
-                dao_response = public_jokes_dao.create_record(request_body)
+                dao_response = public_quotes_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
-                private_jokes_dao.clear_credentials()
+                private_quotes_dao.clear_credentials()
                 status_code, body = ResponseCode(e).to_http_response()
                 return jsonify(body), status_code
-            public_jokes_dao.clear_credentials()
+            public_quotes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
@@ -388,7 +388,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
     """
 
     if credentials.title == 'Employee':
-        private_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
         request_body = request.get_json()
         request_body["is_edit"] = False
         try:
@@ -414,7 +414,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             return jsonify(body), status_code
         
     elif credentials.title == 'Manager':
-        public_trivias_dao = get_dao_set_credentials(credentials, 'T')
+        public_trivias_dao = get_dao_set_credentials(credentials, 'PublicTriviaDAO')
         request_body = request.get_json()
         try:
             new_trivia = Trivia.from_json_object(request_body)
@@ -442,7 +442,99 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+
+
+
+@authentication_middleware
+def create_a_new_bio(credentials: Credentials): #employee credentials create in private, manager's create in public
     
+    """
+    Handles the creation of a new bio record (POST /bio).
+
+    The behavior and target collection are strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** The bio is created directly in the PublicBioDAO
+        collection. This action constitutes immediate approval.
+    2.  **Employee ('Employee'):** The bio is created in the PublicBioDAO
+        collection as a proposal (`is_edit` is set to False), requiring subsequent
+        review and approval.
+
+    The request body is first parsed and validated against the bio entity schema.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware. Used to determine the appropriate DAO
+            and access level.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200/201/202): Success response based on the underlying DAO
+            operation (typically 201 for Manager/Public creation, or a status code
+            indicating successful proposal submission for Employee/Private).
+        * (JSON body, 400): If the JSON request body fails validation bio.from_json_object()`.
+        * (JSON body, 401/500): If the user title is unrecognized ('InvalidEmployee'),
+            or if an exception occurs during the DAO operation (translated via
+            ResponseCode error).
+    """
+
+    if credentials.title == 'Employee':
+        private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
+        request_body = request.get_json()
+        request_body["is_edit"] = False
+        try:
+            new_bio = Bio.from_json_object(request_body)
+        except Exception as e:
+            private_bios_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_bio, Bio):
+            try:
+                dao_response = private_bios_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode) == True
+            except Exception as e:
+                private_bios_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            private_bios_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_bios_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+        
+    elif credentials.title == 'Manager':
+        public_bios_dao = get_dao_set_credentials(credentials, 'PublicBioDAO')
+        request_body = request.get_json()
+        try:
+            new_bios = Trivia.from_json_object(request_body)
+        except Exception as e:
+            private_bios_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_bios, Trivia):
+            try:
+                dao_response = public_trivias_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode)
+            except Exception as e:
+                private_bios_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            public_bios_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_bios_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    else:
+        private_bios_dao.clear_credentials()
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
+
         
 @authentication_middleware #this does not work yet
 def update_joke(joke_id: str, credentials: Credentials):
@@ -801,6 +893,7 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
+
     """"
     Update Joke
     -----------
@@ -870,16 +963,39 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/quotes", 
+        view_func=create_a_new_quote, 
+        methods=["POST"],
+        provide_automatic_options=False
+
+    )
+
     app.add_url_rule(
         "/trivias",
         view_func=retrieve_public_trivia_collection,
         methods=["GET"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/trivias", 
+        view_func=create_a_new_trivia, 
+        methods=["POST"],
+        provide_automatic_options=False
+    )
     app.add_url_rule(
         "/bios",
         view_func=retrieve_public_bios_collection,
         methods=["GET"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/bios", 
+        view_func=create_a_new_bio, 
+        methods=["POST"],
         provide_automatic_options=False
     )
 
