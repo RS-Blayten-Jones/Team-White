@@ -528,7 +528,6 @@ class Quotes(BaseRecord):
 
         self.__used_date = parsed_date.strftime("%m/%d/%Y")
         
-    # Refactor to make category not required
     @staticmethod
     def from_json_object(content):
         """
@@ -588,7 +587,7 @@ class Bios(BaseRecord):
     The fields: 'name','paragraph','language','source_url' are all required.
     """
     def __init__(self, id=None, ref_id=None, is_edit=None,
-                    language="English", birth_year=None, death_year=None, name="Bob", 
+                    language="English", birth_year=0000, death_year=0000, name="Bob", 
                     paragraph="Bio stuff", summary="summary", source_url="https://fake-url.com" ):
         super().__init__(id,ref_id,is_edit,language)
         self.birth_year=birth_year
