@@ -31,7 +31,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from all_the_buzz.utilities.authentication import authentication
 from all_the_buzz.entities.credentials_entity import Credentials, Token
-from all_the_buzz.entities.record_entities import Joke
+from all_the_buzz.entities.record_entities import Joke, Trivia, Quote, Bio
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from all_the_buzz.utilities.logger import LoggerFactory
@@ -255,6 +255,194 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
         private_jokes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+    
+
+
+
+
+@authentication_middleware
+def create_a_new_quote(credentials: Credentials): #employee credentials create in private, manager's create in public
+    
+    """
+    Handles the creation of a new quote record (POST /quote).
+
+    The behavior and target collection are strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** The joke is created directly in the PublicQuoteDAO
+        collection. This action constitutes immediate approval.
+    2.  **Employee ('Employee'):** The joke is created in the PrivateQuoteDAO
+        collection as a proposal (`is_edit` is set to False), requiring subsequent
+        review and approval.
+
+    The request body is first parsed and validated against the Quote entity schema.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware. Used to determine the appropriate DAO
+            and access level.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200/201/202): Success response based on the underlying DAO
+            operation (typically 201 for Manager/Public creation, or a status code
+            indicating successful proposal submission for Employee/Private).
+        * (JSON body, 400): If the JSON request body fails validation via
+            `Quote.from_json_object()`.
+        * (JSON body, 401/500): If the user title is unrecognized ('InvalidEmployee'),
+            or if an exception occurs during the DAO operation (translated via
+            ResponseCode error).
+    """
+
+    if credentials.title == 'Employee':
+        private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
+        request_body = request.get_json()
+        request_body["is_edit"] = False
+        try:
+            new_joke = Quote.from_json_object(request_body)
+        except Exception as e:
+            private_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_joke, Quote):
+            try:
+                dao_response = private_quotes_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode) == True
+            except Exception as e:
+                private_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            private_jokes_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_jokes_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+        
+    elif credentials.title == 'Manager':
+        public_jokes_dao = get_dao_set_credentials(credentials, 'PublicJokeDAO')
+        request_body = request.get_json()
+        try:
+            new_joke = Joke.from_json_object(request_body)
+        except Exception as e:
+            private_jokes_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_joke, Joke):
+            try:
+                dao_response = public_jokes_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode)
+            except Exception as e:
+                private_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            public_jokes_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_quotes_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    else:
+        private_quotes_dao.clear_credentials()
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+    
+
+
+@authentication_middleware
+def create_a_new_trivia(credentials: Credentials): #employee credentials create in private, manager's create in public
+    
+    """
+    Handles the creation of a new trivia record (POST /trivias).
+
+    The behavior and target collection are strictly determined by the authenticated
+    user's title:
+
+    1.  **Manager ('Manager'):** The trivia is created directly in the PublicTriviaDAO
+        collection. This action constitutes immediate approval.
+    2.  **Employee ('Employee'):** The trivia is created in the PublicTriviaDAO
+        collection as a proposal (`is_edit` is set to False), requiring subsequent
+        review and approval.
+
+    The request body is first parsed and validated against the trivia entity schema.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware. Used to determine the appropriate DAO
+            and access level.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200/201/202): Success response based on the underlying DAO
+            operation (typically 201 for Manager/Public creation, or a status code
+            indicating successful proposal submission for Employee/Private).
+        * (JSON body, 400): If the JSON request body fails validation via
+            `trivia.from_json_object()`.
+        * (JSON body, 401/500): If the user title is unrecognized ('InvalidEmployee'),
+            or if an exception occurs during the DAO operation (translated via
+            ResponseCode error).
+    """
+
+    if credentials.title == 'Employee':
+        private_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        request_body = request.get_json()
+        request_body["is_edit"] = False
+        try:
+            new_trivia = Trivia.from_json_object(request_body)
+        except Exception as e:
+            private_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_trivia, Trivia):
+            try:
+                dao_response = private_trivias_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode) == True
+            except Exception as e:
+                private_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            private_trivias_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+        
+    elif credentials.title == 'Manager':
+        public_trivias_dao = get_dao_set_credentials(credentials, 'T')
+        request_body = request.get_json()
+        try:
+            new_trivia = Trivia.from_json_object(request_body)
+        except Exception as e:
+            private_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode(e).to_http_response()
+            return jsonify(body), status_code
+        if isinstance(new_trivia, Trivia):
+            try:
+                dao_response = public_trivias_dao.create_record(request_body)
+                assert isinstance(dao_response, ResponseCode)
+            except Exception as e:
+                private_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode(e).to_http_response()
+                return jsonify(body), status_code
+            public_trivias_dao.clear_credentials()
+            status_code, body = dao_response.to_http_response()
+            return jsonify(body), status_code
+        else:
+            private_trivias_dao.clear_credentials()
+            status_code, body = ResponseCode("InvalidRecord").to_http_response()
+            return jsonify(body), status_code
+    else:
+        private_trivias_dao.clear_credentials()
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+    
         
 @authentication_middleware #this does not work yet
 def update_joke(joke_id: str, credentials: Credentials):
