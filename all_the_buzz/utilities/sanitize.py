@@ -27,7 +27,7 @@ def sanitize_json(content):
     elif isinstance(content, list):
         return [sanitize_json(value) for value in content]
     elif isinstance(content, str):
-        text = nh3.clean(content)
+        text = nh3.clean(content, tags=set())
         text = re.sub(r"\{[^{}]*\}", "", text)
         text = re.sub(r"\$[a-zA-Z]+", "", text)
         return text
