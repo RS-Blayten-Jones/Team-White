@@ -53,7 +53,9 @@ _RESPONSE_MAP = {
     "PendingSuccess": (202, "Your edit or suggested file creation is being processed. It will be denied or approved by a moderator at a later time."),
 
     #employee title error
-    "InvalidEmployee": (400, "Employee title invalid")
+    "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used 
+    #record validation error
+    "InvalidRecord": (400, "Record is either invalid or not in valid format")
 }
 
 class ResponseCode:
