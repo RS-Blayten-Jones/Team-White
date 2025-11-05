@@ -493,6 +493,23 @@ def deny_joke(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+@authentication_middleware
+def retrieve_random_joke(credentials: Credentials, amt: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        try:
+            random_jokes=public_jokes_dao.get_random(amt)
+            json_string = dumps(random_jokes)
+            ResponseCode("GeneralSuccess", json_string)
+            public_jokes_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 #quotes
 @authentication_middleware
@@ -720,6 +737,12 @@ def create_app():
         "/joke/<string:id>/deny",
         view_func=deny_joke,
         methods=["POST"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/random_jokes/<int:amount>",
+        view_func=retrieve_random_joke,
+        methods=['GET'],
         provide_automatic_options=False
     )
     """
