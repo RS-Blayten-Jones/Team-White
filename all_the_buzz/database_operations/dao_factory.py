@@ -3,9 +3,10 @@ from all_the_buzz.database_operations.bios_dao import PublicBioDAO, PrivateBioDA
 from all_the_buzz.database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
 from all_the_buzz.database_operations.quotes_dao import PublicQuoteDAO, PrivateQuoteDAO
 from all_the_buzz.database_operations.trivia_dao import PublicTriviaDAO, PrivateTriviaDAO
-from all_the_buzz.utilities.logger import LoggerFactory
 from typing import Optional
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
+from pymongo.errors import PyMongoError
 
 '''
 dao_factory.py
@@ -50,15 +51,37 @@ class DAOFactory:
     '''
 
     _instances: dict[str, DatabaseAccessObject] = {}
+    _client: MongoClient = None
 
     
     @classmethod
     def list_active(cls) -> list[str]:
         return list(cls._instances.keys())
+    
+    @classmethod
+    def set_client(cls, uri: str, server_version: str) -> MongoClient:
+        '''
+        Sets the shared client for all DAOs using the URI and the given server version.
+        
+        Args:
+            uri (str): a string that connects the client to the hosted database
+            server_version (str): the server version that is used for the server API
 
+        Returns:
+            client (MongoClient): a MongoClient shared amongst DAOs
+        '''
+        if not uri:
+            raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+        try:
+            cls._client = MongoClient(uri, server_api=ServerApi(server_version))
+            cls._client.admin.command('ping')
+            print("MongoDB client initialized successfully.")
+            return cls._client
+        except PyMongoError as e:
+            raise e
 
     @classmethod
-    def create_dao(cls, dao_class_name: str, client: MongoClient, database_name: str) -> DatabaseAccessObject:
+    def create_dao(cls, dao_class_name: str, database_name: str) -> DatabaseAccessObject:
         '''
         Creates a DAO of the given class and passes the MongoClient. If one exists, it raises an error
         
@@ -76,7 +99,9 @@ class DAOFactory:
             raise RuntimeError(f"This DAO type has not been registered. Try a valid identifier.")
         if dao_class in cls._instances:
             raise RuntimeError(f"{dao_class} instance already created. Use get_dao() to access it.")
-        instance = dao_class(client, database_name)
+        if(cls._client is None):
+            raise RuntimeError("Client not found. Please set client using set_client().")
+        instance = dao_class(cls._client, database_name)
         cls._instances[dao_class_name] = instance
         return instance
 

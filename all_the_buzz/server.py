@@ -15,8 +15,6 @@ from pymongo.errors import PyMongoError
 import os
 import sys
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from pathlib import Path
 #from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
@@ -35,7 +33,79 @@ from all_the_buzz.entities.record_entities import Joke
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from all_the_buzz.utilities.logger import LoggerFactory
+"""
 
+    Get All Jokes
+    -------------
+    (GET) http://localhost:8080/jokes/
+
+    Included:
+        Include Bearer header with token
+    Returns:
+        Dictonary of all public jokes
+    
+    Create New Joke
+    ---------------
+    (POST) http://localhost:8080/jokes
+    
+    Include:
+        Include Bearer header with token
+        In body include json object in this format:
+        {
+            "level": int,
+            "language": str,
+            "content": {
+                "type": <either "one_liner" or "qa">,
+                "text": str (required if "one_liner"),
+                "question": str (required if "qa"),
+                "answer": str (required if "qa")
+                }
+            }
+    Returns:
+        Adds joke to public table if manager and adds to private
+        table if employee.
+     
+    Update Joke
+    -----------
+    (PUT) http://localhost:8080/jokes/<string:joke_id>/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in uri
+    Returns:
+        If present returns a json object of the specifed joke
+        in the public table
+    
+    Approve Joke
+    ------------
+    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
+    
+    Include:
+        Token in Bearer header
+        ID of joke in private table
+    Returns:
+        If manager updates or adds joke to public table
+        Deletes joke from private table 
+        
+    Deny Joke
+    ---------
+    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
+    
+    Include:
+        Token in bearer header
+        ID of joke in private table
+    Returns:
+        If manager, deletes joke from private table
+        
+    Get All Quotes
+    --------------
+    (GET) http//localhost:8080/quotes/
+
+    Include:
+        Token in bearer header
+    Returns:
+        Returns all quotes from public table
+    """
 global mongo_client
 
 global public_jokes_dao
@@ -58,18 +128,13 @@ load_dotenv(dotenv_path)
 
 ATLAS_URI = os.getenv("ATLAS_URI") 
 DATABASE_NAME = "team_white_database"
-def create_mongodb_connection():
-    if not ATLAS_URI:
-        raise ValueError("ATLAS_URI environment variable not set. Check your .env file.")
+SERVER_VER = '1'
+def create_client_connection(server_version: str = SERVER_VER) -> ResponseCode:
     try:
-        client = MongoClient(ATLAS_URI, server_api=ServerApi('1'))
-        client.admin.command('ping')
-        print("MongoDB client initialized successfully.")
-        return client
-
-    except Exception as PyMongoError:
-        print(f"ERROR: Failed to connect to MongoDB: {PyMongoError}")
-        raise ResponseCode(str(PyMongoError))
+        client = DAOFactory.set_client(ATLAS_URI, server_version)
+        return ResponseCode("GeneralSuccess", data=client)
+    except Exception as e:
+        return ResponseCode(e, f"Failed to connect to MongoDB: {str(e)}")
 
 
 # class MyFlask(Flask):
@@ -529,7 +594,7 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-def establish_all_daos(client):
+def establish_all_daos():
 
     global public_jokes_dao
     global private_jokes_dao
@@ -543,17 +608,17 @@ def establish_all_daos(client):
     global public_bios_dao
     global private_bios_dao
     try:
-        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", client, DATABASE_NAME)
-        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", client, DATABASE_NAME)
+        public_jokes_dao = DAOFactory.create_dao("PublicJokeDAO", DATABASE_NAME)
+        private_jokes_dao = DAOFactory.create_dao("PrivateJokeDAO", DATABASE_NAME)
 
-        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", client, DATABASE_NAME)
-        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", client, DATABASE_NAME)
+        public_quotes_dao = DAOFactory.create_dao("PublicQuoteDAO", DATABASE_NAME)
+        private_quotes_dao = DAOFactory.create_dao("PrivateQuoteDAO", DATABASE_NAME)
 
-        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", client, DATABASE_NAME)
-        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", client, DATABASE_NAME)
+        public_bios_dao = DAOFactory.create_dao("PublicBioDAO", DATABASE_NAME)
+        private_bios_dao = DAOFactory.create_dao("PrivateBioDAO", DATABASE_NAME)
 
-        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", client, DATABASE_NAME)
-        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", client, DATABASE_NAME)
+        public_trivias_dao = DAOFactory.create_dao("PublicTriviaDAO", DATABASE_NAME)
+        private_trivias_dao = DAOFactory.create_dao("PrivateTriviaDAO", DATABASE_NAME)
         print("created")
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
@@ -564,21 +629,12 @@ def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
     try:
-        mongo_client = create_mongodb_connection()
-        establish_all_daos(mongo_client)
+        create_client_connection()
+        establish_all_daos()
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
-    """
-    Get All Jokes
-    -------------
-    (GET) http://localhost:8080/jokes/
-
-    Included:
-        Include Bearer header with token
-    Returns:
-        Dictonary of all public jokes
-    """
+    
     app.add_url_rule(
         "/jokes", 
         view_func=retrieve_public_jokes_collection, 
