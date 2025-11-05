@@ -415,7 +415,7 @@ class Trivia(BaseRecord):
 
         return record_dict
 
-    
+
 class Quote(BaseRecord):
     """
     Validates quotes record data passed to it. This class
@@ -434,7 +434,7 @@ class Quote(BaseRecord):
         self.content=content
         self.author=author
         self.used_date=used_date
-#TODO: fix used date string mm-dd-yyyy
+
     @property
     def category(self):
         return self.__category
@@ -552,7 +552,7 @@ class Quote(BaseRecord):
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
-            quotes_object=Quote(content=content["content"], category=content["category"],
+            quotes_object=Quote(content=content["content"],
                                  author=content["author"],language=content["language"])
             if "id" in content:
                 quotes_object.id=content["id"] 
@@ -580,6 +580,7 @@ class Quote(BaseRecord):
         if self.category is not None:
             record_dict["category"]=self.category
         return record_dict
+
 
 class Bio(BaseRecord):
     """
@@ -673,7 +674,7 @@ class Bio(BaseRecord):
             ValueError: Paragraph must be a string
             """
         if not isinstance(paragraph, str):
-            raise ValueError("Bios paragraph must be a string")
+            raise ValueError("Bio paragraph must be a string")
         self.__paragraph=paragraph
     
     @property
@@ -689,7 +690,7 @@ class Bio(BaseRecord):
             ValueError: Summary must be a string
             """
         if not isinstance(summary, str):
-            raise ValueError("Bios summary must be a string")
+            raise ValueError("Bio summary must be a string")
         self.__summary=summary
 
     @property
