@@ -116,7 +116,6 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     dao.set_credentials(credentials)
     return dao
 
-
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
     """
@@ -231,14 +230,34 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
         
-#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
-    #for managers 
-
 @authentication_middleware
 def update_joke(joke_id: str, credentials: Credentials):
     """
     (PUT /jokes/<joke_id>) for updating or proposing an edit.
+    
+    The function validates the incoming JSON request body against the Joke entity 
+    schema for all users. The target action is strictly determined by the authenticated
+    user's title:
 
+    1.  **Manager ('Manager'):** Executes a direct `update_record` on the specified 
+        public joke ID within the PublicJokeDAO collection.
+    2.  **Employee ('Employee'):** Executes a `create_record` (submission) in the 
+        PrivateJokeDAO collection. The request body is tagged with the original 
+        `joke_id` (as 'original_id') and flagged as an edit (`is_edit=True`).
+
+    Args:
+        joke_id: The unique identifier (ID) of the public joke targeted for update.
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to determine write authority.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON body, 200): Successful **direct update** by a Manager.
+        * (JSON body, 202): Successful submission of a **pending edit proposal** by an Employee.
+        * (JSON body, 400): If the request body fails entity validation 
+        (`Joke.from_json_object`) or is an otherwise invalid record.
+        * (JSON body, 401/500): If the user is unauthorized or if a database 
+        exception occurs during the DAO operation (translated via ResponseCode).
     """
     request_body = request.get_json()
     if credentials.title == 'Manager':
@@ -254,44 +273,46 @@ def update_joke(joke_id: str, credentials: Credentials):
         if isinstance(updated_joke, Joke):
             try:
                 dao_response = public_jokes_dao.update_record(joke_id, request_body)
-                dao.clear_credentials()
-                # Assuming update_record returns a simple success object or ResponseCode
-                return jsonify(dao_response), 200
+                public_jokes_dao.clear_credentials()
+                status_code, body = dao_response.to_http_response()
+                return jsonify(body), status_code
             except Exception as e:
-                dao.clear_credentials()
+                public_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
         else:
+            public_jokes_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
-    #HAVENOT DONE THE REST OF THIS FUNCTION 
-    # 2. Employee: Create Edit Proposal in Private Collection
     elif credentials.title == 'Employee':
-        dao = DAOFactory.get_dao('PrivateJokeDAO')
-        dao.set_credentials(credentials)
-        
-        # Add metadata to the request body to mark it as an edit proposal
-        # and link it to the original public record ID.
-        request_body["original_id_to_edit"] = joke_id
+        private_jokes_dao = DAOFactory.get_dao('PrivateJokeDAO')
+        private_jokes_dao.set_credentials(credentials)
+        #setting the OG id of the record to edit and setting is edit to true
+        request_body["original_id"] = joke_id
         request_body["is_edit"] = True
-        
         try:
-            # Employee calls create_record to submit a new *proposal* for the edit
-            dao_response = dao.create_record(request_body)
-            dao.clear_credentials()
-            # Using 202 Accepted, as the edit is pending review
-            return jsonify(dao_response), 202 
+            new_edit = Joke.from_json_object(request_body)
         except Exception as e:
-            dao.clear_credentials()
-            status_code, body = ResponseCode(str(e)).to_http_response()
+            status_code, body = ResponseCode(e).to_http_response()
             return jsonify(body), status_code
-
-    # 3. Unauthorized
+        if isinstance(new_edit, Joke):
+            try:
+                #calling create record on the private database 
+                dao_response = private_jokes_dao.create_record(request_body)
+                private_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode("PendingSuccess").to_http_response()
+                return jsonify(body), status_code 
+            except Exception as e:
+                private_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode(str(e)).to_http_response()
+                return jsonify(body), status_code
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-
+@authentication_middleware
+def retrieve_private_jokes_collection(credentials: Credentials):
+    pass
 
 
 
@@ -449,6 +470,12 @@ def create_app():
         "/jokes", 
         view_func=create_a_new_joke, 
         methods=["POST"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/jokes/<string:joke_id>", 
+        view_func=update_joke, 
+        methods=["PUT"],
         provide_automatic_options=False
     )
     app.add_url_rule(
