@@ -347,6 +347,88 @@ def retrieve_private_jokes_collection(credentials: Credentials):
 
 
 
+#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
+    #for managers 
+
+@authentication_middleware
+def approve_joke(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        try:
+            record=private_jokes_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid joke
+        try:
+            pending_joke=Joke.from_json_object(record)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending joke is an edit
+        if pending_joke.is_edit == True:
+            original_id=pending_joke.ref_id
+            pending_joke.is_edit=None
+            pending_joke.ref_id=None
+            try:
+                public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending joke isn't and edit
+        elif pending_joke.is_edit == False:
+            pending_joke.is_edit=None
+            try:
+                public_jokes_dao.create_record(pending_joke.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_jokes_dao.clear_credentials()
+                private_jokes_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_jokes_dao.clear_credentials()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_jokes_dao.clear_credentials()
+        private_jokes_dao.clear_credentials()
+        return jsonify(body), status_code
+
+@authentication_middleware
+def deny_joke(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
+        try:
+            dao_response=private_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            private_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
 #quotes
 @authentication_middleware
 def retrieve_public_quotes_collection(credentials: Credentials):
@@ -447,7 +529,6 @@ def retrieve_public_bios_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 
-
 def establish_all_daos(client):
 
     global public_jokes_dao
@@ -505,6 +586,18 @@ def create_app():
         "/jokes/<string:joke_id>", 
         view_func=update_joke, 
         methods=["PUT"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/joke/<string:id>/approve",
+        view_func=approve_joke,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/joke/<string:id>/deny",
+        view_func=deny_joke,
+        methods=["POST"],
         provide_automatic_options=False
     )
     app.add_url_rule(
