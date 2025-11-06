@@ -1452,6 +1452,65 @@ def retrieve_random_joke(credentials: Credentials, amount: int):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+    
+
+@authentication_middleware
+def retrieve_random_quote(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            random_quotes=public_quotes_dao.get_random(amount)
+            json_string = dumps(random_quotes)
+            ResponseCode("GeneralSuccess", json_string)
+            public_quotes_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+
+@authentication_middleware
+def retrieve_random_trivia(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        try:
+            random_trivias=public_trivias_dao.get_random(amount)
+            json_string = dumps(random_trivias)
+            ResponseCode("GeneralSuccess", json_string)
+            public_trivias_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+@authentication_middleware
+def retrieve_random_bio(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
+        try:
+            random_bios=public_bios_dao.get_random(amount)
+            json_string = dumps(random_bios)
+            ResponseCode("GeneralSuccess", json_string)
+            public_bios_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
 
 @authentication_middleware
 def retrieve_short_quote(credentials: Credentials, amount: int):
@@ -1768,6 +1827,7 @@ def create_app():
         methods=['GET'],
         provide_automatic_options=False
     )
+
     app.add_url_rule(
         "/short-quotes/<int:amount>",
         view_func=retrieve_short_quote,
@@ -1828,6 +1888,13 @@ def create_app():
     )
 
     app.add_url_rule(
+        "/random-quotes/<int:amount>",
+        view_func=retrieve_random_quote,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
         "/daily_quotes",
         view_func=retrieve_daily_quote,
         methods=["GET"],
@@ -1874,6 +1941,14 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/random-bios/<int:amount>",
+        view_func=retrieve_random_bio,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+
  
     app.add_url_rule(
         "/bios",
@@ -1916,6 +1991,14 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
+    
+    app.add_url_rule(
+        "/random-bios/<int:amount>",
+        view_func=retrieve_random_bio,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+
 
 
     return app
