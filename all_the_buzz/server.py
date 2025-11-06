@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, g
 # from all_the_buzz.utilities.authentication import authentication
 # from all_the_buzz.utilities.authentication import authentication
 from typing import Callable, Any
@@ -425,7 +425,7 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
         public_quotes_dao = get_dao_set_credentials(credentials, 'PublicQuoteDAO')
         request_body = request.get_json()
         try:
-            new_joke = Quote.from_json_object(request_body)
+            new_quote = Quote.from_json_object(request_body)
         except Exception as e:
             private_quotes_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
@@ -520,7 +520,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
         try:
             new_trivia = Trivia.from_json_object(request_body)
         except Exception as e:
-            private_trivias_dao.clear_credentials()
+            public_trivias_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_trivia, Trivia):
@@ -528,18 +528,18 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
                 dao_response = public_trivias_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
-                private_trivias_dao.clear_credentials()
+                public_trivias_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_trivias_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
-            private_trivias_dao.clear_credentials()
+            public_trivias_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        private_trivias_dao.clear_credentials()
+        public_trivias_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
@@ -609,28 +609,28 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
         public_bios_dao = get_dao_set_credentials(credentials, 'PublicBioDAO')
         request_body = request.get_json()
         try:
-            new_bios = Trivia.from_json_object(request_body)
+            new_bio = Bio.from_json_object(request_body)
         except Exception as e:
-            private_bios_dao.clear_credentials()
+            public_bios_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
-        if isinstance(new_bios, Trivia):
+        if isinstance(new_bio, Bio):
             try:
-                dao_response = public_trivias_dao.create_record(request_body)
+                dao_response = public_bios_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
-                private_bios_dao.clear_credentials()
+                public_bios_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_bios_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
-            private_bios_dao.clear_credentials()
+            public_bios_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        private_bios_dao.clear_credentials()
+        public_bios_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
