@@ -29,11 +29,11 @@ handlers:
 
 loggers:
   generalLogger:
-    level: INFO
+    level: DEBUG
     handlers: [general_file, console]
     propagate: False
 
   securityLogger:
-    level: WARNING
+    level: DEBUG
     handlers: [security_file, console]
     propagate: False

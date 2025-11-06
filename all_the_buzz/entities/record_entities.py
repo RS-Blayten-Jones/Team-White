@@ -4,6 +4,7 @@ from datetime import date
 from datetime import datetime
 import validators
 from bson.objectid import ObjectId
+from all_the_buzz.utilities.sanitize import sanitize_json
 """
 record_entities.py
 
@@ -274,6 +275,7 @@ class Joke(BaseRecord):
             ValueError: Missing required fields
             ValueError: Content not in dictionary format
             """
+        content=sanitize_json(content)
         requried_fields=['level', 'content', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -380,6 +382,7 @@ class Trivia(BaseRecord):
             ValueError: Not proper format
             ValueError: Missing required fields
             """
+        content=sanitize_json(content)
         requried_fields=['question', 'answer','language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -543,6 +546,7 @@ class Quote(BaseRecord):
             ValueError: Not proper format
             ValueError: Missing required fields
             """
+        content=sanitize_json(content)
         requried_fields=['content', 'author', 'language']
         error_field='mesg'
         if not isinstance(content, dict):
@@ -725,6 +729,7 @@ class Bio(BaseRecord):
             ValueError: Not proper format
             ValueError: Missing required fields
             """
+        content=sanitize_json(content)
         requried_fields=['name','paragraph','language','source_url']
         error_field='mesg'
         if not isinstance(content, dict):
