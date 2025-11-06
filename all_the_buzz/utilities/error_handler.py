@@ -62,7 +62,9 @@ _RESPONSE_MAP = {
     "AuthServerError": (502, "The request could not be completed due to a temporary issue with the authentication service. Please retry."),
     "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used 
     #record validation error
-    "InvalidRecord": (400, "Record is either invalid or not in valid format")
+    "InvalidRecord": (400, "Record is either invalid or not in valid format"),
+    "InvalidFilter": (400, "Filters are either invalid fields or not in valid format"),
+    "Missing required fields": (400, "Missing required fields")
 }
 
 class ResponseCode:
