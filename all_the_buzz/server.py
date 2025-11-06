@@ -198,29 +198,68 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     dao.set_credentials(credentials)
     return dao
 
+def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
+    """Converts string values in the filter dictionary to their required types (e.g., int)."""
+    
+    int_fields = ['level', 'birth_year', 'death_year']
+    bool_fields = ['is_edit']
+    type_safe_filter = {}
+    for key, value in filter_dict.items():
+        if key in int_fields:
+            try:
+                type_safe_filter[key] = int(value)
+            except ValueError:
+                print(f"WARNING: Filter '{key}' received non-integer value '{value}'. Skipping.")
+                continue
+        elif key in bool_fields:
+            lower_value = value.lower()
+            if lower_value in ('true'):
+                type_safe_filter[key] = True
+            elif lower_value in ('false','', ' '):
+                type_safe_filter[key] = False
+            else:
+                print(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
+                continue
+        else:
+            type_safe_filter[key] = value
+            
+    return type_safe_filter
+
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
-    """
-    Retrieves the public joke collection and returns it as a http response 
-    (GET /jokes)
+    """Retrieves the collection of public (approved) jokes.
 
-    This endpoint is accessible to any authenticated user (employee or manager)
-    and returns all records stored in the PublicJokeDAO collection. It handles
-    serialization of MongoDB records (including BSON types like ObjectId) to a 
-    valid JSON string.
+    This endpoint serves two functions via the GET /jokes route:
+    1. **Retrieve All:** Returns ALL public jokes if no query parameters are provided (GET /jokes).
+    2. **Filter by Fields:** Returns a filtered list of public jokes if query 
+       parameters are provided (e.g., GET /jokes?difficulty=2&category=tech).
 
     Args:
         credentials: The authenticated user's credentials object, injected by
-        the authentication_middleware.
+            the authentication_middleware. This is used to confirm the user is 
+            authorized for read access.
 
     Returns:
         A tuple containing:
-        * The JSON string representation of all public jokes and a 200 HTTP status code, if the user is authenticated.
-        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+        * The JSON string representation of the jokes (filtered or all) and a 200 HTTP status code,
+          if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code,
+          if the user is unauthorized (handled by the credential check).
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        all_jokes = public_jokes_dao.get_all_records()
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_jokes = public_jokes_dao.get_by_fields(type_safe_filter)
+            else:
+                all_jokes = []
+                public_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_jokes = public_jokes_dao.get_all_records()
         public_jokes_dao.clear_credentials()
         json_string = dumps(all_jokes)
         ResponseCode("GeneralSuccess", json_string)
@@ -230,7 +269,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 @authentication_middleware
-def create_a_new_joke(credentials: Credentials): #employee credentials create in private, manager's create in public
+def create_a_new_joke(credentials: Credentials):
     
     """
     Handles the creation of a new joke record (POST /jokes).
@@ -271,7 +310,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
             try:
@@ -279,7 +318,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
                 private_jokes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             private_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -296,7 +335,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
             try:
@@ -304,7 +343,7 @@ def create_a_new_joke(credentials: Credentials): #employee credentials create in
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
                 private_jokes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -598,7 +637,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
 
 
         
-@authentication_middleware #this does not work yet
+@authentication_middleware
 def update_joke(joke_id: str, credentials: Credentials):
     """
     (PUT /jokes/<joke_id>) for updating or proposing an edit.
@@ -635,7 +674,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             updated_joke = Joke.from_json_object(request_body)
         except Exception as e:
             #entity validation fails
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         #actual database update
         if isinstance(updated_joke, Joke):
@@ -665,15 +704,13 @@ def update_joke(joke_id: str, credentials: Credentials):
             new_edit = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Joke):
             try:
                 #calling create record on the private database 
-                print(new_edit)
                 request_body["original_id"] = ObjectId(joke_id)
                 dao_response = private_jokes_dao.create_record(request_body)
-                print(dao_response.get_data())
                 private_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode("PendingSuccess").to_http_response()
                 return jsonify(body), status_code 
@@ -1081,16 +1118,6 @@ def retrieve_private_trivias_collection(credentials: Credentials):
     
 
 
-#get a list of records by fields 
-@authentication_middleware
-
-
-
-
-
-#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
-    #for managers 
-
 @authentication_middleware
 def approve_joke(credentials: Credentials, id: str):
     if credentials.title == "Manager":
@@ -1100,16 +1127,16 @@ def approve_joke(credentials: Credentials, id: str):
         try:
             record=private_jokes_dao.get_by_key(id)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         
-        # Check if valid joke
+        # check if valid joke
         try:
             pending_joke=Joke.from_json_object(record)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1121,7 +1148,7 @@ def approve_joke(credentials: Credentials, id: str):
             try:
                 public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_jokes_dao.clear_credentials()
                 private_jokes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1131,7 +1158,7 @@ def approve_joke(credentials: Credentials, id: str):
             try:
                 public_jokes_dao.create_record(pending_joke.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_jokes_dao.clear_credentials()
                 private_jokes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1142,7 +1169,7 @@ def approve_joke(credentials: Credentials, id: str):
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1162,7 +1189,7 @@ def deny_joke(credentials: Credentials, id: str):
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
     else:
@@ -1467,7 +1494,20 @@ def retrieve_public_quotes_collection(credentials: Credentials):
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
-        all_quotes = public_quotes_dao.get_all_records()
+
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_quotes = public_quotes_dao.get_by_fields(type_safe_filter)
+            else:
+                all_quotes = []
+                public_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_quotes = public_quotes_dao.get_all_records()
+
         public_quotes_dao.clear_credentials()
         json_string = dumps(all_quotes)
         ResponseCode("GeneralSuccess", json_string)
@@ -1517,9 +1557,22 @@ def retrieve_public_trivia_collection(credentials: Credentials):
         * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
-        public_trivia_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
-        all_trivia = public_trivia_dao.get_all_records()
-        public_trivia_dao.clear_credentials()
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_trivia = public_trivias_dao.get_by_fields(type_safe_filter)
+            else:
+                all_trivia = []
+                public_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_trivia = public_trivias_dao.get_all_records()
+
+        public_trivias_dao.clear_credentials()
         json_string = dumps(all_trivia)
         ResponseCode("GeneralSuccess", json_string)
         return json_string, 200
@@ -1551,7 +1604,20 @@ def retrieve_public_bios_collection(credentials: Credentials):
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
-        all_bios = public_bios_dao.get_all_records()
+        
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_bios = public_bios_dao.get_by_fields(type_safe_filter)
+            else:
+                all_bios = []
+                public_bios_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_bios = public_bios_dao.get_all_records()
+        
         public_bios_dao.clear_credentials()
         json_string = dumps(all_bios)
         ResponseCode("GeneralSuccess", json_string)

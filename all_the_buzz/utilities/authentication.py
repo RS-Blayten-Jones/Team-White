@@ -91,11 +91,11 @@ def authentication(token) -> Credentials:
     logger.debug("Begin sanatize authentication server response")
     safe_content=sanitize_json(json_content)
     logger.debug("Successfully sanitized authentication server.")
-    
+    #print(safe_content)
     # validate credentials follow business rules
     try:
         logger.debug("Begin validating format of recieved credentials.")
-        #print(safe_content)
+        #print("from inside try statement: ", safe_content)
         creds=Credentials.from_json_object(safe_content)
         #print(f"credentials object line 97 of authentication.py {creds}")
         logger.debug("Credentials successfully validated.")
