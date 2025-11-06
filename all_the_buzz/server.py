@@ -248,7 +248,6 @@ def retrieve_public_jokes_collection(credentials: Credentials):
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        #filtering stuff
         filter_dict = request.args.to_dict()
         if filter_dict:
             type_safe_filter = convert_filter_types(filter_dict)
@@ -261,7 +260,6 @@ def retrieve_public_jokes_collection(credentials: Credentials):
                 return jsonify(body), status_code 
         else:
             all_jokes = public_jokes_dao.get_all_records()
-        #end of filtering stuff
         public_jokes_dao.clear_credentials()
         json_string = dumps(all_jokes)
         ResponseCode("GeneralSuccess", json_string)
@@ -271,7 +269,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
         return jsonify(body), status_code
 
 @authentication_middleware
-def create_a_new_joke(credentials: Credentials): #employee credentials create in private, manager's create in public
+def create_a_new_joke(credentials: Credentials):
     
     """
     Handles the creation of a new joke record (POST /jokes).
@@ -431,10 +429,8 @@ def update_joke(joke_id: str, credentials: Credentials):
         if isinstance(new_edit, Joke):
             try:
                 #calling create record on the private database 
-                print(new_edit)
                 request_body["original_id"] = ObjectId(joke_id)
                 dao_response = private_jokes_dao.create_record(request_body)
-                print(dao_response.get_data())
                 private_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode("PendingSuccess").to_http_response()
                 return jsonify(body), status_code 
@@ -478,16 +474,6 @@ def retrieve_private_jokes_collection(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-#get a list of records by fields 
-@authentication_middleware
-
-
-
-
-
-#do PUT /jokes for employees: calls create on private joke table (creates a new proposal either an edit )
-    #for managers 
-
 @authentication_middleware
 def approve_joke(credentials: Credentials, id: str):
     if credentials.title == "Manager":
@@ -502,7 +488,7 @@ def approve_joke(credentials: Credentials, id: str):
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         
-        # Check if valid joke
+        # check if valid joke
         try:
             pending_joke=Joke.from_json_object(record)
         except Exception as e:
