@@ -310,7 +310,7 @@ def create_a_new_joke(credentials: Credentials):
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
             try:
@@ -318,7 +318,7 @@ def create_a_new_joke(credentials: Credentials):
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
                 private_jokes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             private_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -335,7 +335,7 @@ def create_a_new_joke(credentials: Credentials):
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
             try:
@@ -343,7 +343,7 @@ def create_a_new_joke(credentials: Credentials):
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
                 private_jokes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -357,7 +357,7 @@ def create_a_new_joke(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
         
-@authentication_middleware #this does not work yet
+@authentication_middleware
 def update_joke(joke_id: str, credentials: Credentials):
     """
     (PUT /jokes/<joke_id>) for updating or proposing an edit.
@@ -394,7 +394,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             updated_joke = Joke.from_json_object(request_body)
         except Exception as e:
             #entity validation fails
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         #actual database update
         if isinstance(updated_joke, Joke):
@@ -424,7 +424,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             new_edit = Joke.from_json_object(request_body)
         except Exception as e:
             private_jokes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Joke):
             try:
@@ -483,7 +483,7 @@ def approve_joke(credentials: Credentials, id: str):
         try:
             record=private_jokes_dao.get_by_key(id)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -492,7 +492,7 @@ def approve_joke(credentials: Credentials, id: str):
         try:
             pending_joke=Joke.from_json_object(record)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -504,7 +504,7 @@ def approve_joke(credentials: Credentials, id: str):
             try:
                 public_jokes_dao.update_record(original_id,pending_joke.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_jokes_dao.clear_credentials()
                 private_jokes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -514,7 +514,7 @@ def approve_joke(credentials: Credentials, id: str):
             try:
                 public_jokes_dao.create_record(pending_joke.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_jokes_dao.clear_credentials()
                 private_jokes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -525,7 +525,7 @@ def approve_joke(credentials: Credentials, id: str):
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_jokes_dao.clear_credentials()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -545,7 +545,7 @@ def deny_joke(credentials: Credentials, id: str):
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             private_jokes_dao.clear_credentials()
             return jsonify(body), status_code
     else:

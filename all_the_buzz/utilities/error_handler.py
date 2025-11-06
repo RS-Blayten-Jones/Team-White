@@ -63,7 +63,8 @@ _RESPONSE_MAP = {
     "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used 
     #record validation error
     "InvalidRecord": (400, "Record is either invalid or not in valid format"),
-    "InvalidFilter": (400, "Filters are either invalid fields or not in valid format")
+    "InvalidFilter": (400, "Filters are either invalid fields or not in valid format"),
+    "Missing required fields": (400, "Missing required fields")
 }
 
 class ResponseCode:
