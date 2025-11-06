@@ -16,26 +16,26 @@ Classes:
 class Credentials:
     '''
     Validates credential data passed to it.
-    This class includes the id, first name, last name, department,
-    title, and location information for the user.
+    This class includes the id, first name, last name, dept,
+    title, and loc information for the user.
     
     To initialize this class, the from_json_object method can be used.
     To do this just pass in a dict in form:
-    {'id': <id>, 'fname' : <fname>, 'lname': <lname>,
-    'department': <department>, 'title':<title>,
-    'location':<location>}
+    {'id': <id>, 'fName' : <fName>, 'lName': <lName>,
+    'dept': <dept>, 'title':<title>,
+    'loc':<loc>}
 
     All fields are required.
     '''
-    def __init__(self, id=0, fname="Mike", lname="Tiger", 
-                 department="Sales", title="Manager", 
-                 location="United States" ):
+    def __init__(self, id=0, fName="Mike", lName="Tiger", 
+                 dept="Sales", title="Manager", 
+                 loc="United States" ):
         self.id=id
-        self.fname=fname
-        self.lname=lname
-        self.department=department
+        self.fName=fName
+        self.lName=lName
+        self.dept=dept
         self.title=title
-        self.location=location
+        self.loc=loc
 
     @property
     def id(self):
@@ -64,11 +64,11 @@ class Credentials:
             self.__id=id
 
     @property
-    def fname(self):
-        return self.__fname
+    def fName(self):
+        return self.__fName
     
-    @fname.setter
-    def fname(self, fname):
+    @fName.setter
+    def fName(self, fName):
         """
         Validates First Name follows business logic.
         
@@ -78,27 +78,27 @@ class Credentials:
             ValueError: First name must not be all spaces
             ValueError: First name has too many characters
             """
-        if fname is None:
+        if fName is None:
             raise ValueError("First name must be provided")
-        elif not isinstance(fname, str):
+        elif not isinstance(fName, str):
             raise ValueError("First name must be a string")
-        elif len(fname) == 0:
+        elif len(fName) == 0:
             raise ValueError("First name too short")
-        elif len(fname.strip()) == 0:
+        elif len(fName.strip()) == 0:
             raise ValueError("First name can't be all spaces")
-        elif len(fname.strip()) > 50:
+        elif len(fName.strip()) > 50:
             raise ValueError('First name is too long ')
         # Add code to handle apostrophes
         # Add code to test for SQL injection
         else:
-            self.__fname=fname.strip()
+            self.__fName=fName.strip()
     
     @property
-    def lname(self):
-        return self.__lname
+    def lName(self):
+        return self.__lName
     
-    @lname.setter
-    def lname(self,lname):
+    @lName.setter
+    def lName(self,lName):
         """
         Method for validating Last name follows business logic.
         
@@ -108,50 +108,50 @@ class Credentials:
             ValueError: Last name must not be all spaces
             ValueError: Last name has too many characters
             """
-        if lname is None:
+        if lName is None:
             raise ValueError("Last name must be provided")
-        elif not isinstance(lname, str):
+        elif not isinstance(lName, str):
             raise ValueError("Last name must be a string")
-        elif len(lname) == 0:
+        elif len(lName) == 0:
             raise ValueError("Last name too short")
-        elif len(lname.strip()) == 0:
+        elif len(lName.strip()) == 0:
             raise ValueError("Last name can't be all spaces")
-        elif len(lname.strip()) > 50:
+        elif len(lName.strip()) > 50:
             raise ValueError("Last name too long")
         # Add code to handle apostrophes
         # Add code to test for SQL injection
         else:
-            self.__lname=lname.strip()
+            self.__lName=lName.strip()
 
     @property
-    def department(self):
-        return self.__department
+    def dept(self):
+        return self.__dept
     
-    @department.setter
-    def department(self, department):
+    @dept.setter
+    def dept(self, dept):
         """
-        Method for ensuring department follows business rules.
+        Method for ensuring dept follows business rules.
         
         Exceptions:
-            ValueError: Department must be present
-            ValueError: Department must be a string
-            ValueError: Department is too long
+            ValueError: dept must be present
+            ValueError: dept must be a string
+            ValueError: dept is too long
             ValueError: Deparment must only contain letters
             """
-        if department == None:
-            raise ValueError("Department cannot be None")
-        elif not isinstance(department, str):
-            raise ValueError("Department must be a string")
-        elif len(department) == 0:
-            raise ValueError("Department length cannot be 0")
-        elif len(department.strip()) == 0:
-            raise ValueError("Department can't only be spaces")
-        elif len(department) > 35:
-            raise ValueError("Department cannot be greater than 35 characters")
-        elif not all(part.strip().isalpha() for part in department.strip().split()):
-            raise ValueError("Department must be letters")
+        if dept == None:
+            raise ValueError("dept cannot be None")
+        elif not isinstance(dept, str):
+            raise ValueError("dept must be a string")
+        elif len(dept) == 0:
+            raise ValueError("dept length cannot be 0")
+        elif len(dept.strip()) == 0:
+            raise ValueError("dept can't only be spaces")
+        elif len(dept) > 35:
+            raise ValueError("dept cannot be greater than 35 characters")
+        elif not all(part.strip().isalpha() for part in dept.strip().split()):
+            raise ValueError("dept must be letters")
         else:
-            self.__department=department.strip()
+            self.__dept=dept.strip()
 
     @property
     def title(self):
@@ -185,35 +185,35 @@ class Credentials:
             self.__title=title.strip().capitalize()
 
     @property
-    def location(self):
-        return self.__location
+    def loc(self):
+        return self.__loc
     
-    @location.setter
-    def location(self, location):
+    @loc.setter
+    def loc(self, loc):
         """
-        Method for validating location follows business logic.
+        Method for validating loc follows business logic.
         
         Exceptions:
-            ValueError: Location is required
-            ValueError: Location must be a string
-            ValueError: Location can not be empty
-            ValueError: Location has too many characters
-            ValueError: Location can only contain letters
+            ValueError: loc is required
+            ValueError: loc must be a string
+            ValueError: loc can not be empty
+            ValueError: loc has too many characters
+            ValueError: loc can only contain letters
             """
-        if location is None:
-            raise ValueError("Location cannot be None")
-        elif not isinstance(location, str):
-            raise ValueError("Location must be a string")
-        elif len(location) == 0:
-            raise ValueError("Location too short")
-        elif len(location.strip()) == 0:
-            raise ValueError("Location can not be spaces")
-        elif len(location.strip()) > 75:
-            raise ValueError("Location cannot be greater than 75 characters")
-        elif not all(part.strip().isalpha() for part in location.strip().split()):
-            raise ValueError("Location can only be letters")
+        if loc is None:
+            raise ValueError("loc cannot be None")
+        elif not isinstance(loc, str):
+            raise ValueError("loc must be a string")
+        elif len(loc) == 0:
+            raise ValueError("loc too short")
+        elif len(loc.strip()) == 0:
+            raise ValueError("loc can not be spaces")
+        elif len(loc.strip()) > 75:
+            raise ValueError("loc cannot be greater than 75 characters")
+        elif not all(part.strip().isalpha() for part in loc.strip().split()):
+            raise ValueError("loc can only be letters")
         else:
-            self.__location=location.strip()
+            self.__loc=loc.strip()
 
     @staticmethod
     def from_json_object(content):

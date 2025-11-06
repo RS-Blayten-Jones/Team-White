@@ -16,7 +16,7 @@ from requests.exceptions import ConnectionError
 authentication.py
 
 This module provides functions for interacting with the authentication server. It is primarily
-for obtaining creditionals based on a passed token.
+for obtaining credentials based on a passed token.
 
 Functions:
     - authentication: recieved a token and returns a credential object or error response.
@@ -101,7 +101,7 @@ def authentication(token) -> Credentials:
         logger.debug("Credentials successfully validated.")
         logger.debug("Successfully loaded credentials.")
         # return credentials object
-        secure_logger.info(f"{creds.fname} {creds.lname} credentials successfully validated")
+        secure_logger.info(f"{creds.fName} {creds.lName} credentials successfully validated")
         return creds
     except ValueError as e:
         #print(e)
