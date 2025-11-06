@@ -6,6 +6,7 @@ To unit test:
 (.venv)...\project-folder> python -m pytest
 
 To test coverage:
+python -m pytest --cov=entities --cov-report=term
 (.venv)...\project-folder> pip install pytest-cov
 (.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term
 (.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term-missing

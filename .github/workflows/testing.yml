@@ -33,3 +33,25 @@ jobs:
         run: |
           coverage run -m pytest -v all_the_buzz/tests/
           coverage report -m
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.10'
+
+      - name: Install pylint
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+          pip install -r all_the_buzz/requirements.txt
+
+      - name: Run pylint
+        run: |
+          pylint all_the_buzz --exit-zero
