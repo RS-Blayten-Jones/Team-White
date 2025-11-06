@@ -5,6 +5,10 @@ from all_the_buzz.database_operations.abstract_record import DatabaseAccessObjec
 from all_the_buzz.entities.credentials_entity import Credentials
 from all_the_buzz.utilities.error_handler import ResponseCode
 
+"""
+This file creates and runs mock tests on the DAO class in abstract_record.py
+"""
+
 # Concrete subclass for testing
 class DAOStub(DatabaseAccessObject):
     __test__ = False  # Prevent pytest from collecting this as a test class
