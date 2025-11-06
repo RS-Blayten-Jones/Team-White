@@ -978,6 +978,109 @@ def retrieve_private_jokes_collection(credentials: Credentials):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
+
+@authentication_middleware
+def retrieve_private_quotes_collection(credentials: Credentials):
+    """
+    Retrieves the collection of private (pending) quote proposals (GET /pending_quotes).
+
+    This endpoint provides access to the private database collection, which stores
+    all proposed quotes and edits submitted by Employees that are pending review
+    by a Manager. Access is strictly controlled.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the PrivatequoteDAO collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+
+    if credentials.title == 'Manager':
+        private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
+        all_private_quotes = private_quotes_dao.get_all_records()
+        private_quotes_dao.clear_credentials()
+        json_string = dumps(all_private_quotes)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+
+@authentication_middleware
+def retrieve_private_bios_collection(credentials: Credentials):
+    """
+    Retrieves the collection of private (pending) bio proposals (GET /pending_bios).
+
+    This endpoint provides access to the private database collection, which stores
+    all proposed bios and edits submitted by Employees that are pending review
+    by a Manager. Access is strictly controlled.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the PrivatebioDAO collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+
+    if credentials.title == 'Manager':
+        private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
+        all_private_bios = private_bios_dao.get_all_records()
+        private_bios_dao.clear_credentials()
+        json_string = dumps(all_private_bios)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+
+@authentication_middleware
+def retrieve_private_trivias_collection(credentials: Credentials):
+    """
+    Retrieves the collection of private (pending) trivia proposals (GET /pending_trivias).
+
+    This endpoint provides access to the private database collection, which stores
+    all proposed trivias and edits submitted by Employees that are pending review
+    by a Manager. Access is strictly controlled.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the PrivateTriviaDAO collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+
+    if credentials.title == 'Manager':
+        private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
+        all_private_trivias = private_trivias_dao.get_all_records()
+        private_trivias_dao.clear_credentials()
+        json_string = dumps(all_private_trivias)
+        ResponseCode("GeneralSuccess", json_string)
+        return json_string, 200
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+
 #get a list of records by fields 
 @authentication_middleware
 
@@ -1065,6 +1168,245 @@ def deny_joke(credentials: Credentials, id: str):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+    
+
+@authentication_middleware
+def approve_quote(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
+        public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            record=private_quotes_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_quotes_dao.clear_credentials()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid quote
+        try:
+            pending_quote=Quote.from_json_object(record)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_quotes_dao.clear_credentials()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending quote is an edit
+        if pending_quote.is_edit == True:
+            original_id=pending_quote.ref_id
+            pending_quote.is_edit=None
+            pending_quote.ref_id=None
+            try:
+                public_quotes_dao.update_record(original_id,pending_quote.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_quotes_dao.clear_credentials()
+                private_quotes_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending quote isn't and edit
+        elif pending_quote.is_edit == False:
+            pending_quote.is_edit=None
+            try:
+                public_quotes_dao.create_record(pending_quote.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_quotes_dao.clear_credentials()
+                private_quotes_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_quotes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_quotes_dao.clear_credentials()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_quotes_dao.clear_credentials()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_quotes_dao.clear_credentials()
+        private_quotes_dao.clear_credentials()
+        return jsonify(body), status_code
+
+@authentication_middleware
+def deny_quote(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
+        try:
+            dao_response=private_quotes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            private_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
+
+
+@authentication_middleware
+def approve_trivia(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        try:
+            record=private_trivias_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_trivias_dao.clear_credentials()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid trivia
+        try:
+            pending_trivia=Trivia.from_json_object(record)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_trivias_dao.clear_credentials()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending trivia is an edit
+        if pending_trivia.is_edit == True:
+            original_id=pending_trivia.ref_id
+            pending_trivia.is_edit=None
+            pending_trivia.ref_id=None
+            try:
+                public_trivias_dao.update_record(original_id,pending_trivia.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_trivias_dao.clear_credentials()
+                private_trivias_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending trivia isn't and edit
+        elif pending_trivia.is_edit == False:
+            pending_trivia.is_edit=None
+            try:
+                public_trivias_dao.create_record(pending_trivia.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_trivias_dao.clear_credentials()
+                private_trivias_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_trivias_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_trivias_dao.clear_credentials()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_trivias_dao.clear_credentials()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_trivias_dao.clear_credentials()
+        private_trivias_dao.clear_credentials()
+        return jsonify(body), status_code
+
+@authentication_middleware
+def deny_trivia(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
+        try:
+            dao_response=private_trivias_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            private_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+@authentication_middleware
+def approve_bio(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        # set credentials and database
+        private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
+        public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
+        try:
+            record=private_bios_dao.get_by_key(id)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_bios_dao.clear_credentials()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+        
+        # Check if valid bio
+        try:
+            pending_bio=Bio.from_json_object(record)
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_bios_dao.clear_credentials()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+        # if pending bio is an edit
+        if pending_bio.is_edit == True:
+            original_id=pending_bio.ref_id
+            pending_bio.is_edit=None
+            pending_bio.ref_id=None
+            try:
+                public_bios_dao.update_record(original_id,pending_bio.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_bios_dao.clear_credentials()
+                private_bios_dao.clear_credentials()
+                return jsonify(body), status_code
+        # if pending bio isn't and edit
+        elif pending_bio.is_edit == False:
+            pending_bio.is_edit=None
+            try:
+                public_bios_dao.create_record(pending_bio.to_json_object())
+            except Exception as e:
+                status_code, body = ResponseCode(e).to_http_response()
+                public_bios_dao.clear_credentials()
+                private_bios_dao.clear_credentials()
+                return jsonify(body), status_code
+        try:
+            dao_response=private_bios_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_bios_dao.clear_credentials()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            public_bios_dao.clear_credentials()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        public_bios_dao.clear_credentials()
+        private_bios_dao.clear_credentials()
+        return jsonify(body), status_code
+
+@authentication_middleware
+def deny_bio(credentials: Credentials, id: str):
+    if credentials.title == "Manager":
+        private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
+        try:
+            dao_response=private_bios_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(e).to_http_response()
+            private_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
 
 @authentication_middleware
 def retrieve_random_joke(credentials: Credentials, amount: int):
@@ -1398,6 +1740,26 @@ def create_app():
         provide_automatic_options=False
     )
 
+    app.add_url_rule(
+        "/quotes/<string:id>/approve",
+        view_func=approve_quote,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/quotes/<string:id>/deny",
+        view_func=deny_quote,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/pending-quotes",
+        view_func=retrieve_private_quotes_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
 
     app.add_url_rule(
         "/daily_quotes",
@@ -1427,6 +1789,27 @@ def create_app():
     )
 
     app.add_url_rule(
+        "/trivias/<string:id>/approve",
+        view_func=approve_trivia,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/trivias/<string:id>/deny",
+        view_func=deny_trivia,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/pending-trivias",
+        view_func=retrieve_private_trivias_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
+ 
+    app.add_url_rule(
         "/bios",
         view_func=retrieve_public_bios_collection,
         methods=["GET"],
@@ -1447,7 +1830,26 @@ def create_app():
         provide_automatic_options=False
     )
 
-    
+    app.add_url_rule(
+        "/bios/<string:id>/approve",
+        view_func=approve_bio,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/bios/<string:id>/deny",
+        view_func=deny_bio,
+        methods=["POST"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/pending-bios",
+        view_func=retrieve_private_bios_collection,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
 
 
     return app
