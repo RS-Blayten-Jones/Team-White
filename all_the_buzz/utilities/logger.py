@@ -53,6 +53,7 @@ class LoggerFactory:
     _security_logger = None
     _use_smart_logger = True #Default; change in config!
 
+    @staticmethod
     def _is_safe_log_path(path: str) -> bool:
         '''
         Checks a given tag against the ALLOWED_LOG_DIR path

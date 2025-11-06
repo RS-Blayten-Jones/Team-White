@@ -70,7 +70,10 @@ class PublicQuoteDAO(DatabaseAccessObject):
             return ResponseCode("ResourceNotFound", "No unused quotes found in the database and reset failed.", data=[])
         #Obtain a record using a hashed value so that it is unified across users and not random per session
         record = unused_list[hashed % num_unused_quotes]
-        self.update_record(record["_id"], {"used_date": today_string})
+        self._collection.update_one(
+            {"_id": record["_id"]},
+            {"$set": {"used_date": today_string}}
+        )
         return record
     
 class PrivateQuoteDAO(DatabaseAccessObject):
