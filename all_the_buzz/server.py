@@ -1609,6 +1609,24 @@ def retrieve_random_joke(credentials: Credentials, amount: int):
 
 @authentication_middleware
 def retrieve_random_quote(credentials: Credentials, amount: int):
+    """
+    Request a random quote (Get / random-quotes/<amt>).
+
+    This endpoint allows the an employee to request a set of random records from
+    the public collection. 
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        amount: The amount of random records
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
         try:
@@ -1629,6 +1647,24 @@ def retrieve_random_quote(credentials: Credentials, amount: int):
 
 @authentication_middleware
 def retrieve_random_trivia(credentials: Credentials, amount: int):
+    """
+    Request a random trivia (Get / random-trivia/<amt>).
+
+    This endpoint allows the an employee to request a set of random records from
+    the public collection. 
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        amount: The amount of random records
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
         try:
@@ -1648,6 +1684,24 @@ def retrieve_random_trivia(credentials: Credentials, amount: int):
 
 @authentication_middleware
 def retrieve_random_bio(credentials: Credentials, amount: int):
+    """
+    Request a random bio (Get / random-bios/<amt>).
+
+    This endpoint allows the an employee to request a set of random records from
+    the public collection. 
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        amount: The amount of random records
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
         try:
