@@ -22,20 +22,20 @@ class PublicQuoteDAO(DatabaseAccessObject):
 
     #used_date should default to none when added!
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
-        entry["used_date"] = "None"
+        entry["used_date"] = ""
         return entry
     
     @mongo_safe
     def _reset_quotes(self) -> ResponseCode:
         '''
-        Sets all quotes "used_date" to "None"
+        Sets all quotes "used_date" to ""
 
         Returns:
             ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the 
             UpdateResult object
         '''
         self.__logger.debug(f"Reseting all quotes...")
-        result = self._collection.update_many({}, {"$set": {"used_date": "None"}})
+        result = self._collection.update_many({}, {"$set": {"used_date": ""}})
         return result
     
     @DatabaseAccessObject.rbac_action("read")
@@ -91,5 +91,5 @@ class PrivateQuoteDAO(DatabaseAccessObject):
 
     #used_date should default to none when added!    
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
-        entry["used_date"] = "None"
+        entry["used_date"] = ""
         return entry
