@@ -6,6 +6,10 @@ Get All Jokes
 **Headers:**
     - Authorization: Bearer <token>
 
+**Parameters:**
+    - level = 1,2 or 3
+    - language
+
 **Returns:**
     Dictonary of all public jokes
 
@@ -115,6 +119,12 @@ Get All Quotes
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - content 
+    - category 
+    - language
+    - author
 
 **Returns:**
     - Dictonary of all public quotes
@@ -240,6 +250,13 @@ Get All Bios
 **Headers:**
     - Authorization: Bearer <token>
 
+**Parameters:**
+    - birth_year
+    - death_year
+    - name
+    - summary
+    - language
+
 **Returns:**
     Dictonary of all public bios
 
@@ -360,6 +377,11 @@ Create New Trivia
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - question
+    - answer
+    - language
 
 **Request Body (application/json):**
     .. code-block:: javascript
