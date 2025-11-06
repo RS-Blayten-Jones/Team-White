@@ -48,12 +48,30 @@
 <li class="toctree-l3"><a class="reference internal" href="#all_the_buzz.server.MyFlask.add_url_rule"><code class="docutils literal notranslate"><span class="pre">MyFlask.add_url_rule()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.approve_joke"><code class="docutils literal notranslate"><span class="pre">approve_joke()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.authentication_middleware"><code class="docutils literal notranslate"><span class="pre">authentication_middleware()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_a_new_bio"><code class="docutils literal notranslate"><span class="pre">create_a_new_bio()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_a_new_joke"><code class="docutils literal notranslate"><span class="pre">create_a_new_joke()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_mongodb_connection"><code class="docutils literal notranslate"><span class="pre">create_mongodb_connection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_a_new_quote"><code class="docutils literal notranslate"><span class="pre">create_a_new_quote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_a_new_trivia"><code class="docutils literal notranslate"><span class="pre">create_a_new_trivia()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.create_client_connection"><code class="docutils literal notranslate"><span class="pre">create_client_connection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.deny_joke"><code class="docutils literal notranslate"><span class="pre">deny_joke()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.establish_all_daos"><code class="docutils literal notranslate"><span class="pre">establish_all_daos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.get_dao_set_credentials"><code class="docutils literal notranslate"><span class="pre">get_dao_set_credentials()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_daily_quote"><code class="docutils literal notranslate"><span class="pre">retrieve_daily_quote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_private_jokes_collection"><code class="docutils literal notranslate"><span class="pre">retrieve_private_jokes_collection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_public_bios_collection"><code class="docutils literal notranslate"><span class="pre">retrieve_public_bios_collection()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_public_jokes_collection"><code class="docutils literal notranslate"><span class="pre">retrieve_public_jokes_collection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_public_quotes_collection"><code class="docutils literal notranslate"><span class="pre">retrieve_public_quotes_collection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_public_trivia_collection"><code class="docutils literal notranslate"><span class="pre">retrieve_public_trivia_collection()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_random_joke"><code class="docutils literal notranslate"><span class="pre">retrieve_random_joke()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.retrieve_short_quote"><code class="docutils literal notranslate"><span class="pre">retrieve_short_quote()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.update_bio"><code class="docutils literal notranslate"><span class="pre">update_bio()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.update_joke"><code class="docutils literal notranslate"><span class="pre">update_joke()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.update_quote"><code class="docutils literal notranslate"><span class="pre">update_quote()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#all_the_buzz.server.update_trivia"><code class="docutils literal notranslate"><span class="pre">update_trivia()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -149,6 +167,11 @@ respond to <code class="docutils literal notranslate"><span class="pre">OPTIONS<
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.approve_joke">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">approve_joke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.approve_joke" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.authentication_middleware">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">authentication_middleware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#all_the_buzz.server.authentication_middleware" title="Link to this definition"></a></dt>
 <dd><p>Function decorator that extracts the token from a request,
@@ -157,29 +180,553 @@ and injects a Credentials object or returns a ResponseCode</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.create_a_new_bio">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_a_new_bio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_a_new_bio" title="Link to this definition"></a></dt>
+<dd><p>Handles the creation of a new bio record (POST /bio).</p>
+<p>The behavior and target collection are strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> The bio is created directly in the PublicBioDAO
+collection. This action constitutes immediate approval.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> The bio is created in the PublicBioDAO
+collection as a proposal (<cite>is_edit</cite> is set to False), requiring subsequent
+review and approval.</p></li>
+</ol>
+<p>The request body is first parsed and validated against the bio entity schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware. Used to determine the appropriate DAO
+and access level.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>(JSON body, 200/201/202): Success response based on the underlying DAO</dt><dd><p>operation (typically 201 for Manager/Public creation, or a status code
+indicating successful proposal submission for Employee/Private).</p>
+</dd>
+</dl>
+</li>
+<li><p>(JSON body, 400): If the JSON request body fails validation bio.from_json_object()`.</p></li>
+<li><dl class="simple">
+<dt>(JSON body, 401/500): If the user title is unrecognized (‘InvalidEmployee’),</dt><dd><p>or if an exception occurs during the DAO operation (translated via
+ResponseCode error).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.create_a_new_joke">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_a_new_joke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_a_new_joke" title="Link to this definition"></a></dt>
+<dd><p>Handles the creation of a new joke record (POST /jokes).</p>
+<p>The behavior and target collection are strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> The joke is created directly in the PublicJokeDAO
+collection. This action constitutes immediate approval.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> The joke is created in the PrivateJokeDAO
+collection as a proposal (<cite>is_edit</cite> is set to False), requiring subsequent
+review and approval.</p></li>
+</ol>
+<p>The request body is first parsed and validated against the Joke entity schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware. Used to determine the appropriate DAO
+and access level.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>(JSON body, 200/201/202): Success response based on the underlying DAO</dt><dd><p>operation (typically 201 for Manager/Public creation, or a status code
+indicating successful proposal submission for Employee/Private).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 400): If the JSON request body fails validation via</dt><dd><p><cite>Joke.from_json_object()</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 401/500): If the user title is unrecognized (‘InvalidEmployee’),</dt><dd><p>or if an exception occurs during the DAO operation (translated via
+ResponseCode error).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.create_a_new_quote">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_a_new_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_a_new_quote" title="Link to this definition"></a></dt>
+<dd><p>Handles the creation of a new quote record (POST /quote).</p>
+<p>The behavior and target collection are strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> The joke is created directly in the PublicQuoteDAO
+collection. This action constitutes immediate approval.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> The joke is created in the PrivateQuoteDAO
+collection as a proposal (<cite>is_edit</cite> is set to False), requiring subsequent
+review and approval.</p></li>
+</ol>
+<p>The request body is first parsed and validated against the Quote entity schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware. Used to determine the appropriate DAO
+and access level.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>(JSON body, 200/201/202): Success response based on the underlying DAO</dt><dd><p>operation (typically 201 for Manager/Public creation, or a status code
+indicating successful proposal submission for Employee/Private).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 400): If the JSON request body fails validation via</dt><dd><p><cite>Quote.from_json_object()</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 401/500): If the user title is unrecognized (‘InvalidEmployee’),</dt><dd><p>or if an exception occurs during the DAO operation (translated via
+ResponseCode error).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.create_a_new_trivia">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_a_new_trivia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_a_new_trivia" title="Link to this definition"></a></dt>
+<dd><p>Handles the creation of a new trivia record (POST /trivias).</p>
+<p>The behavior and target collection are strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> The trivia is created directly in the PublicTriviaDAO
+collection. This action constitutes immediate approval.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> The trivia is created in the PublicTriviaDAO
+collection as a proposal (<cite>is_edit</cite> is set to False), requiring subsequent
+review and approval.</p></li>
+</ol>
+<p>The request body is first parsed and validated against the trivia entity schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware. Used to determine the appropriate DAO
+and access level.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><dl class="simple">
+<dt>(JSON body, 200/201/202): Success response based on the underlying DAO</dt><dd><p>operation (typically 201 for Manager/Public creation, or a status code
+indicating successful proposal submission for Employee/Private).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 400): If the JSON request body fails validation via</dt><dd><p><cite>trivia.from_json_object()</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(JSON body, 401/500): If the user title is unrecognized (‘InvalidEmployee’),</dt><dd><p>or if an exception occurs during the DAO operation (translated via
+ResponseCode error).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.create_app">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_app" title="Link to this definition"></a></dt>
+<dd><p>Application factory: initializes Flask app and external resources.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.create_client_connection">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_client_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.server.create_client_connection" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="all_the_buzz.server.create_mongodb_connection">
-<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">create_mongodb_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.create_mongodb_connection" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.server.deny_joke">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">deny_joke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.deny_joke" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.establish_all_daos">
-<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">establish_all_daos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.establish_all_daos" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">establish_all_daos</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.establish_all_daos" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.get_dao_set_credentials">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">get_dao_set_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dao_classname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.get_dao_set_credentials" title="Link to this definition"></a></dt>
+<dd><p>A helper function that returns a dao object after
+setting it’s credentials</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s credentials object, injected by</p></li>
+<li><p><strong>authentication_middleware.</strong> (<em>the</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a DatabaseAccessObject of the given dao_class_name string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A (<a class="reference internal" href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject" title="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject">DatabaseAccessObject</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_daily_quote">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_daily_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_daily_quote" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_private_jokes_collection">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_private_jokes_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_private_jokes_collection" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the collection of private (pending) joke proposals (GET /pending_jokes).</p>
+<p>This endpoint provides access to the private database collection, which stores
+all proposed jokes and edits submitted by Employees that are pending review
+by a Manager. Access is strictly controlled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to verify the user’s title.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON string, 200): If the user is a <strong>Manager</strong>, returns a JSON string</p></li>
+</ul>
+<p>containing all records from the PrivateJokeDAO collection.
+* (JSON body, 401): If the user is <strong>not a Manager</strong> (e.g., an Employee or
+any other role), returns an “Unauthorized” error response.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_public_bios_collection">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_public_bios_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_public_bios_collection" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the public bios collection and returns it as a http response
+(GET /bios)</p>
+<p>This endpoint is accessible to any authenticated user (employee or manager)
+and returns all records stored in the PublicBiosDAO collection. It handles
+serialization of MongoDB records (including BSON types like ObjectId) to a
+valid JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s credentials object, injected by</p></li>
+<li><p><strong>authentication_middleware.</strong> (<em>the</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.</p></li>
+<li><p>A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_public_jokes_collection">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_public_jokes_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_public_jokes_collection" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the public joke collection and returns it as a http response
+(GET /jokes)</p>
+<p>This endpoint is accessible to any authenticated user (employee or manager)
+and returns all records stored in the PublicJokeDAO collection. It handles
+serialization of MongoDB records (including BSON types like ObjectId) to a
+valid JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s credentials object, injected by</p></li>
+<li><p><strong>authentication_middleware.</strong> (<em>the</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>The JSON string representation of all public jokes and a 200 HTTP status code, if the user is authenticated.</p></li>
+<li><p>A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_public_quotes_collection">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_public_quotes_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_public_quotes_collection" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the public quote collection and returns it as a http response
+(GET /quotes)</p>
+<p>This endpoint is accessible to any authenticated user (employee or manager)
+and returns all records stored in the PublicQuotesDAO collection. It handles
+serialization of MongoDB records (including BSON types like ObjectId) to a
+valid JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s credentials object, injected by</p></li>
+<li><p><strong>authentication_middleware.</strong> (<em>the</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.</p></li>
+<li><p>A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_public_trivia_collection">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_public_trivia_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_public_trivia_collection" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the public trivia collection and returns it as a http response
+(GET /trivias)</p>
+<p>This endpoint is accessible to any authenticated user (employee or manager)
+and returns all records stored in the PublicTriviaDAO collection. It handles
+serialization of MongoDB records (including BSON types like ObjectId) to a
+valid JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s credentials object, injected by</p></li>
+<li><p><strong>authentication_middleware.</strong> (<em>the</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.</p></li>
+<li><p>A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_random_joke">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_random_joke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_random_joke" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.retrieve_short_quote">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_short_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_short_quote" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.run">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.run" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.update_bio">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">update_bio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bio_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.update_bio" title="Link to this definition"></a></dt>
+<dd><p>(PUT /bio/&lt;bio_id&gt;) for updating or proposing an edit.</p>
+<p>The function validates the incoming JSON request body against the bio entity
+schema for all users. The target action is strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> Executes a direct <cite>update_record</cite> on the specified
+public bio ID within the PublicBioDAO collection.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> Executes a <cite>create_record</cite> (submission) in the
+PrivateBioDAO collection. The request body is tagged with the original
+<cite>bio_id</cite> (as ‘original_id’) and flagged as an edit (<cite>is_edit=True</cite>).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bio_id</strong> – The unique identifier (ID) of the public bio targeted for update.</p></li>
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to determine write authority.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON body, 200): Successful <strong>direct update</strong> by a Manager.</p></li>
+<li><p>(JSON body, 202): Successful submission of a <strong>pending edit proposal</strong> by an Employee.</p></li>
+<li><p>(JSON body, 400): If the request body fails entity validation</p></li>
+</ul>
+<p>(<cite>bio.from_json_object</cite>) or is an otherwise invalid record.
+* (JSON body, 401/500): If the user is unauthorized or if a database
+exception occurs during the DAO operation (translated via ResponseCode).</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.update_joke">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">update_joke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joke_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.update_joke" title="Link to this definition"></a></dt>
+<dd><p>(PUT /jokes/&lt;joke_id&gt;) for updating or proposing an edit.</p>
+<p>The function validates the incoming JSON request body against the Joke entity
+schema for all users. The target action is strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> Executes a direct <cite>update_record</cite> on the specified
+public joke ID within the PublicJokeDAO collection.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> Executes a <cite>create_record</cite> (submission) in the
+PrivateJokeDAO collection. The request body is tagged with the original
+<cite>joke_id</cite> (as ‘original_id’) and flagged as an edit (<cite>is_edit=True</cite>).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joke_id</strong> – The unique identifier (ID) of the public joke targeted for update.</p></li>
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to determine write authority.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON body, 200): Successful <strong>direct update</strong> by a Manager.</p></li>
+<li><p>(JSON body, 202): Successful submission of a <strong>pending edit proposal</strong> by an Employee.</p></li>
+<li><p>(JSON body, 400): If the request body fails entity validation</p></li>
+</ul>
+<p>(<cite>Joke.from_json_object</cite>) or is an otherwise invalid record.
+* (JSON body, 401/500): If the user is unauthorized or if a database
+exception occurs during the DAO operation (translated via ResponseCode).</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.update_quote">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">update_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quote_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.update_quote" title="Link to this definition"></a></dt>
+<dd><p>(PUT /quote/&lt;quote_id&gt;) for updating or proposing an edit.</p>
+<p>The function validates the incoming JSON request body against the quote entity
+schema for all users. The target action is strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> Executes a direct <cite>update_record</cite> on the specified
+public quote ID within the PublicQuoteDAO collection.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> Executes a <cite>create_record</cite> (submission) in the
+PrivateQuoteDAO collection. The request body is tagged with the original
+<cite>quote_id</cite> (as ‘original_id’) and flagged as an edit (<cite>is_edit=True</cite>).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quote_id</strong> – The unique identifier (ID) of the public quote targeted for update.</p></li>
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to determine write authority.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON body, 200): Successful <strong>direct update</strong> by a Manager.</p></li>
+<li><p>(JSON body, 202): Successful submission of a <strong>pending edit proposal</strong> by an Employee.</p></li>
+<li><p>(JSON body, 400): If the request body fails entity validation</p></li>
+</ul>
+<p>(<cite>quote.from_json_object</cite>) or is an otherwise invalid record.
+* (JSON body, 401/500): If the user is unauthorized or if a database
+exception occurs during the DAO operation (translated via ResponseCode).</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.server.update_trivia">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">update_trivia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trivia_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.update_trivia" title="Link to this definition"></a></dt>
+<dd><p>(PUT /trivia/&lt;trivia_id&gt;) for updating or proposing an edit.</p>
+<p>The function validates the incoming JSON request body against the Trivia entity
+schema for all users. The target action is strictly determined by the authenticated
+user’s title:</p>
+<ol class="arabic simple">
+<li><p><strong>Manager (‘Manager’):</strong> Executes a direct <cite>update_record</cite> on the specified
+public trivia ID within the PublicTriviaDAO collection.</p></li>
+<li><p><strong>Employee (‘Employee’):</strong> Executes a <cite>create_record</cite> (submission) in the
+PrivateTriviaDAO collection. The request body is tagged with the original
+<cite>trivia_id</cite> (as ‘original_id’) and flagged as an edit (<cite>is_edit=True</cite>).</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trivia_id</strong> – The unique identifier (ID) of the public trivia targeted for update.</p></li>
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to determine write authority.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON body, 200): Successful <strong>direct update</strong> by a Manager.</p></li>
+<li><p>(JSON body, 202): Successful submission of a <strong>pending edit proposal</strong> by an Employee.</p></li>
+<li><p>(JSON body, 400): If the request body fails entity validation</p></li>
+</ul>
+<p>(<cite>Trivia.from_json_object</cite>) or is an otherwise invalid record.
+* (JSON body, 401/500): If the user is unauthorized or if a database
+exception occurs during the DAO operation (translated via ResponseCode).</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

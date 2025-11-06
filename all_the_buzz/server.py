@@ -1,29 +1,23 @@
+<<<<<<< HEAD
 from flask import Flask, request, jsonify, make_response, g
 # from all_the_buzz.utilities.authentication import authentication
 # from all_the_buzz.utilities.authentication import authentication
+=======
+from flask import Flask, request, jsonify, make_response
+>>>>>>> a50a27b399a17936f8308c01e23e7ac859053bcc
 from typing import Callable, Any
 from functools import wraps
-# from all_the_buzz.entities.credentials_entity import Credentials, Token
-# from all_the_buzz.entities.record_entities import Joke
-# from all_the_buzz.utilities.error_handler import ResponseCode
-# from all_the_buzz.database_operations.dao_factory import DAOFactory
-# from entities.credentials_entity import Credentials, Token
-# from entities.record_entities import Joke
-# from utilities.error_handler import ResponseCode
-# from database_operations.dao_factory import DAOFactory
 from pymongo.errors import PyMongoError
 import os
 import sys
 from dotenv import load_dotenv
 from pathlib import Path
-#from all_the_buzz.utilities.logger import LoggerFactory
+from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 
-# --- PACKAGE PATH FIX FOR DIRECT EXECUTION ---
-# This ensures that absolute imports like 'from all_the_buzz.utilities' work
-# when the script is run directly (e.g., 'python server.py' or 'python all_the_buzz/server.py').
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -34,79 +28,7 @@ from all_the_buzz.entities.record_entities import Joke, Trivia, Quote, Bio
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from all_the_buzz.utilities.logger import LoggerFactory
-"""
 
-    Get All Jokes
-    -------------
-    (GET) http://localhost:8080/jokes/
-
-    Included:
-        Include Bearer header with token
-    Returns:
-        Dictonary of all public jokes
-    
-    Create New Joke
-    ---------------
-    (POST) http://localhost:8080/jokes
-    
-    Include:
-        Include Bearer header with token
-        In body include json object in this format:
-        {
-            "level": int,
-            "language": str,
-            "content": {
-                "type": <either "one_liner" or "qa">,
-                "text": str (required if "one_liner"),
-                "question": str (required if "qa"),
-                "answer": str (required if "qa")
-                }
-            }
-    Returns:
-        Adds joke to public table if manager and adds to private
-        table if employee.
-     
-    Update Joke
-    -----------
-    (PUT) http://localhost:8080/jokes/<string:joke_id>/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in uri
-    Returns:
-        If present returns a json object of the specifed joke
-        in the public table
-    
-    Approve Joke
-    ------------
-    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in private table
-    Returns:
-        If manager updates or adds joke to public table
-        Deletes joke from private table 
-        
-    Deny Joke
-    ---------
-    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
-    
-    Include:
-        Token in bearer header
-        ID of joke in private table
-    Returns:
-        If manager, deletes joke from private table
-        
-    Get All Quotes
-    --------------
-    (GET) http//localhost:8080/quotes/
-
-    Include:
-        Token in bearer header
-    Returns:
-        Returns all quotes from public table
-    """
 global mongo_client
 
 global public_jokes_dao
@@ -142,9 +64,7 @@ class MyFlask(Flask):
     def add_url_rule(self, rule, endpoint=None, view_func=None, **options):
         return super().add_url_rule(rule, endpoint, view_func, **options)
 
-#CORS Preflight necessary only when we integrate with front end 
 
-#middleware 
 def authentication_middleware(f: Callable) -> Callable:
     """
     Function decorator that extracts the token from a request,
@@ -153,9 +73,12 @@ def authentication_middleware(f: Callable) -> Callable:
     """
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
+        logger=LoggerFactory.get_general_logger()
         try:
             #get user token from request
+            logger.debug("Getting token from request")
             user_token = request.headers.get('Bearer')
+            logger.debug("Successfully obtained token from request")
         except:
             #send back a credentials missing response
             missing_token_result = ResponseCode("MissingToken")
@@ -163,10 +86,13 @@ def authentication_middleware(f: Callable) -> Callable:
             return jsonify(body), status_code
         token_dict = {'token': str(user_token)}
         try:
-            print("trying authentication")
+            logger.debug("Trying authentication")
             authentication_result = authentication(token_dict)
+            logger.debug("Successfuly obtained credentials")
         except Exception as e:
-            print("authentication error")
+            logger.error(str(e))
+            status_code, body = ResponseCode("AuthServerError")
+            return jsonify(body), status_code
         #if the authentication result is an error code
         if isinstance(authentication_result, ResponseCode):
             status_code, body = authentication_result.to_http_response()
@@ -174,12 +100,10 @@ def authentication_middleware(f: Callable) -> Callable:
         #if the authentication result is valid credentials
         if isinstance(authentication_result, Credentials):
             kwargs['credentials'] = authentication_result
+            logger.debug("successfully loaded credentials")
             return f(*args, **kwargs)
         #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
-        
-        print(f"Authentication results: {authentication_result}")
-        print(f"Authentication result type: {type(authentication_result)}")
-        status_code, body = ResponseCode("Internal Authentication Error").to_http_response()
+        status_code, body = ResponseCode("AuthServerError").to_http_response()
         return jsonify(body), status_code
     return decorated_function
 
@@ -194,13 +118,17 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     Returns:
         A (DatabaseAccessObject): a DatabaseAccessObject of the given dao_class_name string
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Using DAO factory to intialize mongodb collection")
     dao = DAOFactory.get_dao(dao_classname)
+    logger.debug("setting credentials in dao")
     dao.set_credentials(credentials)
     return dao
 
 def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
     """Converts string values in the filter dictionary to their required types (e.g., int)."""
-    
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Converting filters to correct type")
     int_fields = ['level', 'birth_year', 'death_year']
     bool_fields = ['is_edit']
     type_safe_filter = {}
@@ -209,7 +137,7 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             try:
                 type_safe_filter[key] = int(value)
             except ValueError:
-                print(f"WARNING: Filter '{key}' received non-integer value '{value}'. Skipping.")
+                logger.debug(f"Warning filter '{key}' recieved non-integer value '{value}'. Skipping")
                 continue
         elif key in bool_fields:
             lower_value = value.lower()
@@ -218,7 +146,7 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             elif lower_value in ('false','', ' '):
                 type_safe_filter[key] = False
             else:
-                print(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
+                logger.debug(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
                 continue
         else:
             type_safe_filter[key] = value
@@ -246,6 +174,8 @@ def retrieve_public_jokes_collection(credentials: Credentials):
         * A tuple containing a JSON error response and a 401 HTTP status code,
           if the user is unauthorized (handled by the credential check).
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrievign public jokes collection")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         filter_dict = request.args.to_dict()
@@ -301,8 +231,10 @@ def create_a_new_joke(credentials: Credentials):
             or if an exception occurs during the DAO operation (translated via
             ResponseCode error).
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("creating new joke")
     if credentials.title == 'Employee':
+        logger.debug("New joke as employee")
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
         request_body = request.get_json()
         request_body["is_edit"] = False
@@ -329,12 +261,13 @@ def create_a_new_joke(credentials: Credentials):
             return jsonify(body), status_code
         
     elif credentials.title == 'Manager':
+        logger.debug("New joke as a manager")
         public_jokes_dao = get_dao_set_credentials(credentials, 'PublicJokeDAO')
         request_body = request.get_json()
         try:
             new_joke = Joke.from_json_object(request_body)
         except Exception as e:
-            private_jokes_dao.clear_credentials()
+            public_jokes_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_joke, Joke):
@@ -342,18 +275,18 @@ def create_a_new_joke(credentials: Credentials):
                 dao_response = public_jokes_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
-                private_jokes_dao.clear_credentials()
+                public_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_jokes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
-            private_jokes_dao.clear_credentials()
+            public_jokes_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        private_jokes_dao.clear_credentials()
+        public_jokes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
     
@@ -394,8 +327,10 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
             or if an exception occurs during the DAO operation (translated via
             ResponseCode error).
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Creating new quote")
     if credentials.title == 'Employee':
+        logger.debug("Creating new quote as employee")
         private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
         request_body = request.get_json()
         request_body["is_edit"] = False
@@ -422,12 +357,13 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
             return jsonify(body), status_code
         
     elif credentials.title == 'Manager':
+        logger.debug("New quote as a manager")
         public_quotes_dao = get_dao_set_credentials(credentials, 'PublicQuoteDAO')
         request_body = request.get_json()
         try:
             new_quote = Quote.from_json_object(request_body)
         except Exception as e:
-            private_quotes_dao.clear_credentials()
+            public_quotes_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_quote, Quote):
@@ -435,18 +371,18 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
                 dao_response = public_quotes_dao.create_record(request_body)
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
-                private_quotes_dao.clear_credentials()
+                public_quotes_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_quotes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
             return jsonify(body), status_code
         else:
-            private_quotes_dao.clear_credentials()
+            public_quotes_dao.clear_credentials()
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        private_quotes_dao.clear_credentials()
+        public_quotes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
     
@@ -487,8 +423,10 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             or if an exception occurs during the DAO operation (translated via
             ResponseCode error).
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Creating a new trivia")
     if credentials.title == 'Employee':
+        logger.debug("Create a new trvia as employee")
         private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
         request_body = request.get_json()
         request_body["is_edit"] = False
@@ -515,11 +453,16 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             return jsonify(body), status_code
         
     elif credentials.title == 'Manager':
+        logger.debug("Create a new trivia as a manager")
         public_trivias_dao = get_dao_set_credentials(credentials, 'PublicTriviaDAO')
         request_body = request.get_json()
         try:
             new_trivia = Trivia.from_json_object(request_body)
         except Exception as e:
+<<<<<<< HEAD
+=======
+            print(f"PRINT E ON LINE 436 {str(e)}")
+>>>>>>> a50a27b399a17936f8308c01e23e7ac859053bcc
             public_trivias_dao.clear_credentials()
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
@@ -578,8 +521,10 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
             or if an exception occurs during the DAO operation (translated via
             ResponseCode error).
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Create a new bio")
     if credentials.title == 'Employee':
+        logger.debug("Create a new bio as employee")
         private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
         request_body = request.get_json()
         request_body["is_edit"] = False
@@ -606,6 +551,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
             return jsonify(body), status_code
         
     elif credentials.title == 'Manager':
+        logger.debug("Create a new bio as a manager")
         public_bios_dao = get_dao_set_credentials(credentials, 'PublicBioDAO')
         request_body = request.get_json()
         try:
@@ -666,8 +612,11 @@ def update_joke(joke_id: str, credentials: Credentials):
         * (JSON body, 401/500): If the user is unauthorized or if a database 
         exception occurs during the DAO operation (translated via ResponseCode).
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Update a joke")
     request_body = request.get_json()
     if credentials.title == 'Manager':
+        logger.debug("Update record as manager")
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         #entity validation
         try:
@@ -695,6 +644,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
+        logger.debug("Create new record as employee")
         private_jokes_dao = DAOFactory.get_dao('PrivateJokeDAO')
         private_jokes_dao.set_credentials(credentials)
         #setting the OG id of the record to edit and setting is edit to true
@@ -753,8 +703,11 @@ def update_trivia(trivia_id: str, credentials: Credentials):
         * (JSON body, 401/500): If the user is unauthorized or if a database 
         exception occurs during the DAO operation (translated via ResponseCode).
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Update trivia")
     request_body = request.get_json()
     if credentials.title == 'Manager':
+        logger.debug("Update trivia as an Manager")
         public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
         #entity validation
         try:
@@ -782,6 +735,7 @@ def update_trivia(trivia_id: str, credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
+        logger.debug("Update trivia as employee")
         private_trivias_dao = DAOFactory.get_dao('PrivateTriviaDAO')
         private_trivias_dao.set_credentials(credentials)
         #setting the OG id of the record to edit and setting is edit to true
@@ -838,8 +792,11 @@ def update_quote(quote_id: str, credentials: Credentials):
         * (JSON body, 401/500): If the user is unauthorized or if a database 
         exception occurs during the DAO operation (translated via ResponseCode).
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Update quote")
     request_body = request.get_json()
     if credentials.title == 'Manager':
+        logger.debug("Update quote as manager")
         public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
         #entity validation
         try:
@@ -867,6 +824,7 @@ def update_quote(quote_id: str, credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
+        logger.debug("update quote as employee")
         private_quotes_dao = DAOFactory.get_dao('PrivateQuoteDAO')
         private_quotes_dao.set_credentials(credentials)
         #setting the OG id of the record to edit and setting is edit to true
@@ -923,8 +881,11 @@ def update_bio(bio_id: str, credentials: Credentials):
         * (JSON body, 401/500): If the user is unauthorized or if a database 
         exception occurs during the DAO operation (translated via ResponseCode).
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Update bio")
     request_body = request.get_json()
     if credentials.title == 'Manager':
+        logger.debug("Update as manager")
         public_bios_dao = get_dao_set_credentials(credentials, "B")
         #entity validation
         try:
@@ -952,6 +913,7 @@ def update_bio(bio_id: str, credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
+        logger.debug("Update as employee")
         private_bios_dao = DAOFactory.get_dao('PrivateBioDAO')
         private_bios_dao.set_credentials(credentials)
         #setting the OG id of the record to edit and setting is edit to true
@@ -1003,7 +965,8 @@ def retrieve_private_jokes_collection(credentials: Credentials):
         * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
         any other role), returns an "Unauthorized" error response.
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieve all private jokes")
     if credentials.title == 'Manager':
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
         all_private_jokes = private_jokes_dao.get_all_records()
@@ -1036,7 +999,8 @@ def retrieve_private_quotes_collection(credentials: Credentials):
         * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
         any other role), returns an "Unauthorized" error response.
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieve all private quotes")
     if credentials.title == 'Manager':
         private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
         all_private_quotes = private_quotes_dao.get_all_records()
@@ -1070,7 +1034,8 @@ def retrieve_private_bios_collection(credentials: Credentials):
         * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
         any other role), returns an "Unauthorized" error response.
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieve private bios")
     if credentials.title == 'Manager':
         private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
         all_private_bios = private_bios_dao.get_all_records()
@@ -1104,7 +1069,8 @@ def retrieve_private_trivias_collection(credentials: Credentials):
         * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
         any other role), returns an "Unauthorized" error response.
     """
-
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieve private trivias")
     if credentials.title == 'Manager':
         private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
         all_private_trivias = private_trivias_dao.get_all_records()
@@ -1120,6 +1086,28 @@ def retrieve_private_trivias_collection(credentials: Credentials):
 
 @authentication_middleware
 def approve_joke(credentials: Credentials, id: str):
+    """
+    Approves a pending joke (POST / jokes/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending joke in the private 
+    collection. The joke in the pending table is either an edit or a new submitted 
+    joke. The joke is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Approving a joke request")
     if credentials.title == "Manager":
         # set credentials and database
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
@@ -1181,6 +1169,27 @@ def approve_joke(credentials: Credentials, id: str):
 
 @authentication_middleware
 def deny_joke(credentials: Credentials, id: str):
+    """
+    Denies a pending joke (POST / jokes/<id>/aprove).
+
+    This endpoint allows the manager to deny a pending joke in the private 
+    collection. The joke in the pending table is either an edit or a new submitted 
+    joke. The joke deleted in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Denying a joke request")
     if credentials.title == "Manager":
         private_jokes_dao = get_dao_set_credentials(credentials, "PrivateJokeDAO")
         try:
@@ -1199,6 +1208,28 @@ def deny_joke(credentials: Credentials, id: str):
 
 @authentication_middleware
 def approve_quote(credentials: Credentials, id: str):
+    """
+    Approves a pending quote (POST / quotes/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Approving a quote request")
     if credentials.title == "Manager":
         # set credentials and database
         private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
@@ -1260,6 +1291,27 @@ def approve_quote(credentials: Credentials, id: str):
 
 @authentication_middleware
 def deny_quote(credentials: Credentials, id: str):
+    """
+    Deny a pending quote (POST / quotes/<id>/aprove).
+
+    This endpoint allows the manager to deny a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is deleted in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deny a quote request")
     if credentials.title == "Manager":
         private_quotes_dao = get_dao_set_credentials(credentials, "PrivateQuoteDAO")
         try:
@@ -1279,6 +1331,28 @@ def deny_quote(credentials: Credentials, id: str):
 
 @authentication_middleware
 def approve_trivia(credentials: Credentials, id: str):
+    """
+    Approves a pending trivia (POST / trivia/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Approving a trivia request")
     if credentials.title == "Manager":
         # set credentials and database
         private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
@@ -1340,6 +1414,28 @@ def approve_trivia(credentials: Credentials, id: str):
 
 @authentication_middleware
 def deny_trivia(credentials: Credentials, id: str):
+    """
+    Deny a pending trivia (POST / trivia/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deny a trivia request")
     if credentials.title == "Manager":
         private_trivias_dao = get_dao_set_credentials(credentials, "PrivateTriviaDAO")
         try:
@@ -1358,6 +1454,28 @@ def deny_trivia(credentials: Credentials, id: str):
 
 @authentication_middleware
 def approve_bio(credentials: Credentials, id: str):
+    """
+    Deny a pending bio (POST / bio/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Approve a bio request")
     if credentials.title == "Manager":
         # set credentials and database
         private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
@@ -1419,6 +1537,28 @@ def approve_bio(credentials: Credentials, id: str):
 
 @authentication_middleware
 def deny_bio(credentials: Credentials, id: str):
+    """
+    Deny a pending bio (POST / bio/<id>/aprove).
+
+    This endpoint allows the manager to approve a pending record in the private 
+    collection. The record in the pending table is either an edit or a new submitted 
+    record. The record is added or updated in the public collection and then deleted 
+    in the private collection.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        id: The id of the record in the private collection.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deny a bio request")
     if credentials.title == "Manager":
         private_bios_dao = get_dao_set_credentials(credentials, "PrivateBioDAO")
         try:
@@ -1437,6 +1577,26 @@ def deny_bio(credentials: Credentials, id: str):
 
 @authentication_middleware
 def retrieve_random_joke(credentials: Credentials, amount: int):
+    """
+    Request a random joke (Get / random-jokes/<amt>).
+
+    This endpoint allows the an employee to request a set of random records from
+    the public collection. 
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        amount: The amount of random records
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Request a random joke")
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         try:
@@ -1452,9 +1612,88 @@ def retrieve_random_joke(credentials: Credentials, amount: int):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
+    
+
+@authentication_middleware
+def retrieve_random_quote(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            random_quotes=public_quotes_dao.get_random(amount)
+            json_string = dumps(random_quotes)
+            ResponseCode("GeneralSuccess", json_string)
+            public_quotes_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_quotes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+
+@authentication_middleware
+def retrieve_random_trivia(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        try:
+            random_trivias=public_trivias_dao.get_random(amount)
+            json_string = dumps(random_trivias)
+            ResponseCode("GeneralSuccess", json_string)
+            public_trivias_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_trivias_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
+
+@authentication_middleware
+def retrieve_random_bio(credentials: Credentials, amount: int):
+    if credentials.title == "Manager" or credentials.title == "Employee":
+        public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
+        try:
+            random_bios=public_bios_dao.get_random(amount)
+            json_string = dumps(random_bios)
+            ResponseCode("GeneralSuccess", json_string)
+            public_bios_dao.clear_credentials()
+            return json_string, 200
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_bios_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
 
 @authentication_middleware
 def retrieve_short_quote(credentials: Credentials, amount: int):
+    """
+    Request a short joke (Get / short-jokes/<amt>).
+
+    This endpoint allows the an employee to request a set of short records
+    (under 80 characters) from the public table.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+        amount: The amount of short records
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Request a short joke")
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_quote_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
         try:
@@ -1492,6 +1731,8 @@ def retrieve_public_quotes_collection(credentials: Credentials):
         * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
         * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieving public quotes")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
 
@@ -1518,6 +1759,25 @@ def retrieve_public_quotes_collection(credentials: Credentials):
 
 @authentication_middleware
 def retrieve_daily_quote(credentials: Credentials):
+    """
+    Request a daily quote (Get / daily-quotes).
+
+    This endpoint allows an employee to request a daily quote from the public
+    table.
+
+    Args:
+        credentials: The authenticated user's Credentials object, injected by
+            the authentication_middleware, used to verify the user's title.
+
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): If the user is a **Manager**, returns a JSON string
+        containing all records from the Private collection.
+        * (JSON body, 401): If the user is **not a Manager** (e.g., an Employee or
+        any other role), returns an "Unauthorized" error response.
+    """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieving daily quote")
     if credentials.title == "Manager" or credentials.title == "Employee":
         public_quotes_dao=get_dao_set_credentials(credentials, "PublicQuoteDAO")
         try:
@@ -1556,6 +1816,8 @@ def retrieve_public_trivia_collection(credentials: Credentials):
         * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
         * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieving public trivia collection")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
         
@@ -1602,6 +1864,8 @@ def retrieve_public_bios_collection(credentials: Credentials):
         * The JSON string representation of all public quotes and a 200 HTTP status code, if the user is authenticated.
         * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
     """
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Retrieve bios collection")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
         
@@ -1674,28 +1938,6 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
-    """
-    Create New Joke
-    ---------------
-    (POST) http://localhost:8080/jokes
-    
-    Include:
-        Include Bearer header with token
-        In body include json object in this format:
-        {
-            "level": int,
-            "language": str,
-            "content": {
-                "type": <either "one_liner" or "qa">,
-                "text": str (required if "one_liner"),
-                "question": str (required if "qa"),
-                "answer": str (required if "qa")
-                }
-            }
-    Returns:
-        Adds joke to public table if manager and adds to private
-        table if employee.
-        """
     app.add_url_rule(
         "/pending-jokes",
         view_func=retrieve_private_jokes_collection,
@@ -1708,54 +1950,18 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
-
-    """"
-    Update Joke
-    -----------
-    (PUT) http://localhost:8080/jokes/<string:joke_id>/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in uri
-    Returns:
-        If present returns a json object of the specifed joke
-        in the public table
-    """
     app.add_url_rule(
         "/jokes/<string:joke_id>", 
         view_func=update_joke, 
         methods=["PUT"],
         provide_automatic_options=False
     )
-    """
-    Approve Joke
-    ------------
-    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in private table
-    Returns:
-        If manager updates or adds joke to public table
-        Deletes joke from private table 
-        """
     app.add_url_rule(
         "/jokes/<string:id>/approve",
         view_func=approve_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
-    """
-    Deny Joke
-    ---------
-    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
-    
-    Include:
-        Token in bearer header
-        ID of joke in private table
-    Returns:
-        If manager, deletes joke from private table
-        """
     app.add_url_rule(
         "/jokes/<string:id>/deny",
         view_func=deny_joke,
@@ -1768,22 +1974,14 @@ def create_app():
         methods=['GET'],
         provide_automatic_options=False
     )
+
     app.add_url_rule(
         "/short-quotes/<int:amount>",
         view_func=retrieve_short_quote,
         methods=['GET'],
         provide_automatic_options=False
     )
-    """
-    Get All Quotes
-    --------------
-    (GET) http//localhost:8080/quotes/
 
-    Include:
-        Token in bearer header
-    Returns:
-        Returns all quotes from public table
-    """
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
@@ -1824,6 +2022,13 @@ def create_app():
         "/pending-quotes",
         view_func=retrieve_private_quotes_collection,
         methods=["GET"],
+        provide_automatic_options=False
+    )
+
+    app.add_url_rule(
+        "/random-quotes/<int:amount>",
+        view_func=retrieve_random_quote,
+        methods=['GET'],
         provide_automatic_options=False
     )
 
@@ -1874,6 +2079,14 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
+
+    app.add_url_rule(
+        "/random-bios/<int:amount>",
+        view_func=retrieve_random_bio,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+
  
     app.add_url_rule(
         "/bios",
@@ -1916,6 +2129,14 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
+    
+    app.add_url_rule(
+        "/random-bios/<int:amount>",
+        view_func=retrieve_random_bio,
+        methods=['GET'],
+        provide_automatic_options=False
+    )
+
 
 
     return app

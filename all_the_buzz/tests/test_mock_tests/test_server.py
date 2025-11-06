@@ -125,3 +125,5 @@ def test_employee_creates_joke_success(mock_auth, mock_joke, mock_dao, client):
     })
     assert response.status_code == 202
     mock_dao_instance.create_record.assert_called_once()
+
+# ------------------------------- retrieve private jokes collection -------------------------------

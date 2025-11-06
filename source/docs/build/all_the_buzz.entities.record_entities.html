@@ -86,7 +86,7 @@ language.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.BaseRecord.hexadecimal_test">
-<span class="sig-name descname"><span class="pre">hexadecimal_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.BaseRecord.hexadecimal_test" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hexadecimal_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.BaseRecord.hexadecimal_test" title="Link to this definition"></a></dt>
 <dd><p>Method for validating a string is
 hexadecimal.This will be used for
 validating mongodb ids.</p>
@@ -133,28 +133,28 @@ False if s is not hexadecimal</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Bios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'English'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">death_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bob'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paragraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bio</span> <span class="pre">stuff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'summary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://fake-url.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Bio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'English'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">birth_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">death_year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2020</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bob</span> <span class="pre">Lastname'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">paragraph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bio</span> <span class="pre">stuff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'summary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://fake-url.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#all_the_buzz.entities.record_entities.BaseRecord" title="all_the_buzz.entities.record_entities.BaseRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRecord</span></code></a></p>
 <p>Validates bios record data passed to it. This class
 includes id, ref_id, is_edit, birth_year, death_year,
-paragraph, summary, source_url, language</p>
+paragraph, summary, source_url, language.</p>
 <p>To initilize this class, the from_json_object method can
 be used.</p>
 <p>The fields: ‘name’,’paragraph’,’language’,’source_url’ are all required.</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.birth_year">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">birth_year</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.birth_year" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.birth_year">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">birth_year</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.birth_year" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.death_year">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">death_year</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.death_year" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.death_year">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">death_year</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.death_year" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.from_json_object">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.from_json_object" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.from_json_object">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.from_json_object" title="Link to this definition"></a></dt>
 <dd><p>Method for converting json string to Bios object.</p>
 <dl class="simple">
 <dt>Excpetions:</dt><dd><p>ValueError: Not proper format
@@ -164,28 +164,28 @@ ValueError: Missing required fields</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.name">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.name" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.paragraph">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paragraph</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.paragraph" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.paragraph">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paragraph</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.paragraph" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.source_url">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_url</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.source_url" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.source_url">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">source_url</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.source_url" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.summary">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">summary</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.summary" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.summary">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">summary</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.summary" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bios.to_json_object">
-<span class="sig-name descname"><span class="pre">to_json_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bios.to_json_object" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Bio.to_json_object">
+<span class="sig-name descname"><span class="pre">to_json_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Bio.to_json_object" title="Link to this definition"></a></dt>
 <dd><p>”
 Method for converting Bios object to dict.</p>
 </dd></dl>
@@ -239,28 +239,33 @@ Method for converting Joke object to dict.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Quotes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'01-02-23'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'english'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'category'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'stuff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Joe'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">used_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'03/15/2020'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'english'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#all_the_buzz.entities.record_entities.BaseRecord" title="all_the_buzz.entities.record_entities.BaseRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRecord</span></code></a></p>
 <p>Validates quotes record data passed to it. This class
 includes id, ref_id, is_edit, category, author, used_status,
 language</p>
 <p>To initilize this class, the from_json_object method can
 be used.</p>
-<p>The fields: ‘content’, ‘category’,’author’, ‘language’ are all required.</p>
+<p>The fields: ‘content’,’author’, ‘language’ are all required.</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes.author">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes.author" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.author">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">author</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.author" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes.category">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes.category" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.category">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.category" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.content">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.content" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes.from_json_object">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes.from_json_object" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.from_json_object">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.from_json_object" title="Link to this definition"></a></dt>
 <dd><p>Method for converting json string to Quotes object.</p>
 <dl class="simple">
 <dt>Excpetions:</dt><dd><p>ValueError: Not proper format
@@ -270,28 +275,28 @@ ValueError: Missing required fields</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes.to_json_object">
-<span class="sig-name descname"><span class="pre">to_json_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes.to_json_object" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.to_json_object">
+<span class="sig-name descname"><span class="pre">to_json_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.to_json_object" title="Link to this definition"></a></dt>
 <dd><p>”
 Method for converting Trivia object to dict.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quotes.used_status">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">used_status</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quotes.used_status" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Quote.used_date">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">used_date</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Quote.used_date" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Trivia">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Trivia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">question</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">answer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Trivia" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.entities.record_entities.</span></span><span class="sig-name descname"><span class="pre">Trivia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_edit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">question</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Question'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Answer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'english'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Trivia" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#all_the_buzz.entities.record_entities.BaseRecord" title="all_the_buzz.entities.record_entities.BaseRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRecord</span></code></a></p>
 <p>Validates trivia record data passed to it. This class
 includes id, ref_id, is_edit, question, answer, language</p>
 <p>To initilize this class, the from_json_object method can
 be used.</p>
-<p>The fields: ‘question’, ‘answer’,’language’ are all required.</p>
+<p>The fields: ‘question’, ‘answer’, ‘language’ are all required.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="all_the_buzz.entities.record_entities.Trivia.answer">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">answer</span></span><a class="headerlink" href="#all_the_buzz.entities.record_entities.Trivia.answer" title="Link to this definition"></a></dt>

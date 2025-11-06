@@ -1,6 +1,6 @@
 import nh3
 import re
-
+from all_the_buzz.utilities.logger import LoggerFactory
 '''
 sanitize.py
 
@@ -22,6 +22,10 @@ def sanitize_json(content):
     Returns:
         either cleaned content if proper format or the original content input
         """
+    logger=LoggerFactory.get_general_logger()
+
+    logger.debug("Begin sanitization")
+
     if isinstance(content, dict):
         return {key:sanitize_json(value) for key, value in content.items()}
     elif isinstance(content, list):
