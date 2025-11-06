@@ -226,7 +226,7 @@ class Credentials:
             ValueError: Authentication Server Response
             ValueError: Required fields are missing
             """
-        requried_fields=['id','fname','lname','department','title','location']
+        requried_fields=['id','fName','lName','dept','title','loc']
         error_field='mesg'
         if not isinstance(content, dict):
             raise ValueError("Must be dictionary input")
@@ -238,9 +238,9 @@ class Credentials:
             if content['title'].capitalize() != 'Manager':
                 content['title']='Employee'
         
-            return Credentials(content["id"], content["fname"], 
-                            content["lname"], content["department"], 
-                            content["title"], content["location"])
+            return Credentials(content["id"], content["fName"], 
+                            content["lName"], content["dept"], 
+                            content["title"], content["loc"])
     
     
 

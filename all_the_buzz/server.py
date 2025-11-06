@@ -198,29 +198,70 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     dao.set_credentials(credentials)
     return dao
 
+def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
+    """Converts string values in the filter dictionary to their required types (e.g., int)."""
+    
+    int_fields = ['level', 'birth_year', 'death_year']
+    bool_fields = ['is_edit']
+    type_safe_filter = {}
+    for key, value in filter_dict.items():
+        if key in int_fields:
+            try:
+                type_safe_filter[key] = int(value)
+            except ValueError:
+                print(f"WARNING: Filter '{key}' received non-integer value '{value}'. Skipping.")
+                continue
+        elif key in bool_fields:
+            lower_value = value.lower()
+            if lower_value in ('true'):
+                type_safe_filter[key] = True
+            elif lower_value in ('false','', ' '):
+                type_safe_filter[key] = False
+            else:
+                print(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
+                continue
+        else:
+            type_safe_filter[key] = value
+            
+    return type_safe_filter
+
 @authentication_middleware
 def retrieve_public_jokes_collection(credentials: Credentials):
-    """
-    Retrieves the public joke collection and returns it as a http response 
-    (GET /jokes)
+    """Retrieves the collection of public (approved) jokes.
 
-    This endpoint is accessible to any authenticated user (employee or manager)
-    and returns all records stored in the PublicJokeDAO collection. It handles
-    serialization of MongoDB records (including BSON types like ObjectId) to a 
-    valid JSON string.
+    This endpoint serves two functions via the GET /jokes route:
+    1. **Retrieve All:** Returns ALL public jokes if no query parameters are provided (GET /jokes).
+    2. **Filter by Fields:** Returns a filtered list of public jokes if query 
+       parameters are provided (e.g., GET /jokes?difficulty=2&category=tech).
 
     Args:
         credentials: The authenticated user's credentials object, injected by
-        the authentication_middleware.
+            the authentication_middleware. This is used to confirm the user is 
+            authorized for read access.
 
     Returns:
         A tuple containing:
-        * The JSON string representation of all public jokes and a 200 HTTP status code, if the user is authenticated.
-        * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
+        * The JSON string representation of the jokes (filtered or all) and a 200 HTTP status code,
+          if the user is authenticated.
+        * A tuple containing a JSON error response and a 401 HTTP status code,
+          if the user is unauthorized (handled by the credential check).
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        all_jokes = public_jokes_dao.get_all_records()
+        #filtering stuff
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_jokes = public_jokes_dao.get_by_fields(type_safe_filter)
+            else:
+                all_jokes = []
+                public_jokes_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_jokes = public_jokes_dao.get_all_records()
+        #end of filtering stuff
         public_jokes_dao.clear_credentials()
         json_string = dumps(all_jokes)
         ResponseCode("GeneralSuccess", json_string)
@@ -550,7 +591,20 @@ def retrieve_public_quotes_collection(credentials: Credentials):
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_quotes_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
-        all_quotes = public_quotes_dao.get_all_records()
+
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_quotes = public_quotes_dao.get_by_fields(type_safe_filter)
+            else:
+                all_quotes = []
+                public_quotes_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_quotes = public_quotes_dao.get_all_records()
+
         public_quotes_dao.clear_credentials()
         json_string = dumps(all_quotes)
         ResponseCode("GeneralSuccess", json_string)
@@ -582,9 +636,22 @@ def retrieve_public_trivia_collection(credentials: Credentials):
         * A tuple containing a JSON error response and a 401 HTTP status code, if the user is unauthorized 
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
-        public_trivia_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
-        all_trivia = public_trivia_dao.get_all_records()
-        public_trivia_dao.clear_credentials()
+        public_trivias_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_trivia = public_trivias_dao.get_by_fields(type_safe_filter)
+            else:
+                all_trivia = []
+                public_trivias_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_trivia = public_trivias_dao.get_all_records()
+
+        public_trivias_dao.clear_credentials()
         json_string = dumps(all_trivia)
         ResponseCode("GeneralSuccess", json_string)
         return json_string, 200
@@ -616,7 +683,20 @@ def retrieve_public_bios_collection(credentials: Credentials):
     """
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
-        all_bios = public_bios_dao.get_all_records()
+        
+        filter_dict = request.args.to_dict()
+        if filter_dict:
+            type_safe_filter = convert_filter_types(filter_dict)
+            if type_safe_filter:
+                all_bios = public_bios_dao.get_by_fields(type_safe_filter)
+            else:
+                all_bios = []
+                public_bios_dao.clear_credentials()
+                status_code, body = ResponseCode("InvalidFilter").to_http_response()
+                return jsonify(body), status_code 
+        else:
+            all_bios = public_bios_dao.get_all_records()
+        
         public_bios_dao.clear_credentials()
         json_string = dumps(all_bios)
         ResponseCode("GeneralSuccess", json_string)

@@ -149,6 +149,7 @@ class DatabaseAccessObject(ABC):
         '''
         self.__logger.debug(f"Getting {self.__class__.__name__} record by fields {filter}.")
         document_list = list(self.__collection.find(filter))
+        print(document_list)
         return document_list
     
     @rbac_action("read")
