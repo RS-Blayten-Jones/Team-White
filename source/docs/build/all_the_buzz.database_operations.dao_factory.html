@@ -88,7 +88,7 @@ List of acceptable DAO tables:</p>
 <p>“PrivateTriviaDAO”</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="all_the_buzz.database_operations.dao_factory.DAOFactory.create_dao">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_dao</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dao_class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject" title="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject"><span class="pre">DatabaseAccessObject</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.dao_factory.DAOFactory.create_dao" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_dao</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dao_class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject" title="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject"><span class="pre">DatabaseAccessObject</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.dao_factory.DAOFactory.create_dao" title="Link to this definition"></a></dt>
 <dd><p>Creates a DAO of the given class and passes the MongoClient. If one exists, it raises an error</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -136,6 +136,26 @@ List of acceptable DAO tables:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dao_class_name</strong> (<em>str optional</em>) – a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.dao_factory.DAOFactory.set_client">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MongoClient</span></span></span><a class="headerlink" href="#all_the_buzz.database_operations.dao_factory.DAOFactory.set_client" title="Link to this definition"></a></dt>
+<dd><p>Sets the shared client for all DAOs using the URI and the given server version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri</strong> (<em>str</em>) – a string that connects the client to the hosted database</p></li>
+<li><p><strong>server_version</strong> (<em>str</em>) – the server version that is used for the server API</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a MongoClient shared amongst DAOs</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>client (MongoClient)</p>
 </dd>
 </dl>
 </dd></dl>

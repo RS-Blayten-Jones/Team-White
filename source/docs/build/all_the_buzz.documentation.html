@@ -1,0 +1,594 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>all_the_buzz.documentation module &mdash; All The Buzz 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            All The Buzz
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.server.html">all_the_buzz.server module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">All The Buzz</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">all_the_buzz.documentation module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/all_the_buzz.documentation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-all_the_buzz.documentation">
+<span id="all-the-buzz-documentation-module"></span><h1>all_the_buzz.documentation module<a class="headerlink" href="#module-all_the_buzz.documentation" title="Link to this heading"></a></h1>
+<section id="get-all-jokes">
+<h2>Get All Jokes<a class="headerlink" href="#get-all-jokes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/jokes/">http://localhost:8080/jokes/</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>Dictonary of all public jokes</p>
+</dd>
+</dl>
+</section>
+<section id="create-new-joke">
+<h2>Create New Joke<a class="headerlink" href="#create-new-joke" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/jokes">http://localhost:8080/jokes</a></p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;level&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;one_liner&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;qa&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;text&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">        </span><span class="c1">// required if type == &quot;one_liner&quot;</span>
+<span class="w">        </span><span class="s2">&quot;question&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span><span class="w">    </span><span class="c1">// required if type == &quot;qa&quot;</span>
+<span class="w">        </span><span class="s2">&quot;answer&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w">       </span><span class="c1">// required if type == &quot;qa&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>Adds joke to public table if manager</p></li>
+<li><p>Adds joke to private table if employee</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="update-joke">
+<h2>Update Joke<a class="headerlink" href="#update-joke" title="Link to this heading"></a></h2>
+<p><strong>PUT</strong> <a class="reference external" href="http://localhost:8080/jokes">http://localhost:8080/jokes</a>/&lt;string:joke_id&gt;/</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;level&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">&lt;</span><span class="nx">either</span><span class="w"> </span><span class="s2">&quot;one_liner&quot;</span><span class="w"> </span><span class="nx">or</span><span class="w"> </span><span class="s2">&quot;qa&quot;</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;text&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w"> </span><span class="p">(</span><span class="nx">required</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="s2">&quot;one_liner&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="s2">&quot;question&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w"> </span><span class="p">(</span><span class="nx">required</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="s2">&quot;qa&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="s2">&quot;answer&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="w"> </span><span class="p">(</span><span class="nx">required</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="s2">&quot;qa&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>If employee, adds new joke record in private table pending</p></li>
+</ul>
+<p>approval by manager.
+- If manager, updates existing record in private table.</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-pending-jokes">
+<h2>Get All Pending Jokes<a class="headerlink" href="#get-all-pending-jokes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/pending-jokes">http://localhost:8080/pending-jokes</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>If manager, returns all jokes in private table</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="approve-joke">
+<h2>Approve Joke<a class="headerlink" href="#approve-joke" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/jokes">http://localhost:8080/jokes</a>/&lt;string:joke-id&gt;/approve/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>If manager updates or adds joke to public table</p></li>
+<li><p>Deletes joke from private table</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="deny-joke">
+<h2>Deny Joke<a class="headerlink" href="#deny-joke" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/jokes">http://localhost:8080/jokes</a>/&lt;string:joke-id&gt;/deny/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>If manager, deletes joke from private table</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="get-random-jokes">
+<h2>Get Random Jokes<a class="headerlink" href="#get-random-jokes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/random-jokes">http://localhost:8080/random-jokes</a>/&lt;int:amount&gt;</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>The specified amount of random jokes from</p></li>
+</ul>
+<p>the public table</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-quotes">
+<h2>Get All Quotes<a class="headerlink" href="#get-all-quotes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/quotes/">http://localhost:8080/quotes/</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>Dictonary of all public quotes</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="create-new-quote">
+<h2>Create New Quote<a class="headerlink" href="#create-new-quote" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/quotes">http://localhost:8080/quotes</a></p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;category&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;author&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>Adds quote to public table if manager</p></li>
+<li><p>Adds quote to private table if employee</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="update-quote">
+<h2>Update Quote<a class="headerlink" href="#update-quote" title="Link to this heading"></a></h2>
+<p><strong>PUT</strong> <a class="reference external" href="http://localhost:8080/quotes">http://localhost:8080/quotes</a>/&lt;string:quote_id&gt;/</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;category&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;author&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If employee, adds new quote record in private table pending
+approval by manager.
+If manager, updates existing record in private table.</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-pending-quotes">
+<h2>Get All Pending Quotes<a class="headerlink" href="#get-all-pending-quotes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/pending-quotes">http://localhost:8080/pending-quotes</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, returns all quotes in private table</p>
+</dd>
+</dl>
+</section>
+<section id="approve-quote">
+<h2>Approve Quote<a class="headerlink" href="#approve-quote" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/quotes">http://localhost:8080/quotes</a>/&lt;string:quote-id&gt;/approve/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager updates or adds quote to public table
+Deletes quote from private table</p>
+</dd>
+</dl>
+</section>
+<section id="deny-quote">
+<h2>Deny Quote<a class="headerlink" href="#deny-quote" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/quotes">http://localhost:8080/quotes</a>/&lt;string:quote-id&gt;/deny/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, deletes quote from private table</p>
+</dd>
+</dl>
+</section>
+<section id="get-random-quotes">
+<h2>Get Random Quotes<a class="headerlink" href="#get-random-quotes" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/random-quotes">http://localhost:8080/random-quotes</a>/&lt;int:amount&gt;</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>The specified amount of random quotes from</p></li>
+</ul>
+<p>the public table</p>
+</dd>
+</dl>
+</section>
+<section id="get-short-quote">
+<h2>Get Short Quote<a class="headerlink" href="#get-short-quote" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/short-quotes">http://localhost:8080/short-quotes</a>/&lt;int:amount&gt;</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>Returns the specified number of quotes shorter than 80 characters</p>
+</dd>
+</dl>
+</section>
+<section id="get-daily-quote">
+<h2>Get Daily Quote<a class="headerlink" href="#get-daily-quote" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/daily-quotes">http://localhost:8080/daily-quotes</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>Returns the daily quote and updates the last used date</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-bios">
+<h2>Get All Bios<a class="headerlink" href="#get-all-bios" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/bios/">http://localhost:8080/bios/</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>Dictonary of all public bios</p>
+</dd>
+</dl>
+</section>
+<section id="create-new-bio">
+<h2>Create New Bio<a class="headerlink" href="#create-new-bio" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/bios">http://localhost:8080/bios</a></p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;birth_year&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;death_year&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;paragraph: str,</span>
+<span class="s2">    &quot;</span><span class="nx">summary</span><span class="s2">&quot;: str,</span>
+<span class="s2">    &quot;</span><span class="nx">source_url</span><span class="s2">&quot;: str,</span>
+<span class="s2">    &quot;</span><span class="nx">language</span><span class="err">&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>Adds bio to public table if manager</p></li>
+<li><p>Adds bio to private table if employee</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="update-bio">
+<h2>Update Bio<a class="headerlink" href="#update-bio" title="Link to this heading"></a></h2>
+<p><strong>PUT</strong> <a class="reference external" href="http://localhost:8080/bios">http://localhost:8080/bios</a>/&lt;string:bio_id&gt;/</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;birth_year&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;death_year&quot;</span><span class="o">:</span><span class="w"> </span><span class="kr">int</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;paragraph: str,</span>
+<span class="s2">    &quot;</span><span class="nx">summary</span><span class="s2">&quot;: str,</span>
+<span class="s2">    &quot;</span><span class="nx">source_url</span><span class="s2">&quot;: str,</span>
+<span class="s2">    &quot;</span><span class="nx">language</span><span class="err">&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If employee, adds new bio record in private table pending
+approval by manager.
+If manager, updates existing record in private table.</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-pending-bios">
+<h2>Get All Pending Bios<a class="headerlink" href="#get-all-pending-bios" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/pending-bios">http://localhost:8080/pending-bios</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, returns all bios in private table</p>
+</dd>
+</dl>
+</section>
+<section id="approve-bio">
+<h2>Approve Bio<a class="headerlink" href="#approve-bio" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/bios">http://localhost:8080/bios</a>/&lt;string:bio-id&gt;/approve/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager updates or adds bio to public table
+Deletes bio from private table</p>
+</dd>
+</dl>
+</section>
+<section id="deny-bio">
+<h2>Deny Bio<a class="headerlink" href="#deny-bio" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/bios">http://localhost:8080/bios</a>/&lt;string:bio-id&gt;/deny/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, deletes bio from private table</p>
+</dd>
+</dl>
+</section>
+<section id="get-random-bios">
+<h2>Get Random Bios<a class="headerlink" href="#get-random-bios" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/random-bios">http://localhost:8080/random-bios</a>/&lt;int:amount&gt;</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>The specified amount of random bios from</p></li>
+</ul>
+<p>the public table</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-trivia">
+<h2>Get All Trivia<a class="headerlink" href="#get-all-trivia" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/trivia/">http://localhost:8080/trivia/</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>Dictonary of all public trivia</p>
+</dd>
+</dl>
+</section>
+<section id="create-new-trivia">
+<h2>Create New Trivia<a class="headerlink" href="#create-new-trivia" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/trivia">http://localhost:8080/trivia</a></p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;question&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;answer&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>Adds trivia to public table if manager</p></li>
+<li><p>Adds trivia to private table if employee</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="update-trivia">
+<h2>Update Trivia<a class="headerlink" href="#update-trivia" title="Link to this heading"></a></h2>
+<p><strong>PUT</strong> <a class="reference external" href="http://localhost:8080/trivia">http://localhost:8080/trivia</a>/&lt;string:trivia_id&gt;/</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;question&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;answer&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;language&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">str</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If employee, adds new trivia record in private table pending
+approval by manager.
+If manager, updates existing record in private table.</p>
+</dd>
+</dl>
+</section>
+<section id="get-all-pending-trivia">
+<h2>Get All Pending Trivia<a class="headerlink" href="#get-all-pending-trivia" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/pending-trivia">http://localhost:8080/pending-trivia</a></p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, returns all trivia in private table</p>
+</dd>
+</dl>
+</section>
+<section id="approve-trivia">
+<h2>Approve Trivia<a class="headerlink" href="#approve-trivia" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/trivia">http://localhost:8080/trivia</a>/&lt;string:trivia-id&gt;/approve/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager updates or adds trivia to public table
+Deletes trivia from private table</p>
+</dd>
+</dl>
+</section>
+<section id="deny-trivia">
+<h2>Deny Trivia<a class="headerlink" href="#deny-trivia" title="Link to this heading"></a></h2>
+<p><strong>POST</strong> <a class="reference external" href="http://localhost:8080/trivia">http://localhost:8080/trivia</a>/&lt;string:trivia-id&gt;/deny/</p>
+<dl class="simple">
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><p>If manager, deletes trivia from private table</p>
+</dd>
+</dl>
+</section>
+<section id="get-random-trivia">
+<h2>Get Random Trivia<a class="headerlink" href="#get-random-trivia" title="Link to this heading"></a></h2>
+<p><strong>GET</strong> <a class="reference external" href="http://localhost:8080/random-trivia">http://localhost:8080/random-trivia</a>/&lt;int:amount&gt;</p>
+<dl>
+<dt><strong>Headers:</strong></dt><dd><ul class="simple">
+<li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Returns:</strong></dt><dd><ul class="simple">
+<li><p>The specified amount of random trivia from</p></li>
+</ul>
+<p>the public table</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Team White.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -161,6 +161,13 @@
 </li>
       </ul></li>
       <li>
+    all_the_buzz.documentation
+
+      <ul>
+        <li><a href="all_the_buzz.documentation.html#module-all_the_buzz.documentation">module</a>
+</li>
+      </ul></li>
+      <li>
     all_the_buzz.entities
 
       <ul>
@@ -234,11 +241,13 @@
       </ul></li>
       <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Trivia.answer">answer (all_the_buzz.entities.record_entities.Trivia property)</a>
 </li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.approve_joke">approve_joke() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.utilities.authentication.html#all_the_buzz.utilities.authentication.authentication">authentication() (in module all_the_buzz.utilities.authentication)</a>
 </li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.authentication_middleware">authentication_middleware() (in module all_the_buzz.server)</a>
 </li>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes.author">author (all_the_buzz.entities.record_entities.Quotes property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.author">author (all_the_buzz.entities.record_entities.Quote property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -250,9 +259,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios">Bios (class in all_the_buzz.entities.record_entities)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio">Bio (class in all_the_buzz.entities.record_entities)</a>
 </li>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.birth_year">birth_year (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.birth_year">birth_year (all_the_buzz.entities.record_entities.Bio property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -260,7 +269,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes.category">category (all_the_buzz.entities.record_entities.Quotes property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.category">category (all_the_buzz.entities.record_entities.Quote property)</a>
 </li>
       <li><a href="all_the_buzz.database_operations.checksum_dao.html#all_the_buzz.database_operations.checksum_dao.ChecksumDAO">ChecksumDAO (class in all_the_buzz.database_operations.checksum_dao)</a>
 </li>
@@ -269,14 +278,26 @@
       <li><a href="all_the_buzz.utilities.config.html#all_the_buzz.utilities.config.config_file_reader">config_file_reader() (in module all_the_buzz.utilities.config)</a>
 </li>
       <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Joke.content">content (all_the_buzz.entities.record_entities.Joke property)</a>
+
+      <ul>
+        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.content">(all_the_buzz.entities.record_entities.Quote property)</a>
+</li>
+      </ul></li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_a_new_bio">create_a_new_bio() (in module all_the_buzz.server)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_a_new_joke">create_a_new_joke() (in module all_the_buzz.server)</a>
 </li>
-      <li><a href="all_the_buzz.database_operations.dao_factory.html#all_the_buzz.database_operations.dao_factory.DAOFactory.create_dao">create_dao() (all_the_buzz.database_operations.dao_factory.DAOFactory class method)</a>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_a_new_quote">create_a_new_quote() (in module all_the_buzz.server)</a>
 </li>
-      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_mongodb_connection">create_mongodb_connection() (in module all_the_buzz.server)</a>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_a_new_trivia">create_a_new_trivia() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_app">create_app() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_client_connection">create_client_connection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.database_operations.dao_factory.html#all_the_buzz.database_operations.dao_factory.DAOFactory.create_dao">create_dao() (all_the_buzz.database_operations.dao_factory.DAOFactory class method)</a>
 </li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.create_record">create_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
@@ -292,15 +313,17 @@
 </li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject">DatabaseAccessObject (class in all_the_buzz.database_operations.abstract_record)</a>
 </li>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.death_year">death_year (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.death_year">death_year (all_the_buzz.entities.record_entities.Bio property)</a>
+</li>
+      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record">delete_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record">delete_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
-</li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record_by_field">delete_record_by_field() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
-      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.department">department (all_the_buzz.entities.credentials_entity.Credentials property)</a>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.deny_joke">deny_joke() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.dept">dept (all_the_buzz.entities.credentials_entity.Credentials property)</a>
 </li>
       <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Joke.difficulty">difficulty (all_the_buzz.entities.record_entities.Joke property)</a>
 </li>
@@ -322,7 +345,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.fname">fname (all_the_buzz.entities.credentials_entity.Credentials property)</a>
+      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.fName">fName (all_the_buzz.entities.credentials_entity.Credentials property)</a>
 </li>
       <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.from_json_object">from_json_object() (all_the_buzz.entities.credentials_entity.Credentials static method)</a>
 
@@ -331,11 +354,11 @@
 </li>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.BaseRecord.from_json_object">(all_the_buzz.entities.record_entities.BaseRecord static method)</a>
 </li>
-        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.from_json_object">(all_the_buzz.entities.record_entities.Bios static method)</a>
+        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.from_json_object">(all_the_buzz.entities.record_entities.Bio static method)</a>
 </li>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Joke.from_json_object">(all_the_buzz.entities.record_entities.Joke static method)</a>
 </li>
-        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes.from_json_object">(all_the_buzz.entities.record_entities.Quotes static method)</a>
+        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.from_json_object">(all_the_buzz.entities.record_entities.Quote static method)</a>
 </li>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Trivia.from_json_object">(all_the_buzz.entities.record_entities.Trivia static method)</a>
 </li>
@@ -354,14 +377,18 @@
 </li>
       <li><a href="all_the_buzz.database_operations.checksum_dao.html#all_the_buzz.database_operations.checksum_dao.ChecksumDAO.get_checksum">get_checksum() (all_the_buzz.database_operations.checksum_dao.ChecksumDAO method)</a>
 </li>
+      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_credentials">get_credentials() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
+</li>
       <li><a href="all_the_buzz.database_operations.dao_factory.html#all_the_buzz.database_operations.dao_factory.DAOFactory.get_dao">get_dao() (all_the_buzz.database_operations.dao_factory.DAOFactory class method)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.get_dao_set_credentials">get_dao_set_credentials() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode.get_data">get_data() (all_the_buzz.utilities.error_handler.ResponseCode method)</a>
 </li>
-      <li><a href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode.get_error_code">get_error_code() (all_the_buzz.utilities.error_handler.ResponseCode method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode.get_error_code">get_error_code() (all_the_buzz.utilities.error_handler.ResponseCode method)</a>
+</li>
       <li><a href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode.get_error_tag">get_error_tag() (all_the_buzz.utilities.error_handler.ResponseCode method)</a>
 </li>
       <li><a href="all_the_buzz.utilities.logger.html#all_the_buzz.utilities.logger.LoggerFactory.get_general_logger">get_general_logger() (all_the_buzz.utilities.logger.LoggerFactory static method)</a>
@@ -424,9 +451,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.lname">lname (all_the_buzz.entities.credentials_entity.Credentials property)</a>
+      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.lName">lName (all_the_buzz.entities.credentials_entity.Credentials property)</a>
 </li>
-      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.location">location (all_the_buzz.entities.credentials_entity.Credentials property)</a>
+      <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.loc">loc (all_the_buzz.entities.credentials_entity.Credentials property)</a>
 </li>
       <li><a href="all_the_buzz.utilities.logger.html#all_the_buzz.utilities.logger.LoggerFactory">LoggerFactory (class in all_the_buzz.utilities.logger)</a>
 </li>
@@ -457,6 +484,8 @@
         <li><a href="all_the_buzz.database_operations.quotes_dao.html#module-all_the_buzz.database_operations.quotes_dao">all_the_buzz.database_operations.quotes_dao</a>
 </li>
         <li><a href="all_the_buzz.database_operations.trivia_dao.html#module-all_the_buzz.database_operations.trivia_dao">all_the_buzz.database_operations.trivia_dao</a>
+</li>
+        <li><a href="all_the_buzz.documentation.html#module-all_the_buzz.documentation">all_the_buzz.documentation</a>
 </li>
         <li><a href="all_the_buzz.entities.html#module-all_the_buzz.entities">all_the_buzz.entities</a>
 </li>
@@ -491,7 +520,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.name">name (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.name">name (all_the_buzz.entities.record_entities.Bio property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -499,7 +528,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.paragraph">paragraph (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.paragraph">paragraph (all_the_buzz.entities.record_entities.Bio property)</a>
 </li>
       <li><a href="all_the_buzz.database_operations.bios_dao.html#all_the_buzz.database_operations.bios_dao.PrivateBioDAO">PrivateBioDAO (class in all_the_buzz.database_operations.bios_dao)</a>
 </li>
@@ -529,7 +558,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes">Quotes (class in all_the_buzz.entities.record_entities)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote">Quote (class in all_the_buzz.entities.record_entities)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -545,7 +574,23 @@
 </li>
       <li><a href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode (class in all_the_buzz.utilities.error_handler)</a>
 </li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_daily_quote">retrieve_daily_quote() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_private_jokes_collection">retrieve_private_jokes_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_bios_collection">retrieve_public_bios_collection() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_jokes_collection">retrieve_public_jokes_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_quotes_collection">retrieve_public_quotes_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_trivia_collection">retrieve_public_trivia_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_joke">retrieve_random_joke() (in module all_the_buzz.server)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_short_quote">retrieve_short_quote() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.ROLE_MATRIX">ROLE_MATRIX (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject attribute)</a>
 
@@ -567,8 +612,6 @@
         <li><a href="all_the_buzz.database_operations.trivia_dao.html#all_the_buzz.database_operations.trivia_dao.PublicTriviaDAO.ROLE_MATRIX">(all_the_buzz.database_operations.trivia_dao.PublicTriviaDAO attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.run">run() (in module all_the_buzz.server)</a>
 </li>
   </ul></td>
@@ -579,13 +622,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="all_the_buzz.utilities.sanitize.html#all_the_buzz.utilities.sanitize.sanitize_json">sanitize_json() (in module all_the_buzz.utilities.sanitize)</a>
 </li>
-      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.set_credentials">set_credentials() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
+      <li><a href="all_the_buzz.database_operations.dao_factory.html#all_the_buzz.database_operations.dao_factory.DAOFactory.set_client">set_client() (all_the_buzz.database_operations.dao_factory.DAOFactory class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.source_url">source_url (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.set_credentials">set_credentials() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.summary">summary (all_the_buzz.entities.record_entities.Bios property)</a>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.source_url">source_url (all_the_buzz.entities.record_entities.Bio property)</a>
+</li>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.summary">summary (all_the_buzz.entities.record_entities.Bio property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -602,11 +647,11 @@
       <ul>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.BaseRecord.to_json_object">(all_the_buzz.entities.record_entities.BaseRecord method)</a>
 </li>
-        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bios.to_json_object">(all_the_buzz.entities.record_entities.Bios method)</a>
+        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Bio.to_json_object">(all_the_buzz.entities.record_entities.Bio method)</a>
 </li>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Joke.to_json_object">(all_the_buzz.entities.record_entities.Joke method)</a>
 </li>
-        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes.to_json_object">(all_the_buzz.entities.record_entities.Quotes method)</a>
+        <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.to_json_object">(all_the_buzz.entities.record_entities.Quote method)</a>
 </li>
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Trivia.to_json_object">(all_the_buzz.entities.record_entities.Trivia method)</a>
 </li>
@@ -625,11 +670,19 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.update_record">update_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.update_bio">update_bio() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.update_joke">update_joke() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.update_quote">update_quote() (in module all_the_buzz.server)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quotes.used_status">used_status (all_the_buzz.entities.record_entities.Quotes property)</a>
+      <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.update_record">update_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.update_trivia">update_trivia() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.used_date">used_date (all_the_buzz.entities.record_entities.Quote property)</a>
 </li>
   </ul></td>
 </tr></table>
