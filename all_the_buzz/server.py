@@ -6,8 +6,6 @@ import os
 import sys
 from dotenv import load_dotenv
 from pathlib import Path
-from all_the_buzz.utilities.logger import LoggerFactory
-#from utilities.logger import LoggerFactory
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 
@@ -280,7 +278,6 @@ def create_a_new_joke(credentials: Credentials):
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        public_jokes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
     
@@ -376,7 +373,6 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        public_quotes_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
     
@@ -473,7 +469,6 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        public_trivias_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
@@ -567,7 +562,6 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
             status_code, body = ResponseCode("InvalidRecord").to_http_response()
             return jsonify(body), status_code
     else:
-        public_bios_dao.clear_credentials()
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
@@ -752,6 +746,9 @@ def update_trivia(trivia_id: str, credentials: Credentials):
                 private_trivias_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 
 @authentication_middleware #this does not work yet
@@ -841,6 +838,9 @@ def update_quote(quote_id: str, credentials: Credentials):
                 private_quotes_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
             
 
 @authentication_middleware #this does not work yet
@@ -930,7 +930,10 @@ def update_bio(bio_id: str, credentials: Credentials):
                 private_bios_dao.clear_credentials()
                 status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
-            
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+
 
 
             
@@ -1154,8 +1157,6 @@ def approve_joke(credentials: Credentials, id: str):
             return jsonify(body), status_code
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
-        public_jokes_dao.clear_credentials()
-        private_jokes_dao.clear_credentials()
         return jsonify(body), status_code
 
 @authentication_middleware
@@ -2024,7 +2025,7 @@ def create_app():
     )
 
     app.add_url_rule(
-        "/daily_quotes",
+        "/daily-quotes",
         view_func=retrieve_daily_quote,
         methods=["GET"],
         provide_automatic_options=False        
@@ -2072,8 +2073,8 @@ def create_app():
     )
 
     app.add_url_rule(
-        "/random-bios/<int:amount>",
-        view_func=retrieve_random_bio,
+        "/random-trivias/<int:amount>",
+        view_func=retrieve_random_trivia,
         methods=['GET'],
         provide_automatic_options=False
     )
