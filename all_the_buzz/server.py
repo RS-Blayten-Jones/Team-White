@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, make_response
+import json
 from typing import Callable, Any
 from functools import wraps
 from pymongo.errors import PyMongoError
@@ -75,9 +76,9 @@ def authentication_middleware(f: Callable) -> Callable:
             logger.debug("Successfully obtained token from request")
         except:
             #send back a credentials missing response
-            missing_token_result = ResponseCode("MissingToken")
+            missing_token_result = ResponseCode("InvalidToken")
             status_code, body = missing_token_result.to_http_response()
-            return jsonify(body), status_code
+            return json.dumps(body), status_code, {"Content-Type": "application/json"}        
         token_dict = {'token': str(user_token)}
         try:
             logger.debug("Trying authentication")
@@ -1154,8 +1155,8 @@ def approve_joke(credentials: Credentials, id: str):
             return jsonify(body), status_code
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
-        public_jokes_dao.clear_credentials()
-        private_jokes_dao.clear_credentials()
+        # public_jokes_dao.clear_credentials()
+        # private_jokes_dao.clear_credentials()
         return jsonify(body), status_code
 
 @authentication_middleware
@@ -1776,7 +1777,7 @@ def retrieve_daily_quote(credentials: Credentials):
             print(f"HERE IS THE TYPE: {type(random_quote.get_data())}")
             json_string=dumps(random_quote.get_data())
             ResponseCode("GeneralSuccess", json_string)
-            public_bios_dao.clear_credentials()
+            public_quotes_dao.clear_credentials()
             return json_string, 200
         except Exception as e:
             status_code, body = ResponseCode(str(e)).to_http_response()
@@ -2024,7 +2025,7 @@ def create_app():
     )
 
     app.add_url_rule(
-        "/daily_quotes",
+        "/daily-quotes",
         view_func=retrieve_daily_quote,
         methods=["GET"],
         provide_automatic_options=False        
