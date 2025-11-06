@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>all_the_buzz.database_operations.abstract_record module &mdash; All The Buzz 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="all_the_buzz.database_operations.bios_dao module" href="all_the_buzz.database_operations.bios_dao.html" />
+    <link rel="prev" title="all_the_buzz.database_operations package" href="all_the_buzz.database_operations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            All The Buzz
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.documentation.html">all_the_buzz.documentation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.server.html">all_the_buzz.server module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="all_the_buzz.database_operations.html">all_the_buzz.database_operations package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="all_the_buzz.database_operations.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">all_the_buzz.database_operations.abstract_record module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject"><code class="docutils literal notranslate"><span class="pre">DatabaseAccessObject</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#all_the_buzz.database_operations.abstract_record.mongo_safe"><code class="docutils literal notranslate"><span class="pre">mongo_safe()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.bios_dao.html">all_the_buzz.database_operations.bios_dao module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.checksum_dao.html">all_the_buzz.database_operations.checksum_dao module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.dao_factory.html">all_the_buzz.database_operations.dao_factory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.jokes_dao.html">all_the_buzz.database_operations.jokes_dao module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.quotes_dao.html">all_the_buzz.database_operations.quotes_dao module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="all_the_buzz.database_operations.trivia_dao.html">all_the_buzz.database_operations.trivia_dao module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.utilities.html">all_the_buzz.utilities package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">All The Buzz</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="all_the_buzz.database_operations.html">all_the_buzz.database_operations package</a></li>
+      <li class="breadcrumb-item active">all_the_buzz.database_operations.abstract_record module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/all_the_buzz.database_operations.abstract_record.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-all_the_buzz.database_operations.abstract_record">
+<span id="all-the-buzz-database-operations-abstract-record-module"></span><h1>all_the_buzz.database_operations.abstract_record module<a class="headerlink" href="#module-all_the_buzz.database_operations.abstract_record" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">all_the_buzz.database_operations.abstract_record.</span></span><span class="sig-name descname"><span class="pre">DatabaseAccessObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MongoClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>This class is an abstract class that all DAO objects extend from to access their corresponding collections.
+Each extension can define a custom ROLE_MATRIX for role-based acessed control.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.ROLE_MATRIX">
+<span class="sig-name descname"><span class="pre">ROLE_MATRIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'create':</span> <span class="pre">['Employee',</span> <span class="pre">'Manager'],</span> <span class="pre">'delete':</span> <span class="pre">['Employee',</span> <span class="pre">'Manager'],</span> <span class="pre">'read':</span> <span class="pre">['Employee',</span> <span class="pre">'Manager'],</span> <span class="pre">'update':</span> <span class="pre">['Employee',</span> <span class="pre">'Manager']}</span></em><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.ROLE_MATRIX" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.clear_credentials">
+<span class="sig-name descname"><span class="pre">clear_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.clear_credentials" title="Link to this definition"></a></dt>
+<dd><p>Clears any set credentials by setting the current one t “None”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.create_record">
+<span class="sig-name descname"><span class="pre">create_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.create_record" title="Link to this definition"></a></dt>
+<dd><p>Creates a record with the entry data given</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary of fields and values to add to the collection</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with InsertOneResult</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record">
+<span class="sig-name descname"><span class="pre">delete_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record" title="Link to this definition"></a></dt>
+<dd><p>Deletes a record of a given ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ID</strong> (<em>str</em>) – a string corresponding to a MongoDB _id value</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the
+deleted_count ({1}) as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record_by_field">
+<span class="sig-name descname"><span class="pre">delete_record_by_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record_by_field" title="Link to this definition"></a></dt>
+<dd><p>Deletes a record of a given filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary corresponding to the field to check and the value by which to filter</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the
+deleted_count as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_all_records">
+<span class="sig-name descname"><span class="pre">get_all_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_all_records" title="Link to this definition"></a></dt>
+<dd><p>Return all (or the first x) MongoDB documents from a collection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>limit</strong> (<em>int optional</em>) – an integer that determines the number of records to send back. By default, it is set to None and returns the entire set of documents</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the JSON
+documents from the collection as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_by_fields">
+<span class="sig-name descname"><span class="pre">get_by_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_by_fields" title="Link to this definition"></a></dt>
+<dd><p>Return MongoDB documents by given fields</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filter</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary corresponding to the fields to check and the values by which to filter</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the JSON
+documents as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_by_key">
+<span class="sig-name descname"><span class="pre">get_by_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_by_key" title="Link to this definition"></a></dt>
+<dd><p>Return MongoDB document by ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ID</strong> (<em>str</em>) – a string corresponding to a MongoDB _id value</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode
+with the JSON document as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_credentials">
+<span class="sig-name descname"><span class="pre">get_credentials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_credentials" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_random">
+<span class="sig-name descname"><span class="pre">get_random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numReturned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_random" title="Link to this definition"></a></dt>
+<dd><p>Return a set number of random records given an optional filter</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numReturned</strong> (<em>int optional</em>) – an integer that determines the number of documents returned. Defaults to 1</p></li>
+<li><p><strong>filter</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>optional</em>) – a dictionary corresponding to the fields to check and the values by which to filter</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the JSON documents as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_short_record">
+<span class="sig-name descname"><span class="pre">get_short_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numReturned</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.get_short_record" title="Link to this definition"></a></dt>
+<dd><p>Return a set number of random records given an optional filter that also have a content less than
+the given max_length</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numReturned</strong> (<em>int optional</em>) – an integer that determines the number of documents returned. Defaults to 1</p></li>
+<li><p><strong>filter</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>optional</em>) – a dictionary corresponding to the fields to check and the values by which to filter</p></li>
+<li><p><strong>max_length</strong> (<em>int optional</em>) – an integer that determines the max_length of the content field. Defaults to 80</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the JSON documents as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.rbac_action">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rbac_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.rbac_action" title="Link to this definition"></a></dt>
+<dd><p>Wraps a function to ensure that it can be called with the current credential’s permissions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<em>str</em>) – which action to check in the ROLE_MATRIX with the credential’s title</p></li>
+<li><p><strong>func</strong> (<em>Callable</em>) – base function to be wrapped</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a decorator that will return a ResponseCode with the error or result of the passed
+in function or not even run the function if the ROLE_MATRIX does not give permission</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>decorator (function(?))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.set_credentials">
+<span class="sig-name descname"><span class="pre">set_credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.set_credentials" title="Link to this definition"></a></dt>
+<dd><p>Sets the current credentials of the DAO</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>credentials</strong> (<a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><em>Credentials</em></a>) – the credentials given by the authorization server to use for role-based access control</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.update_record">
+<span class="sig-name descname"><span class="pre">update_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode"><span class="pre">ResponseCode</span></a></span></span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.update_record" title="Link to this definition"></a></dt>
+<dd><p>Updates a record of a given ID with given updates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> (<em>str</em>) – a string corresponding to a MongoDB _id value</p></li>
+<li><p><strong>updates</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – a dictionary corresponding to the fields to change and the values to change to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>After being wrapped, it will return a ResponseCode with the
+matched_count and modified_count ({1, 1}) as data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a> (<a class="reference internal" href="all_the_buzz.utilities.error_handler.html#all_the_buzz.utilities.error_handler.ResponseCode" title="all_the_buzz.utilities.error_handler.ResponseCode">ResponseCode</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="all_the_buzz.database_operations.abstract_record.mongo_safe">
+<span class="sig-prename descclassname"><span class="pre">all_the_buzz.database_operations.abstract_record.</span></span><span class="sig-name descname"><span class="pre">mongo_safe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.database_operations.abstract_record.mongo_safe" title="Link to this definition"></a></dt>
+<dd><p>Wraps a function to ensure that a ResponseCode is always returned and that the result of a given
+function is added to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>Any</em>) – base function to be wrapped</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a wrapper that will return a ResponseCode with the error or result of the passed
+in function</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>wrapper (function)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="all_the_buzz.database_operations.html" class="btn btn-neutral float-left" title="all_the_buzz.database_operations package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="all_the_buzz.database_operations.bios_dao.html" class="btn btn-neutral float-right" title="all_the_buzz.database_operations.bios_dao module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Team White.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

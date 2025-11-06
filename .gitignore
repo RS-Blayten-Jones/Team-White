@@ -1,0 +1,11 @@
+.venv/
+.env
+.vscode/
+.DS_Store
+all_the_buzz/logs/
+__pycache__/
+all_the_buzz/utilities/__pycache__/
+checksummer.py
+all_the_buzz/database_operations/test_file.py
+all_the_buzz/.coverage
+all_the_buzz/entities/__pycache__/
