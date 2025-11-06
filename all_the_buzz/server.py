@@ -16,7 +16,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from pathlib import Path
-#from all_the_buzz.utilities.logger import LoggerFactory
+from all_the_buzz.utilities.logger import LoggerFactory
 #from utilities.logger import LoggerFactory
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -81,9 +81,12 @@ def authentication_middleware(f: Callable) -> Callable:
     """
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
+        logger=LoggerFactory.get_general_logger()
         try:
             #get user token from request
+            logger.debug("Getting token from request")
             user_token = request.headers.get('Bearer')
+            logger.debug("Successfully obtained token from request")
         except:
             #send back a credentials missing response
             missing_token_result = ResponseCode("MissingToken")
