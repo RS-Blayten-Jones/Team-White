@@ -403,7 +403,7 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
             new_quote = Quote.from_json_object(request_body)
         except Exception as e:
             private_quotes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_quote, Quote):
             try:
@@ -411,7 +411,7 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
                 private_quotes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             private_quotes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -428,7 +428,7 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
             new_joke = Quote.from_json_object(request_body)
         except Exception as e:
             private_quotes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_quote, Quote):
             try:
@@ -436,7 +436,7 @@ def create_a_new_quote(credentials: Credentials): #employee credentials create i
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
                 private_quotes_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_quotes_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -496,7 +496,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             new_trivia = Trivia.from_json_object(request_body)
         except Exception as e:
             private_trivias_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_trivia, Trivia):
             try:
@@ -504,7 +504,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
                 private_trivias_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             private_trivias_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -521,7 +521,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
             new_trivia = Trivia.from_json_object(request_body)
         except Exception as e:
             private_trivias_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_trivia, Trivia):
             try:
@@ -529,7 +529,7 @@ def create_a_new_trivia(credentials: Credentials): #employee credentials create 
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
                 private_trivias_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_trivias_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -587,7 +587,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
             new_bio = Bio.from_json_object(request_body)
         except Exception as e:
             private_bios_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_bio, Bio):
             try:
@@ -595,7 +595,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
                 assert isinstance(dao_response, ResponseCode) == True
             except Exception as e:
                 private_bios_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             private_bios_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -612,7 +612,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
             new_bios = Trivia.from_json_object(request_body)
         except Exception as e:
             private_bios_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_bios, Trivia):
             try:
@@ -620,7 +620,7 @@ def create_a_new_bio(credentials: Credentials): #employee credentials create in 
                 assert isinstance(dao_response, ResponseCode)
             except Exception as e:
                 private_bios_dao.clear_credentials()
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 return jsonify(body), status_code
             public_bios_dao.clear_credentials()
             status_code, body = dao_response.to_http_response()
@@ -761,7 +761,7 @@ def update_trivia(trivia_id: str, credentials: Credentials):
             updated_trivia = Trivia.from_json_object(request_body)
         except Exception as e:
             #entity validation fails
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         #actual database update
         if isinstance(updated_trivia, Trivia):
@@ -791,7 +791,7 @@ def update_trivia(trivia_id: str, credentials: Credentials):
             new_edit = Trivia.from_json_object(request_body)
         except Exception as e:
             private_trivias_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Trivia):
             try:
@@ -846,7 +846,7 @@ def update_quote(quote_id: str, credentials: Credentials):
             updated_quote = Quote.from_json_object(request_body)
         except Exception as e:
             #entity validation fails
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         #actual database update
         if isinstance(updated_quote, Quote):
@@ -876,7 +876,7 @@ def update_quote(quote_id: str, credentials: Credentials):
             new_edit = Quote.from_json_object(request_body)
         except Exception as e:
             private_quotes_dao.clear_credentials()
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         if isinstance(new_edit, Quote):
             try:
@@ -931,7 +931,7 @@ def update_bio(bio_id: str, credentials: Credentials):
             updated_bio = Bio.from_json_object(request_body)
         except Exception as e:
             #entity validation fails
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
         #actual database update
         if isinstance(updated_bio, Bio):
@@ -1206,7 +1206,7 @@ def approve_quote(credentials: Credentials, id: str):
         try:
             record=private_quotes_dao.get_by_key(id)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_quotes_dao.clear_credentials()
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1215,7 +1215,7 @@ def approve_quote(credentials: Credentials, id: str):
         try:
             pending_quote=Quote.from_json_object(record)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_quotes_dao.clear_credentials()
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1227,7 +1227,7 @@ def approve_quote(credentials: Credentials, id: str):
             try:
                 public_quotes_dao.update_record(original_id,pending_quote.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_quotes_dao.clear_credentials()
                 private_quotes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1237,7 +1237,7 @@ def approve_quote(credentials: Credentials, id: str):
             try:
                 public_quotes_dao.create_record(pending_quote.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_quotes_dao.clear_credentials()
                 private_quotes_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1248,7 +1248,7 @@ def approve_quote(credentials: Credentials, id: str):
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_quotes_dao.clear_credentials()
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1268,7 +1268,7 @@ def deny_quote(credentials: Credentials, id: str):
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             private_quotes_dao.clear_credentials()
             return jsonify(body), status_code
     else:
@@ -1286,7 +1286,7 @@ def approve_trivia(credentials: Credentials, id: str):
         try:
             record=private_trivias_dao.get_by_key(id)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_trivias_dao.clear_credentials()
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1295,7 +1295,7 @@ def approve_trivia(credentials: Credentials, id: str):
         try:
             pending_trivia=Trivia.from_json_object(record)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_trivias_dao.clear_credentials()
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1307,7 +1307,7 @@ def approve_trivia(credentials: Credentials, id: str):
             try:
                 public_trivias_dao.update_record(original_id,pending_trivia.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_trivias_dao.clear_credentials()
                 private_trivias_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1317,7 +1317,7 @@ def approve_trivia(credentials: Credentials, id: str):
             try:
                 public_trivias_dao.create_record(pending_trivia.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_trivias_dao.clear_credentials()
                 private_trivias_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1328,7 +1328,7 @@ def approve_trivia(credentials: Credentials, id: str):
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_trivias_dao.clear_credentials()
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1348,7 +1348,7 @@ def deny_trivia(credentials: Credentials, id: str):
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             private_trivias_dao.clear_credentials()
             return jsonify(body), status_code
     else:
@@ -1365,7 +1365,7 @@ def approve_bio(credentials: Credentials, id: str):
         try:
             record=private_bios_dao.get_by_key(id)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_bios_dao.clear_credentials()
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1374,7 +1374,7 @@ def approve_bio(credentials: Credentials, id: str):
         try:
             pending_bio=Bio.from_json_object(record)
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_bios_dao.clear_credentials()
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1386,7 +1386,7 @@ def approve_bio(credentials: Credentials, id: str):
             try:
                 public_bios_dao.update_record(original_id,pending_bio.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_bios_dao.clear_credentials()
                 private_bios_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1396,7 +1396,7 @@ def approve_bio(credentials: Credentials, id: str):
             try:
                 public_bios_dao.create_record(pending_bio.to_json_object())
             except Exception as e:
-                status_code, body = ResponseCode(e).to_http_response()
+                status_code, body = ResponseCode(str(e)).to_http_response()
                 public_bios_dao.clear_credentials()
                 private_bios_dao.clear_credentials()
                 return jsonify(body), status_code
@@ -1407,7 +1407,7 @@ def approve_bio(credentials: Credentials, id: str):
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             public_bios_dao.clear_credentials()
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
@@ -1427,7 +1427,7 @@ def deny_bio(credentials: Credentials, id: str):
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
         except Exception as e:
-            status_code, body = ResponseCode(e).to_http_response()
+            status_code, body = ResponseCode(str(e)).to_http_response()
             private_bios_dao.clear_credentials()
             return jsonify(body), status_code
     else:
