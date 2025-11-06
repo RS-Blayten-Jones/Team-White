@@ -34,79 +34,7 @@ from all_the_buzz.entities.record_entities import Joke, Trivia, Quote, Bio
 from all_the_buzz.utilities.error_handler import ResponseCode
 from all_the_buzz.database_operations.dao_factory import DAOFactory
 from all_the_buzz.utilities.logger import LoggerFactory
-"""
 
-    Get All Jokes
-    -------------
-    (GET) http://localhost:8080/jokes/
-
-    Included:
-        Include Bearer header with token
-    Returns:
-        Dictonary of all public jokes
-    
-    Create New Joke
-    ---------------
-    (POST) http://localhost:8080/jokes
-    
-    Include:
-        Include Bearer header with token
-        In body include json object in this format:
-        {
-            "level": int,
-            "language": str,
-            "content": {
-                "type": <either "one_liner" or "qa">,
-                "text": str (required if "one_liner"),
-                "question": str (required if "qa"),
-                "answer": str (required if "qa")
-                }
-            }
-    Returns:
-        Adds joke to public table if manager and adds to private
-        table if employee.
-     
-    Update Joke
-    -----------
-    (PUT) http://localhost:8080/jokes/<string:joke_id>/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in uri
-    Returns:
-        If present returns a json object of the specifed joke
-        in the public table
-    
-    Approve Joke
-    ------------
-    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in private table
-    Returns:
-        If manager updates or adds joke to public table
-        Deletes joke from private table 
-        
-    Deny Joke
-    ---------
-    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
-    
-    Include:
-        Token in bearer header
-        ID of joke in private table
-    Returns:
-        If manager, deletes joke from private table
-        
-    Get All Quotes
-    --------------
-    (GET) http//localhost:8080/quotes/
-
-    Include:
-        Token in bearer header
-    Returns:
-        Returns all quotes from public table
-    """
 global mongo_client
 
 global public_jokes_dao
@@ -1266,28 +1194,6 @@ def create_app():
         methods=["GET"],
         provide_automatic_options=False
     )
-    """
-    Create New Joke
-    ---------------
-    (POST) http://localhost:8080/jokes
-    
-    Include:
-        Include Bearer header with token
-        In body include json object in this format:
-        {
-            "level": int,
-            "language": str,
-            "content": {
-                "type": <either "one_liner" or "qa">,
-                "text": str (required if "one_liner"),
-                "question": str (required if "qa"),
-                "answer": str (required if "qa")
-                }
-            }
-    Returns:
-        Adds joke to public table if manager and adds to private
-        table if employee.
-        """
     app.add_url_rule(
         "/pending-jokes",
         view_func=retrieve_private_jokes_collection,
@@ -1300,54 +1206,18 @@ def create_app():
         methods=["POST"],
         provide_automatic_options=False
     )
-
-    """"
-    Update Joke
-    -----------
-    (PUT) http://localhost:8080/jokes/<string:joke_id>/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in uri
-    Returns:
-        If present returns a json object of the specifed joke
-        in the public table
-    """
     app.add_url_rule(
         "/jokes/<string:joke_id>", 
         view_func=update_joke, 
         methods=["PUT"],
         provide_automatic_options=False
     )
-    """
-    Approve Joke
-    ------------
-    (POST) http://localhost:8080/joke/<string:joke-id>/approve/
-    
-    Include:
-        Token in Bearer header
-        ID of joke in private table
-    Returns:
-        If manager updates or adds joke to public table
-        Deletes joke from private table 
-        """
     app.add_url_rule(
         "/jokes/<string:id>/approve",
         view_func=approve_joke,
         methods=["POST"],
         provide_automatic_options=False
     )
-    """
-    Deny Joke
-    ---------
-    (POST) http://localhost:8080/joke/<string:joke-id>/deny/
-    
-    Include:
-        Token in bearer header
-        ID of joke in private table
-    Returns:
-        If manager, deletes joke from private table
-        """
     app.add_url_rule(
         "/jokes/<string:id>/deny",
         view_func=deny_joke,
@@ -1366,16 +1236,7 @@ def create_app():
         methods=['GET'],
         provide_automatic_options=False
     )
-    """
-    Get All Quotes
-    --------------
-    (GET) http//localhost:8080/quotes/
 
-    Include:
-        Token in bearer header
-    Returns:
-        Returns all quotes from public table
-    """
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
@@ -1400,7 +1261,7 @@ def create_app():
 
 
     app.add_url_rule(
-        "/daily_quotes",
+        "/daily-quotes",
         view_func=retrieve_daily_quote,
         methods=["GET"],
         provide_automatic_options=False        

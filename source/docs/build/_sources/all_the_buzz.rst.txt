@@ -22,4 +22,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   all_the_buzz.documentation
    all_the_buzz.server
