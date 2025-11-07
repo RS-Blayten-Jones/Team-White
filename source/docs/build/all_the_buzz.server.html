@@ -90,6 +90,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="all_the_buzz.database_operations.html">all_the_buzz.database_operations package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.entities.html">all_the_buzz.entities package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="all_the_buzz.utilities.html">all_the_buzz.utilities package</a></li>
 </ul>
 
@@ -923,7 +924,31 @@ valid JSON string.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_random_bio">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_random_bio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_random_bio" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Request a random bio (Get / random-bios/&lt;amt&gt;).</p>
+<p>This endpoint allows the an employee to request a set of random records from
+the public collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to verify the user’s title.</p></li>
+<li><p><strong>amount</strong> – The amount of random records</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON string, 200): If the user is a <strong>Manager</strong>, returns a JSON string</p></li>
+</ul>
+<p>containing all records from the Private collection.
+* (JSON body, 401): If the user is <strong>not a Manager</strong> (e.g., an Employee or
+any other role), returns an “Unauthorized” error response.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_random_joke">
@@ -957,12 +982,60 @@ any other role), returns an “Unauthorized” error response.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_random_quote">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_random_quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_random_quote" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Request a random quote (Get / random-quotes/&lt;amt&gt;).</p>
+<p>This endpoint allows the an employee to request a set of random records from
+the public collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to verify the user’s title.</p></li>
+<li><p><strong>amount</strong> – The amount of random records</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON string, 200): If the user is a <strong>Manager</strong>, returns a JSON string</p></li>
+</ul>
+<p>containing all records from the Private collection.
+* (JSON body, 401): If the user is <strong>not a Manager</strong> (e.g., an Employee or
+any other role), returns an “Unauthorized” error response.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_random_trivia">
 <span class="sig-prename descclassname"><span class="pre">all_the_buzz.server.</span></span><span class="sig-name descname"><span class="pre">retrieve_random_trivia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials" title="all_the_buzz.entities.credentials_entity.Credentials"><span class="pre">Credentials</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#all_the_buzz.server.retrieve_random_trivia" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Request a random trivia (Get / random-trivia/&lt;amt&gt;).</p>
+<p>This endpoint allows the an employee to request a set of random records from
+the public collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials</strong> – The authenticated user’s Credentials object, injected by
+the authentication_middleware, used to verify the user’s title.</p></li>
+<li><p><strong>amount</strong> – The amount of random records</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>(JSON string, 200): If the user is a <strong>Manager</strong>, returns a JSON string</p></li>
+</ul>
+<p>containing all records from the Private collection.
+* (JSON body, 401): If the user is <strong>not a Manager</strong> (e.g., an Employee or
+any other role), returns an “Unauthorized” error response.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing a JSON response body and an HTTP status code</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="all_the_buzz.server.retrieve_short_quote">
