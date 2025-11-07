@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import ssl
