@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from abc import ABC

@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 import nh3
 import re
 from all_the_buzz.utilities.logger import LoggerFactory
@@ -8,7 +12,7 @@ This module contains a function for sanitizing external inputs to avoid
 code injection.
 
 Functions:
-    sanitize_json: function that uses the nh3 library to sanitize strings
+    sanitize_json: function that uses the nh3 and re library to sanitize strings
     '''
 
 def sanitize_json(content):

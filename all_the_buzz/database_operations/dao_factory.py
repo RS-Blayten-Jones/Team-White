@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from all_the_buzz.database_operations.abstract_record import DatabaseAccessObject
 from all_the_buzz.database_operations.bios_dao import PublicBioDAO, PrivateBioDAO
 from all_the_buzz.database_operations.jokes_dao import PublicJokeDAO, PrivateJokeDAO
