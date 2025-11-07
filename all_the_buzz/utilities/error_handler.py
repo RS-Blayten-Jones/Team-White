@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from typing import Optional, Any
 from all_the_buzz.utilities.logger import LoggerFactory
 

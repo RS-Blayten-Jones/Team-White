@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from flask import Flask, request, jsonify, make_response
 import json
 from typing import Callable, Any

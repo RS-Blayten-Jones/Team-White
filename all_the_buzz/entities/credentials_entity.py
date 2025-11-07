@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 '''
 credentials_entity.py
 
@@ -7,11 +11,6 @@ Classes:
     Credentials: An entity class for storing and validating credential information. 
     Token: An entity class for storing and validating the token
 '''
-
-#TODO make the filters for Employee here, A person
-# object from his server has titles like sales agent 
-#or developer and those need to be filtered to say that 
-#their title is Employee instead also filter for Managers too
 
 class Credentials:
     '''
@@ -246,7 +245,7 @@ class Credentials:
 
 class Token:
     """
-    Entity class for the json web tokens.
+    Entity class for validating the json web tokens.
     """
     def __init__(self, token='ABC'):
         self.token=token
