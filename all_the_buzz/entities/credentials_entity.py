@@ -8,11 +8,6 @@ Classes:
     Token: An entity class for storing and validating the token
 '''
 
-#TODO make the filters for Employee here, A person
-# object from his server has titles like sales agent 
-#or developer and those need to be filtered to say that 
-#their title is Employee instead also filter for Managers too
-
 class Credentials:
     '''
     Validates credential data passed to it.
@@ -246,7 +241,7 @@ class Credentials:
 
 class Token:
     """
-    Entity class for the json web tokens.
+    Entity class for validating the json web tokens.
     """
     def __init__(self, token='ABC'):
         self.token=token
