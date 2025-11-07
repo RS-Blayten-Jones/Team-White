@@ -1,10 +1,18 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 """
 Get All Jokes
 -------------
-**GET** http://localhost:8080/jokes/
+**GET** http://localhost:8080/jokes
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - level = 1,2 or 3
+    - language
 
 **Returns:**
     Dictonary of all public jokes
@@ -39,7 +47,7 @@ Create New Joke
 
 Update Joke
 -----------
-**PUT** http://localhost:8080/jokes/<string:joke_id>/
+**PUT** http://localhost:8080/jokes/<string:joke_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -77,7 +85,7 @@ Get All Pending Jokes
     
 Approve Joke
 ------------
-**POST** http://localhost:8080/jokes/<string:joke-id>/approve/
+**POST** http://localhost:8080/jokes/<string:joke-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -88,7 +96,7 @@ Approve Joke
     
 Deny Joke
 ---------
-**POST** http://localhost:8080/jokes/<string:joke-id>/deny/
+**POST** http://localhost:8080/jokes/<string:joke-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -111,10 +119,16 @@ Get Random Jokes
     
 Get All Quotes
 --------------
-**GET** http://localhost:8080/quotes/
+**GET** http://localhost:8080/quotes
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - content 
+    - category 
+    - language
+    - author
 
 **Returns:**
     - Dictonary of all public quotes
@@ -145,7 +159,7 @@ Create New Quote
     
 Update Quote
 ------------
-**PUT** http://localhost:8080/quotes/<string:quote_id>/
+**PUT** http://localhost:8080/quotes/<string:quote_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -179,7 +193,7 @@ Get All Pending Quotes
     
 Approve Quote
 -------------
-**POST** http://localhost:8080/quotes/<string:quote-id>/approve/
+**POST** http://localhost:8080/quotes/<string:quote-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -191,7 +205,7 @@ Approve Quote
 
 Deny Quote
 ----------
-**POST** http://localhost:8080/quotes/<string:quote-id>/deny/
+**POST** http://localhost:8080/quotes/<string:quote-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -235,10 +249,17 @@ Get Daily Quote
     
 Get All Bios
 ------------
-**GET** http://localhost:8080/bios/
+**GET** http://localhost:8080/bios
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - birth_year
+    - death_year
+    - name
+    - summary
+    - language
 
 **Returns:**
     Dictonary of all public bios
@@ -272,7 +293,7 @@ Create New Bio
     
 Update Bio
 ----------
-**PUT** http://localhost:8080/bios/<string:bio_id>/
+**PUT** http://localhost:8080/bios/<string:bio_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -309,7 +330,7 @@ Get All Pending Bios
     
 Approve Bio
 -----------
-**POST** http://localhost:8080/bios/<string:bio-id>/approve/
+**POST** http://localhost:8080/bios/<string:bio-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -321,7 +342,7 @@ Approve Bio
 
 Deny Bio
 --------
-**POST** http://localhost:8080/bios/<string:bio-id>/deny/
+**POST** http://localhost:8080/bios/<string:bio-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -344,7 +365,7 @@ Get Random Bios
 
 Get All Trivia
 --------------
-**GET** http://localhost:8080/trivia/
+**GET** http://localhost:8080/trivia
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -360,6 +381,11 @@ Create New Trivia
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - question
+    - answer
+    - language
 
 **Request Body (application/json):**
     .. code-block:: javascript
@@ -377,7 +403,7 @@ Create New Trivia
     
 Update Trivia
 -------------
-**PUT** http://localhost:8080/trivia/<string:trivia_id>/
+**PUT** http://localhost:8080/trivia/<string:trivia_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -410,7 +436,7 @@ Get All Pending Trivia
     
 Approve Trivia
 --------------
-**POST** http://localhost:8080/trivia/<string:trivia-id>/approve/
+**POST** http://localhost:8080/trivia/<string:trivia-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -422,7 +448,7 @@ Approve Trivia
 
 Deny Trivia
 -----------
-**POST** http://localhost:8080/trivia/<string:trivia-id>/deny/
+**POST** http://localhost:8080/trivia/<string:trivia-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>

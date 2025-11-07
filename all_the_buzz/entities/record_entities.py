@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 # house all entity classes
 from abc import ABC, abstractmethod
 from datetime import date

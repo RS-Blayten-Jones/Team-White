@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White 
+# Licensed under the MIT License
+# See LICENSE for more details
+
 import pytest
 from all_the_buzz.utilities.authentication import authentication
 from all_the_buzz.entities.credentials_entity import Credentials
