@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 # stuff for the secret file and the database URI
-load_dotenv() 
+load_dotenv()
 ATLAS_URI = os.getenv("ATLAS_URI")
 DATABASE_NAME = "team_white_database"
 COLLECTION_NAME = "jokes_public"
@@ -34,7 +34,7 @@ jokes_public_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "level", "content", "language"], #ADD THE OG ID FIELD 
+                "required": ["_id", "level", "content", "language"], #ADD THE OG ID FIELD
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "level": {"bsonType": "int", "enum": [1, 2, 3]},
@@ -57,7 +57,7 @@ jokes_public_schema = {
         },
 
         #RULE 2: Conditional Check: is_edit=True REQUIRES original_id
-       
+
 
         #RULE 3: Conditional Check: level=3 REQUIRES explanation
         {
@@ -102,7 +102,7 @@ jokes_public_schema = {
 #     else:
 #         print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
 #         db.create_collection(
-#             COLLECTION_NAME, 
+#             COLLECTION_NAME,
 #             validator=jokes_public_schema, #****change this line to say collection_publicOrPublic_schema
 #             validationAction='error',
 #             validationLevel='strict'
@@ -112,7 +112,7 @@ jokes_public_schema = {
 
 
 
-# This(below) was me practicing putting an invalid document into the database to 
+# This(below) was me practicing putting an invalid document into the database to
 # test it but the code above has to be commented out to run the file again
 
 # invalid_doc = {"is_edit": False, "level": 3, "content": {"type": "one_liner", "text": "A joke"}, "language": "English"}
