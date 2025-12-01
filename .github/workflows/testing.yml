@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - test
+      - better_spencer
   pull_request:
     branches:
       - main
       - test
+      - better_spencer
 
 jobs:
   unit-tests:
