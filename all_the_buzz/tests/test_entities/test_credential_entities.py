@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -14,7 +14,7 @@ python -m pytest --cov=entities --cov-report=term
 (.venv)...\project-folder> pip install pytest-cov
 (.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term
 (.venv)...\project-folder> python -m pytest --cov=entities --cov-report=term-missing
-"""  
+"""
 
 from all_the_buzz.entities import Credentials, Token
 import pytest
@@ -39,14 +39,14 @@ def test_id_setter_negative():
     cred = Credentials()
     with pytest.raises(ValueError):
         cred.id = -1
-    
+
 # ------ Testing fName setter ------
 def test_fName_setter_valid():
     cred = Credentials()
     cred.id = 1234
     cred.fName = "Mike"
     assert cred.fName == "Mike"
-    
+
 # Test for allowing apostrophes in names
 # def test_fName_setter_valid_apostrophe():
 #     cred = Credentials()
@@ -83,7 +83,7 @@ def test_fName_setter_greater_than_50():
     cred.id = 1234
     with pytest.raises(ValueError):
         cred.fName = "a" * 51
-    
+
 # def test_fName_setter_non_letters():
 #     cred = Credentials()
 #     cred.id = 1234
@@ -256,7 +256,7 @@ def test_loc_setter_spaces():
     cred.id = 1234
     with pytest.raises(ValueError):
         cred.loc = "       "
-    
+
 def test_loc_setter_greater_than_75():
     cred = Credentials()
     cred.id = 1234

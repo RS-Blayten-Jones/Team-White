@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - test
+      - better_spencer
   pull_request:
     branches:
       - main
       - test
+      - better_spencer
 
 jobs:
   unit-tests:
@@ -46,12 +48,12 @@ jobs:
         with:
           python-version: '3.12.10'
 
-      - name: Install pylint
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pylint
           pip install -r all_the_buzz/requirements.txt
 
-      - name: Run pylint
+      - name: Run pylint with minimum score of 8.5
         run: |
-          pylint all_the_buzz --exit-zero
+          pylint all_the_buzz --fail-under=8.5
