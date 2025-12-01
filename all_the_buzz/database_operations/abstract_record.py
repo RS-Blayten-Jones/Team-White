@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from abc import ABC
@@ -12,7 +16,7 @@ def mongo_safe(func):
     '''
     Wraps a function to ensure that a ResponseCode is always returned and that the result of a given
     function is added to data.
-    
+
     Args:
         func (Any): base function to be wrapped
 
@@ -62,13 +66,13 @@ class DatabaseAccessObject(ABC):
 
     def get_credentials(self):
         return self.__credentials
-    
+
     #Checks the current credential's role against the ROLE_MATRIX which holds compatible roles with a given action
     @staticmethod
     def rbac_action(action: str):
         '''
         Wraps a function to ensure that it can be called with the current credential's permissions
-        
+
         Args:
             action (str): which action to check in the ROLE_MATRIX with the credential's title
             func (Callable): base function to be wrapped
@@ -93,7 +97,7 @@ class DatabaseAccessObject(ABC):
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
         '''
         Hooks to a function and overrides to give default values for MongoDB documents
-        
+
         Args:
             entry (dict[str, Any]): the entry to be processed
 
@@ -101,11 +105,11 @@ class DatabaseAccessObject(ABC):
             entry (dict[str, Any]): the entry after processing (usually defining a default field)
         '''
         return entry  #Default: no changes
-    
+
     def set_credentials(self, credentials: Credentials) -> None:
         '''
         Sets the current credentials of the DAO
-        
+
         Args:
             credentials (Credentials): the credentials given by the authorization server to use for role-based access control
         '''
@@ -121,7 +125,7 @@ class DatabaseAccessObject(ABC):
     def get_by_key(self, ID: str) -> ResponseCode:
         '''
         Return MongoDB document by ID
-        
+
         Args:
             ID (str): a string corresponding to a MongoDB _id value
 
@@ -139,7 +143,7 @@ class DatabaseAccessObject(ABC):
     def get_by_fields(self, filter: dict[str, Any]) -> ResponseCode:
         '''
         Return MongoDB documents by given fields
-        
+
         Args:
             filter (dict[str, Any]): a dictionary corresponding to the fields to check and the values by which to filter
 
@@ -150,12 +154,12 @@ class DatabaseAccessObject(ABC):
         self.__logger.debug(f"Getting {self.__class__.__name__} record by fields {filter}.")
         document_list = list(self._collection.find(filter))
         return document_list
-    
+
     @rbac_action("read")
     def get_all_records(self, limit: int = None) -> ResponseCode:
         '''
         Return all (or the first x) MongoDB documents from a collection
-        
+
         Args:
             limit (int optional): an integer that determines the number of records to send back. By default, it is set to None and returns the entire set of documents
 
@@ -171,12 +175,12 @@ class DatabaseAccessObject(ABC):
         if not documents:
             return ResponseCode(error_tag="ResourceNotFound")
         return documents
-    
+
     @rbac_action("read")
     def get_random(self, numReturned: int = 1, filter: dict[str, Any] = None) -> ResponseCode:
         '''
         Return a set number of random records given an optional filter
-        
+
         Args:
             numReturned (int optional): an integer that determines the number of documents returned. Defaults to 1
             filter (dict[str, Any] optional): a dictionary corresponding to the fields to check and the values by which to filter
@@ -193,13 +197,13 @@ class DatabaseAccessObject(ABC):
         if len(random_documents) < numReturned:
             self.__logger.warning(f"Requested {numReturned}, but only returned {len(random_documents)} records.")
         return random_documents
-    
+
     @rbac_action("read")
     def get_short_record(self, numReturned: int, filter: dict[str, Any] = None, max_length: int = 80) -> ResponseCode:
         '''
         Return a set number of random records given an optional filter that also have a content less than
         the given max_length
-        
+
         Args:
             numReturned (int optional): an integer that determines the number of documents returned. Defaults to 1
             filter (dict[str, Any] optional): a dictionary corresponding to the fields to check and the values by which to filter
@@ -237,7 +241,7 @@ class DatabaseAccessObject(ABC):
     def update_record(self, ID: str, updates: dict[str, Any]) -> ResponseCode:
         '''
         Updates a record of a given ID with given updates
-        
+
         Args:
             ID (str): a string corresponding to a MongoDB _id value
             updates (dict[str, Any]): a dictionary corresponding to the fields to change and the values to change to
@@ -254,13 +258,13 @@ class DatabaseAccessObject(ABC):
         if result.matched_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return ID
-    
+
     @rbac_action("create")
     @mongo_safe
     def create_record(self, entry: dict[str, Any]) -> ResponseCode:
         '''
         Creates a record with the entry data given
-        
+
         Args:
             entry (dict[str, Any]): a dictionary of fields and values to add to the collection
 
@@ -278,7 +282,7 @@ class DatabaseAccessObject(ABC):
     def delete_record(self, ID: str) -> ResponseCode:
         '''
         Deletes a record of a given ID
-        
+
         Args:
             ID (str): a string corresponding to a MongoDB _id value
 
@@ -291,13 +295,13 @@ class DatabaseAccessObject(ABC):
         if result.deleted_count == 0:
             return ResponseCode(error_tag="ResourceNotFound")
         return {"deleted_count": result.deleted_count}
-    
+
     @rbac_action("delete")
     @mongo_safe
     def delete_record_by_field(self, filter: dict[str, Any]) -> ResponseCode:
         '''
         Deletes a record of a given filter
-        
+
         Args:
             filter (dict[str, Any]): a dictionary corresponding to the field to check and the value by which to filter
 

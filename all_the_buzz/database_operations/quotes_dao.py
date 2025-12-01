@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from all_the_buzz.database_operations.abstract_record import DatabaseAccessObject, mongo_safe
 from all_the_buzz.utilities.error_handler import ResponseCode
 from typing import Any
@@ -24,27 +28,27 @@ class PublicQuoteDAO(DatabaseAccessObject):
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
         entry["used_date"] = ""
         return entry
-    
+
     @mongo_safe
     def _reset_quotes(self) -> ResponseCode:
         '''
         Sets all quotes "used_date" to ""
 
         Returns:
-            ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the 
+            ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the
             UpdateResult object
         '''
         self.__logger.debug(f"Reseting all quotes...")
         result = self._collection.update_many({}, {"$set": {"used_date": ""}})
         return result
-    
+
     @DatabaseAccessObject.rbac_action("read")
     @mongo_safe
     def get_quote_of_day(self) -> ResponseCode:
         '''
         Gets the quote of the day using today's date. After that date is used, it is marked. On New Year's
         all of the quotes are unmarked back to being "unused"
- 
+
         Returns:
             ResponseCode (ResponseCode): After being wrapped, it will return a ResponseCode with the
             JSON document
@@ -75,7 +79,7 @@ class PublicQuoteDAO(DatabaseAccessObject):
             {"$set": {"used_date": today_string}}
         )
         return record
-    
+
 class PrivateQuoteDAO(DatabaseAccessObject):
     ROLE_MATRIX = {
         "read": ["Manager"],
@@ -92,7 +96,7 @@ class PrivateQuoteDAO(DatabaseAccessObject):
         '''
         super().__init__("quotes_private", client, database_name)
 
-    #used_date should default to none when added!    
+    #used_date should default to none when added!
     def _prepare_entry(self, entry: dict[str, Any]) -> dict[str, Any]:
         entry["used_date"] = ""
         return entry
