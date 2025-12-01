@@ -117,6 +117,11 @@
 <li><p>Authorization: Bearer &lt;token&gt;</p></li>
 </ul>
 </dd>
+<dt><strong>Parameters:</strong></dt><dd><ul class="simple">
+<li><p>level = 1,2 or 3</p></li>
+<li><p>language</p></li>
+</ul>
+</dd>
 <dt><strong>Returns:</strong></dt><dd><p>Dictonary of all public jokes</p>
 </dd>
 </dl>
@@ -242,6 +247,13 @@
 <dl class="simple">
 <dt><strong>Headers:</strong></dt><dd><ul class="simple">
 <li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Parameters:</strong></dt><dd><ul class="simple">
+<li><p>content</p></li>
+<li><p>category</p></li>
+<li><p>language</p></li>
+<li><p>author</p></li>
 </ul>
 </dd>
 <dt><strong>Returns:</strong></dt><dd><ul class="simple">
@@ -381,6 +393,14 @@ Deletes quote from private table</p>
 <li><p>Authorization: Bearer &lt;token&gt;</p></li>
 </ul>
 </dd>
+<dt><strong>Parameters:</strong></dt><dd><ul class="simple">
+<li><p>birth_year</p></li>
+<li><p>death_year</p></li>
+<li><p>name</p></li>
+<li><p>summary</p></li>
+<li><p>language</p></li>
+</ul>
+</dd>
 <dt><strong>Returns:</strong></dt><dd><p>Dictonary of all public bios</p>
 </dd>
 </dl>
@@ -508,6 +528,12 @@ Deletes bio from private table</p>
 <dl>
 <dt><strong>Headers:</strong></dt><dd><ul class="simple">
 <li><p>Authorization: Bearer &lt;token&gt;</p></li>
+</ul>
+</dd>
+<dt><strong>Parameters:</strong></dt><dd><ul class="simple">
+<li><p>question</p></li>
+<li><p>answer</p></li>
+<li><p>language</p></li>
 </ul>
 </dd>
 <dt><strong>Request Body (application/json):</strong></dt><dd><div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
