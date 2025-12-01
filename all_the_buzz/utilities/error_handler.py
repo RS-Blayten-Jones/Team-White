@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -33,7 +33,7 @@ _RESPONSE_MAP = {
     "WriteError": (400, "The write operation failed due to invalid data."),
     "PyMongoError": (500, "An unexpected and unknown database error occurred. Please try again or contact support."),
     "ResourceNotFound": (404, "This resource does not exist in our database."), #Custom error
-    
+
     #Custom Error Calls
         #Token Validation Errors
     "AuthenticationTimeout": (503, "Authentication server did not respond. Try again later."),
@@ -58,13 +58,13 @@ _RESPONSE_MAP = {
 
     #employee title error
     "InvalidEmployee": (400, "Employee title invalid"),
-    
+
     #Authentication Codes
     "InvalidToken": (401, "Authentication failed. Please verify your credentials and try again."),
     "ConfigLoadError": (500, "The configuration could not be loaded. Please verify the file and try again."),
     "ServerConnectionError": (503, "The operation could not be completed due to a lost connection. Please retry."),
     "AuthServerError": (502, "The request could not be completed due to a temporary issue with the authentication service. Please retry."),
-    "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used 
+    "InvalidEmployee": (400, "Employee title invalid"), #idk if this is actually used
     #record validation error
     "InvalidRecord": (400, "Record is either invalid or not in valid format"),
     "InvalidFilter": (400, "Filters are either invalid fields or not in valid format"),
@@ -74,7 +74,7 @@ _RESPONSE_MAP = {
 class ResponseCode:
     '''
     This class wraps a detailed HTTP response code with a custom message and added data and automatically
-    logs this result 
+    logs this result
     '''
     def __init__(self, error_tag: str = "", data: Optional[Any] = None):
         '''
@@ -95,23 +95,23 @@ class ResponseCode:
 
     def get_success(self) -> bool:
         return self.__success
-    
+
     def get_error_code(self) -> int:
         return self.__error_code
-    
+
     def get_error_tag(self) -> str:
         return self.__error_tag
-    
+
     def get_message(self) -> str:
         return self.__message
-    
+
     def get_data(self) -> Optional[Any]:
         return self.__data
-    
+
     def to_http_response(self) -> tuple[int, dict]:
         '''
         Creates an HTTP response to send back to the user
-        
+
         Returns:
             response (tuple[int, dict]): a coupled a tuple of the response code and a JSONified version
             of the information stored in ResponseCode
@@ -123,5 +123,5 @@ class ResponseCode:
         }
         if self.__data is not None:
             response_body["data"] = self.__data
-        
+
         return self.__error_code, response_body

@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -50,7 +50,7 @@ class _SmartLogger:
 class LoggerFactory:
     '''
     This class is a static singleton that produces a single logger of each type (security and general).
-    Depending on the logger config SmartLogger will be turned on, which saves memory and optimizes speed 
+    Depending on the logger config SmartLogger will be turned on, which saves memory and optimizes speed
     '''
     _initialized = False
     _general_logger = None
@@ -60,7 +60,7 @@ class LoggerFactory:
     def _is_safe_log_path(path: str) -> bool:
         '''
         Checks a given tag against the ALLOWED_LOG_DIR path
-        
+
         Args:
             path (str): the file path to check
 
@@ -97,7 +97,7 @@ class LoggerFactory:
             config = yaml.safe_load(f)
 
         LoggerFactory._use_smart_logger = config.get("use_smart_logger", True)
-        
+
         #Set the absolute path of the log files inside the config file
         for _, handler in config.get("handlers", {}).items():
             if "filename" in handler and "{LOG_DIR}" in handler["filename"]:
@@ -113,7 +113,7 @@ class LoggerFactory:
     def get_general_logger() -> logging.Logger:
         '''
         Returns the general logger. First initalizes LoggerFactory if not already initialized
-        
+
         Returns:
             general_logger (logging.Logger): the logger for the general.log file
         '''
@@ -129,7 +129,7 @@ class LoggerFactory:
     def get_security_logger() -> logging.Logger:
         '''
         Returns the security logger. First initalizes LoggerFactory if not already initialized
-        
+
         Returns:
             security_logger (logging.Logger): the logger for the security.log file
         '''

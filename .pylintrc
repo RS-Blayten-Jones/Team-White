@@ -1,0 +1,49 @@
+[MAIN]
+# Files or directories to be skipped
+ignore=CVS,.git,__pycache__,venv
+
+[MESSAGES CONTROL]
+# Disable specific pylint warnings that are too pedantic or not applicable
+disable=
+    # Documentation - we have docstrings where they matter
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring,
+    
+    # Formatting - some are too strict
+    line-too-long,
+    
+    # Design - these are often false positives or over-restrictive
+    too-many-instance-attributes,
+    too-many-arguments,
+    too-many-positional-arguments,
+    too-many-branches,
+    too-few-public-methods,
+    
+    # Code style - sometimes necessary for clarity
+    no-else-raise,
+    no-else-return,
+    unnecessary-comprehension,
+    
+    # Duplicate code - common in DAOs and entities
+    duplicate-code,
+    
+    # Other pedantic checks
+    pointless-string-statement,
+    superfluous-parens,
+    
+    # Import-related (we'll keep wrong-import-order enabled)
+    ungrouped-imports
+
+[FORMAT]
+# Maximum number of characters on a single line (increased from 100)
+max-line-length=120
+
+[DESIGN]
+# Relaxed design limits
+max-attributes=15
+max-args=10
+
+[BASIC]
+# Allow some naming conventions that are common in the codebase
+good-names=i,j,k,e,f,id,db,ID,uri,pk,fName,lName

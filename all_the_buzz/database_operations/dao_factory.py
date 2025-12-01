@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -19,7 +19,7 @@ This module allows a singular instance of each DAO to be made without accidental
 
 Functions:
     -create_dao <classmethod>: creates a DAO for the specified type and returns it; it will raise an
-    error if one exists 
+    error if one exists
     -get_dao <classmethod>: returns the DAO of a given type if it exists
     -reset <classmethod>: if (for whatever unknown reason???) you need to reset the DAOs, you can clarify
     which one or reset all
@@ -57,16 +57,16 @@ class DAOFactory:
     _instances: dict[str, DatabaseAccessObject] = {}
     _client: MongoClient = None
 
-    
+
     @classmethod
     def list_active(cls) -> list[str]:
         return list(cls._instances.keys())
-    
+
     @classmethod
     def set_client(cls, uri: str, server_version: str) -> MongoClient:
         '''
         Sets the shared client for all DAOs using the URI and the given server version.
-        
+
         Args:
             uri (str): a string that connects the client to the hosted database
             server_version (str): the server version that is used for the server API
@@ -88,7 +88,7 @@ class DAOFactory:
     def create_dao(cls, dao_class_name: str, database_name: str) -> DatabaseAccessObject:
         '''
         Creates a DAO of the given class and passes the MongoClient. If one exists, it raises an error
-        
+
         Args:
             dao_class_name (str): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
             client (MongoClient): the MongoClient that establishes a connection with the database
@@ -113,7 +113,7 @@ class DAOFactory:
     def get_dao(cls, dao_class_name: str) -> DatabaseAccessObject:
         '''
         Returns a DAO if it exists; otherwise, raises an error
-        
+
         Args:
             dao_class_name (str): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
 
@@ -128,7 +128,7 @@ class DAOFactory:
     def reset(cls, dao_class_name: Optional[str] = None):
         '''
         Resets either a specific DAO (if given a dao_class_name) or all of them
-        
+
         Args:
             dao_class_name (str optional): a string that represents the table the DAO connects to; must be in the _DAO_REGISTRY
         '''

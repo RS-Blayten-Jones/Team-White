@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -29,7 +29,7 @@ Functions:
 def authentication(token) -> Credentials:
     '''
     Authenticates users credentials given generated json web token.
-    
+
     Args:
         token: a dictionary in format {'token': <token string>}
 
@@ -44,7 +44,7 @@ def authentication(token) -> Credentials:
     # sanitize token to avoid code injection
     safe_token=sanitize_json(token)
     logger.debug("Token successfully sanitized")
-    
+
     # validate token dict is of proper format
     try:
         logger.debug("Begin validating format of token")
@@ -55,7 +55,7 @@ def authentication(token) -> Credentials:
     except ValueError as e:
         logger.error(e)
         return ResponseCode('InvalidToken')
-    
+
     # load authenication server uris
     logger.debug("Begin read in config file")
     try:
@@ -65,7 +65,7 @@ def authentication(token) -> Credentials:
         logger.debug("Successfully loaded config file")
     except:
         return ResponseCode("ConfigLoadError")
-    
+
     # check if server online
     logger.debug("Pinging authentication server.")
     try:
@@ -76,7 +76,7 @@ def authentication(token) -> Credentials:
             raise ConnectionError("Could not connect to server")
     except:
         return ResponseCode("ServerConnectionError")
-    
+
     # send sanitized and valid token to authenication server
     headers={
         "Content-Type": 'application/json'
@@ -90,7 +90,7 @@ def authentication(token) -> Credentials:
         # issue reaching server
         logger.error("Issue obtaining credentials from authentication server.")
         return ResponseCode('AuthServerError')
-    
+
     # sanitize response from authentication server
     logger.debug("Begin sanatize authentication server response")
     safe_content=sanitize_json(json_content)
@@ -111,7 +111,4 @@ def authentication(token) -> Credentials:
         #print(e)
         logger.error(e)
         return ResponseCode('UnauthorizedToken') # returns ResponseCode object which logs to general log
-        
-    
 
-    
