@@ -12,6 +12,10 @@ export default defineComponent({
 			jwt: {
 				type: String,
 				required: true
+			},
+			category: {
+				type: String,
+				required: true
 			}
 		},
 	data() {
@@ -25,7 +29,7 @@ export default defineComponent({
 	},
 	methods: {
 		approveData() {
-			axios.post(`http://localhost:8080/jokes/${this.id}/approve`, {}, {
+			axios.post(`http://localhost:8080/${this.category}/${this.id}/approve`, {}, {
 				headers: {
 					Authorization: `Bearer ${this.jwt}`
 				}
@@ -39,7 +43,7 @@ export default defineComponent({
 			})
 		},
 		denyData() {
-			axios.post(`http://localhost:8080/jokes/${this.id}/deny`, {}, {
+			axios.post(`http://localhost:8080/${this.category}/${this.id}/deny`, {}, {
 				headers: {
 					Authorization: `Bearer ${this.jwt}`
 				}
@@ -57,9 +61,9 @@ export default defineComponent({
 </script>
 <template>
 <button v-on:click="approveData()">
-<span>&#10003;</span>
+<span>&#10003;</span> APPROVE
 </button>
 <button v-on:click="denyData()">
-<span>&#10006;</span>
+<span>&#10006;</span> DENY
 </button>
 </template>
