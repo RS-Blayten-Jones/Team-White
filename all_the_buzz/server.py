@@ -95,7 +95,8 @@ def authentication_middleware(f: Callable) -> Callable:
             kwargs['credentials'] = authentication_result
             logger.debug("successfully loaded credentials")
             return f(*args, **kwargs)
-        #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
+        #returns AuthServerError error if authentication result is something other than a 
+        # ResponseCode object or a Credentials object
         status_code, body = ResponseCode("AuthServerError").to_http_response()
         return jsonify(body), status_code
     return decorated_function
@@ -119,7 +120,9 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     return dao
 
 def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
-    """Converts string values in the filter dictionary to their required types (e.g., int)."""
+    """
+    converts string values in the filter dictionary to their required types
+    """
     logger=LoggerFactory.get_general_logger()
     logger.debug("Converting filters to correct type")
     int_fields = ['level', 'birth_year', 'death_year']
@@ -130,7 +133,7 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             try:
                 type_safe_filter[key] = int(value)
             except ValueError:
-                logger.debug(f"Warning filter '{key}' recieved non-integer value '{value}'. Skipping")
+                logger.debug(f"WARNING filter '{key}' recieved non-integer value '{value}'. Skipping")
                 continue
         elif key in bool_fields:
             lower_value = value.lower()
@@ -139,11 +142,10 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             elif lower_value in ('false','', ' '):
                 type_safe_filter[key] = False
             else:
-                logger.debug(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
+                logger.debug(f"WARNING: filter '{key}' received non-bool value '{value}'. Skipping.")
                 continue
         else:
-            type_safe_filter[key] = value
-            
+            type_safe_filter[key] = value    
     return type_safe_filter
 
 @authentication_middleware
@@ -153,7 +155,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
     This endpoint serves two functions via the GET /jokes route:
     1. **Retrieve All:** Returns ALL public jokes if no query parameters are provided (GET /jokes).
     2. **Filter by Fields:** Returns a filtered list of public jokes if query 
-       parameters are provided (e.g., GET /jokes?difficulty=2&category=tech).
+       parameters are provided (GET /jokes?level=2&category=computers).
 
     Args:
         credentials: The authenticated user's credentials object, injected by
@@ -168,7 +170,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
           if the user is unauthorized (handled by the credential check).
     """
     logger=LoggerFactory.get_general_logger()
-    logger.debug("Retrievign public jokes collection")
+    logger.debug("Retrieving public jokes collection")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         filter_dict = request.args.to_dict()
@@ -177,7 +179,6 @@ def retrieve_public_jokes_collection(credentials: Credentials):
             if type_safe_filter:
                 all_jokes = public_jokes_dao.get_by_fields(type_safe_filter)
             else:
-                all_jokes = []
                 public_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode("InvalidFilter").to_http_response()
                 return jsonify(body), status_code 
@@ -193,9 +194,8 @@ def retrieve_public_jokes_collection(credentials: Credentials):
 
 @authentication_middleware
 def create_a_new_joke(credentials: Credentials):
-    
     """
-    Handles the creation of a new joke record (POST /jokes).
+    Creates a new joke record (POST /jokes).
 
     The behavior and target collection are strictly determined by the authenticated
     user's title:
@@ -604,19 +604,13 @@ def update_joke(joke_id: str, credentials: Credentials):
     if credentials.title == 'Manager':
         logger.debug("Update record as manager")
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        #entity validation
         try:
             updated_joke = Joke.from_json_object(request_body)
         except Exception as e:
-            #entity validation fails
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
-        #actual database update
         if isinstance(updated_joke, Joke):
             try:
-                print(joke_id)
-                get_response = public_jokes_dao.get_by_fields({'_id': str(joke_id)})
-                print(get_response)
                 dao_response = public_jokes_dao.update_record(str(joke_id), request_body)
                 public_jokes_dao.clear_credentials()
                 status_code, body = dao_response.to_http_response()
@@ -631,9 +625,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
         logger.debug("Create new record as employee")
-        private_jokes_dao = DAOFactory.get_dao('PrivateJokeDAO')
-        private_jokes_dao.set_credentials(credentials)
-        #setting the OG id of the record to edit and setting is edit to true
+        private_jokes_dao = get_dao_set_credentials(credentials, 'PrivateJokeDAO')
         request_body["original_id"] = joke_id
         request_body["is_edit"] = True
         try:
@@ -644,7 +636,6 @@ def update_joke(joke_id: str, credentials: Credentials):
             return jsonify(body), status_code
         if isinstance(new_edit, Joke):
             try:
-                #calling create record on the private database 
                 request_body["original_id"] = ObjectId(joke_id)
                 dao_response = private_jokes_dao.create_record(request_body)
                 private_jokes_dao.clear_credentials()
