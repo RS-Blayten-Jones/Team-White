@@ -41,7 +41,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.documentation.html">all_the_buzz.documentation module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="all_the_buzz.server.html">all_the_buzz.server module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.database_operations.html">all_the_buzz.database_operations package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.entities.html">all_the_buzz.entities package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="all_the_buzz.utilities.html">all_the_buzz.utilities package</a></li>
 </ul>
 
         </div>
@@ -174,8 +178,6 @@
         <li><a href="all_the_buzz.entities.html#module-all_the_buzz.entities">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     all_the_buzz.entities.credentials_entity
 
@@ -183,6 +185,8 @@
         <li><a href="all_the_buzz.entities.credentials_entity.html#module-all_the_buzz.entities.credentials_entity">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     all_the_buzz.entities.record_entities
 
@@ -241,7 +245,13 @@
       </ul></li>
       <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Trivia.answer">answer (all_the_buzz.entities.record_entities.Trivia property)</a>
 </li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.approve_bio">approve_bio() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.approve_joke">approve_joke() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.approve_quote">approve_quote() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.approve_trivia">approve_trivia() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.utilities.authentication.html#all_the_buzz.utilities.authentication.authentication">authentication() (in module all_the_buzz.utilities.authentication)</a>
 </li>
@@ -283,6 +293,8 @@
         <li><a href="all_the_buzz.entities.record_entities.html#all_the_buzz.entities.record_entities.Quote.content">(all_the_buzz.entities.record_entities.Quote property)</a>
 </li>
       </ul></li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.convert_filter_types">convert_filter_types() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.create_a_new_bio">create_a_new_bio() (in module all_the_buzz.server)</a>
 </li>
   </ul></td>
@@ -317,11 +329,17 @@
 </li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record">delete_record() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.delete_record_by_field">delete_record_by_field() (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.deny_bio">deny_bio() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.deny_joke">deny_joke() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.deny_quote">deny_quote() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.deny_trivia">deny_trivia() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.entities.credentials_entity.html#all_the_buzz.entities.credentials_entity.Credentials.dept">dept (all_the_buzz.entities.credentials_entity.Credentials property)</a>
 </li>
@@ -576,7 +594,13 @@
 </li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_daily_quote">retrieve_daily_quote() (in module all_the_buzz.server)</a>
 </li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_private_bios_collection">retrieve_private_bios_collection() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_private_jokes_collection">retrieve_private_jokes_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_private_quotes_collection">retrieve_private_quotes_collection() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_private_trivias_collection">retrieve_private_trivias_collection() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_bios_collection">retrieve_public_bios_collection() (in module all_the_buzz.server)</a>
 </li>
@@ -586,10 +610,16 @@
 </li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_public_trivia_collection">retrieve_public_trivia_collection() (in module all_the_buzz.server)</a>
 </li>
-      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_joke">retrieve_random_joke() (in module all_the_buzz.server)</a>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_bio">retrieve_random_bio() (in module all_the_buzz.server)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_joke">retrieve_random_joke() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_quote">retrieve_random_quote() (in module all_the_buzz.server)</a>
+</li>
+      <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_random_trivia">retrieve_random_trivia() (in module all_the_buzz.server)</a>
+</li>
       <li><a href="all_the_buzz.server.html#all_the_buzz.server.retrieve_short_quote">retrieve_short_quote() (in module all_the_buzz.server)</a>
 </li>
       <li><a href="all_the_buzz.database_operations.abstract_record.html#all_the_buzz.database_operations.abstract_record.DatabaseAccessObject.ROLE_MATRIX">ROLE_MATRIX (all_the_buzz.database_operations.abstract_record.DatabaseAccessObject attribute)</a>

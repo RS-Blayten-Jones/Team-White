@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from all_the_buzz.utilities.error_handler import ResponseCode
 from pymongo import MongoClient
 from all_the_buzz.database_operations.abstract_record import mongo_safe
@@ -20,8 +24,8 @@ class ChecksumDAO:
     @mongo_safe
     def get_checksum(self, file_name: str) -> ResponseCode:
         '''
-        Return checksum given a file_name 
-        
+        Return checksum given a file_name
+
         Args:
             file_name (str): the file_name of the file you would like to confirm the checksum of
 
@@ -32,5 +36,5 @@ class ChecksumDAO:
         document = self.__collection.find_one({"fileName": file_name})
         checksum = document["hash_value"]
         return checksum
-    
+
     #If you would like to change the checksum of a particular file, consider changing it manually in the database

@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import ssl
@@ -5,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 # stuff for the secret file and the database URI
-load_dotenv() 
+load_dotenv()
 ATLAS_URI = os.getenv("ATLAS_URI")
 DATABASE_NAME = "team_white_database"
 COLLECTION_NAME = "quotes_private"
@@ -30,7 +34,7 @@ quotes_private_schema = {
             "$jsonSchema": {
                 "bsonType": "object",
                 #original_id and explanation are NOT in the required list here, they are conditionally handled below.
-                "required": ["_id", "is_edit", "content", "author", "language" ,"used_date"], #ADD THE OG ID FIELD 
+                "required": ["_id", "is_edit", "content", "author", "language" ,"used_date"], #ADD THE OG ID FIELD
                 "properties": {
                     "_id": {"bsonType": "objectId"},
                     "is_edit": {"bsonType": "bool"},
@@ -42,7 +46,7 @@ quotes_private_schema = {
                     "language": {"bsonType": "string"},
 
                     # Nested content structure ensures all possible fields are defined
-                    
+
                 }
             }
         },
@@ -51,7 +55,7 @@ quotes_private_schema = {
         {
             "$or": [
                 { "is_edit": False },
-                { "$and": [ 
+                { "$and": [
                     { "is_edit": True },
                     { "original_id": { "$exists": True, "$ne": None } }
                 ]}
@@ -59,10 +63,10 @@ quotes_private_schema = {
         },
 
         #RULE 3: Conditional Check: level=3 REQUIRES explanation
-        
+
 
         #RULE 4: Conditional Check: Content Structure for QA vs. One Liner
-        
+
     ]
 }
 
@@ -77,7 +81,7 @@ quotes_private_schema = {
 #     else:
 #         print(f"Creating collection with validation rules: {COLLECTION_NAME}...")
 #         db.create_collection(
-#             COLLECTION_NAME, 
+#             COLLECTION_NAME,
 #             validator=quotes_private_schema, #****change this line to say collection_privateOrPublic_schema
 #             validationAction='error',
 #             validationLevel='strict'
@@ -87,7 +91,7 @@ quotes_private_schema = {
 
 
 
-# This(below) was me practicing putting an invalid document into the database to 
+# This(below) was me practicing putting an invalid document into the database to
 # test it but the code above has to be commented out to run the file again
 
 # invalid_doc = {"is_edit": False, "level": 3, "content": {"type": "one_liner", "text": "A joke"}, "language": "English"}

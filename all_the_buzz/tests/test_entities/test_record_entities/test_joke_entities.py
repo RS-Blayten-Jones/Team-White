@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 from all_the_buzz.entities import Joke
 import pytest
 
@@ -122,7 +126,7 @@ def test_empty_explanation_for_difficulty_3():
     joke = Joke(id="1"*24, ref_id="2"*24, is_edit=False, language="english")
     joke.difficulty = 3
     joke.content = {"type": "qa", "question": "Why?", "answer": "Because"}
-    
+
     with pytest.raises(ValueError, match="Jokes must have an explanation when difficulty is 3"):
         joke.explanation = ""
 
@@ -130,7 +134,7 @@ def test_None_explanation_for_difficulty_3():
     joke = Joke(id="1"*24, ref_id="2"*24, is_edit=False, language="english")
     joke.difficulty = 3
     joke.content = {"type": "qa", "question": "Why?", "answer": "Because"}
-    
+
     with pytest.raises(ValueError, match="Jokes must have an explanation when difficulty is 3"):
         joke.explanation = None
 

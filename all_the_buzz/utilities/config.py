@@ -1,3 +1,7 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 import yaml
 """
 config.py
@@ -10,16 +14,14 @@ Functions:
 def config_file_reader(path):
     """
     Function for reading config file in yaml format.
-    
+
     Args:
         path: string that is path to config file
-        
+
     Returns:
         data: dictionary containing config file information
         """
     with open(path, "r") as file:
-        data=yaml.safe_load(file) 
+        data=yaml.safe_load(file)
     return data
-
-
 

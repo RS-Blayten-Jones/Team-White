@@ -1,15 +1,23 @@
+# Copyright (C) 2025 Team White
+# Licensed under the MIT License
+# See LICENSE for more details
+
 """
 Get All Jokes
 -------------
-**GET** http://localhost:8080/jokes/
+**GET** http://localhost:8080/jokes
 
 **Headers:**
     - Authorization: Bearer <token>
 
+**Parameters:**
+    - level = 1,2 or 3
+    - language
+
 **Returns:**
     Dictonary of all public jokes
 
-    
+
 
 Create New Joke
 ---------------
@@ -39,7 +47,7 @@ Create New Joke
 
 Update Joke
 -----------
-**PUT** http://localhost:8080/jokes/<string:joke_id>/
+**PUT** http://localhost:8080/jokes/<string:joke_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -63,7 +71,7 @@ Update Joke
     approval by manager.
     - If manager, updates existing record in private table.
 
-    
+
 Get All Pending Jokes
 ----------------------
 **GET** http://localhost:8080/pending-jokes
@@ -74,21 +82,21 @@ Get All Pending Jokes
 **Returns:**
     - If manager, returns all jokes in private table
 
-    
+
 Approve Joke
 ------------
-**POST** http://localhost:8080/jokes/<string:joke-id>/approve/
+**POST** http://localhost:8080/jokes/<string:joke-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
 
 **Returns:**
     - If manager updates or adds joke to public table
-    - Deletes joke from private table 
-    
+    - Deletes joke from private table
+
 Deny Joke
 ---------
-**POST** http://localhost:8080/jokes/<string:joke-id>/deny/
+**POST** http://localhost:8080/jokes/<string:joke-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -96,7 +104,7 @@ Deny Joke
 **Returns:**
     - If manager, deletes joke from private table
 
-    
+
 Get Random Jokes
 ----------------
 **GET** http://localhost:8080/random-jokes/<int:amount>
@@ -108,13 +116,19 @@ Get Random Jokes
     - The specified amount of random jokes from
     the public table
 
-    
+
 Get All Quotes
 --------------
-**GET** http://localhost:8080/quotes/
+**GET** http://localhost:8080/quotes
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - content
+    - category
+    - language
+    - author
 
 **Returns:**
     - Dictonary of all public quotes
@@ -142,10 +156,10 @@ Create New Quote
     - Adds quote to public table if manager
     - Adds quote to private table if employee
 
-    
+
 Update Quote
 ------------
-**PUT** http://localhost:8080/quotes/<string:quote_id>/
+**PUT** http://localhost:8080/quotes/<string:quote_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -165,7 +179,7 @@ Update Quote
     approval by manager.
     If manager, updates existing record in private table.
 
-    
+
 Get All Pending Quotes
 ----------------------
 **GET** http://localhost:8080/pending-quotes
@@ -176,22 +190,22 @@ Get All Pending Quotes
 **Returns:**
     If manager, returns all quotes in private table
 
-    
+
 Approve Quote
 -------------
-**POST** http://localhost:8080/quotes/<string:quote-id>/approve/
+**POST** http://localhost:8080/quotes/<string:quote-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
 
 **Returns:**
     If manager updates or adds quote to public table
-    Deletes quote from private table 
-    
+    Deletes quote from private table
+
 
 Deny Quote
 ----------
-**POST** http://localhost:8080/quotes/<string:quote-id>/deny/
+**POST** http://localhost:8080/quotes/<string:quote-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -232,13 +246,20 @@ Get Daily Quote
 **Returns:**
     Returns the daily quote and updates the last used date
 
-    
+
 Get All Bios
 ------------
-**GET** http://localhost:8080/bios/
+**GET** http://localhost:8080/bios
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - birth_year
+    - death_year
+    - name
+    - summary
+    - language
 
 **Returns:**
     Dictonary of all public bios
@@ -262,17 +283,17 @@ Create New Bio
             "paragraph: str,
             "summary": str,
             "source_url": str,
-            "language": str 
+            "language": str
         }
 
 **Returns:**
     - Adds bio to public table if manager
     - Adds bio to private table if employee
 
-    
+
 Update Bio
 ----------
-**PUT** http://localhost:8080/bios/<string:bio_id>/
+**PUT** http://localhost:8080/bios/<string:bio_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -287,7 +308,7 @@ Update Bio
             "paragraph: str,
             "summary": str,
             "source_url": str,
-            "language": str 
+            "language": str
         }
 
 **Returns:**
@@ -295,7 +316,7 @@ Update Bio
     approval by manager.
     If manager, updates existing record in private table.
 
-    
+
 Get All Pending Bios
 --------------------
 **GET** http://localhost:8080/pending-bios
@@ -306,22 +327,22 @@ Get All Pending Bios
 **Returns:**
     If manager, returns all bios in private table
 
-    
+
 Approve Bio
 -----------
-**POST** http://localhost:8080/bios/<string:bio-id>/approve/
+**POST** http://localhost:8080/bios/<string:bio-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
 
 **Returns:**
     If manager updates or adds bio to public table
-    Deletes bio from private table 
-    
+    Deletes bio from private table
+
 
 Deny Bio
 --------
-**POST** http://localhost:8080/bios/<string:bio-id>/deny/
+**POST** http://localhost:8080/bios/<string:bio-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -344,7 +365,7 @@ Get Random Bios
 
 Get All Trivia
 --------------
-**GET** http://localhost:8080/trivia/
+**GET** http://localhost:8080/trivia
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -352,7 +373,7 @@ Get All Trivia
 **Returns:**
     Dictonary of all public trivia
 
-    
+
 Create New Trivia
 -----------------
 
@@ -360,6 +381,11 @@ Create New Trivia
 
 **Headers:**
     - Authorization: Bearer <token>
+
+**Parameters:**
+    - question
+    - answer
+    - language
 
 **Request Body (application/json):**
     .. code-block:: javascript
@@ -374,10 +400,10 @@ Create New Trivia
     - Adds trivia to public table if manager
     - Adds trivia to private table if employee
 
-    
+
 Update Trivia
 -------------
-**PUT** http://localhost:8080/trivia/<string:trivia_id>/
+**PUT** http://localhost:8080/trivia/<string:trivia_id>
 
 **Headers:**
     - Authorization: Bearer <token>
@@ -396,7 +422,7 @@ Update Trivia
     approval by manager.
     If manager, updates existing record in private table.
 
-    
+
 Get All Pending Trivia
 ----------------------
 **GET** http://localhost:8080/pending-trivia
@@ -407,22 +433,22 @@ Get All Pending Trivia
 **Returns:**
     If manager, returns all trivia in private table
 
-    
+
 Approve Trivia
 --------------
-**POST** http://localhost:8080/trivia/<string:trivia-id>/approve/
+**POST** http://localhost:8080/trivia/<string:trivia-id>/approve
 
 **Headers:**
     - Authorization: Bearer <token>
 
 **Returns:**
     If manager updates or adds trivia to public table
-    Deletes trivia from private table 
-    
+    Deletes trivia from private table
+
 
 Deny Trivia
 -----------
-**POST** http://localhost:8080/trivia/<string:trivia-id>/deny/
+**POST** http://localhost:8080/trivia/<string:trivia-id>/deny
 
 **Headers:**
     - Authorization: Bearer <token>
