@@ -1202,7 +1202,25 @@ def deny_joke(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-
+@authentication_middleware
+def delete_joke(credentials: Credentials, id: str):
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deleting a joke")
+    if credentials.title == "Manager":
+        public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
+        try:
+            dao_response=public_jokes_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_jokes_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
 @authentication_middleware
 def approve_quote(credentials: Credentials, id: str):
     """
@@ -1322,7 +1340,24 @@ def deny_quote(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-
+@authentication_middleware
+def delete_quote(credentials: Credentials, id: str):
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deleting a quote")
+    if credentials.title == "Manager":
+        public_quote_dao = get_dao_set_credentials(credentials, "PublicQuoteDAO")
+        try:
+            dao_response=public_quote_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_quote_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_quote_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
 
 @authentication_middleware
 def approve_trivia(credentials: Credentials, id: str):
@@ -1446,7 +1481,25 @@ def deny_trivia(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-
+@authentication_middleware
+def delete_trivia(credentials: Credentials, id: str):
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deleting a trivia")
+    if credentials.title == "Manager":
+        public_trivia_dao = get_dao_set_credentials(credentials, "PublicTriviaDAO")
+        try:
+            dao_response=public_trivia_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_trivia_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_trivia_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
 @authentication_middleware
 def approve_bio(credentials: Credentials, id: str):
     """
@@ -1569,7 +1622,25 @@ def deny_bio(credentials: Credentials, id: str):
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
 
-
+@authentication_middleware
+def delete_bio(credentials: Credentials, id: str):
+    logger=LoggerFactory.get_general_logger()
+    logger.debug("Deleting a bio")
+    if credentials.title == "Manager":
+        public_bio_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
+        try:
+            dao_response=public_bio_dao.delete_record(id)
+            status_code, body = dao_response.to_http_response()
+            public_bio_dao.clear_credentials()
+            return jsonify(body), status_code
+        except Exception as e:
+            status_code, body = ResponseCode(str(e)).to_http_response()
+            public_bio_dao.clear_credentials()
+            return jsonify(body), status_code
+    else:
+        status_code, body = ResponseCode("Unauthorized").to_http_response()
+        return jsonify(body), status_code
+    
 @authentication_middleware
 def retrieve_random_joke(credentials: Credentials, amount: int):
     """
@@ -2185,9 +2256,30 @@ def create_app():
         methods=['GET'],
         provide_automatic_options=False
     )
-
-
-
+    app.add_url_rule(
+        "/jokes/<string:id>",
+        view_func=delete_joke,
+        methods=["DELETE"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/trivia/<string:id>",
+        view_func=delete_trivia,
+        methods=["DELETE"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/quotes/<string:id>",
+        view_func=delete_quote,
+        methods=["DELETE"],
+        provide_automatic_options=False
+    )
+    app.add_url_rule(
+        "/bios/<string:id>",
+        view_func=delete_bio,
+        methods=["DELETE"],
+        provide_automatic_options=False
+    )
     return app
 
 def run():

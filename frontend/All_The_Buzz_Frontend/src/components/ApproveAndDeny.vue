@@ -60,10 +60,10 @@ export default defineComponent({
 })
 </script>
 <template>
-<button v-on:click="approveData()">
-<span>&#10003;</span> APPROVE
+<button class="approve-btn" v-on:click="approveData()">
+	<span>&#10003;</span> APPROVE
 </button>
-<button v-on:click="denyData()">
-<span>&#10006;</span> DENY
+<button class="deny-btn" v-on:click="denyData()">
+	<span>&#10006;</span> DENY
 </button>
 </template>
