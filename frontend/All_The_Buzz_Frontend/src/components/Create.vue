@@ -60,53 +60,101 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive } from 'vue'
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
 
-interface Props {
-  resourceType: string
-}
-
-const props = defineProps<Props>()
-
-const formData = reactive({
-  content: '',
-  author: '',
-  question: '',
-  answer: ''
-})
-
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
-
-const handleSubmit = async () => {
-  loading.value = true
-  error.value = ''
-  success.value = ''
+export default defineComponent({
+  name: 'CreateComponent',
   
-  try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 500))
+  props: {
+    resourceType: {
+      type: String,
+      required: true
+    }
+  },
+  
+  data() {
+    return {
+      formData: {
+        content: '',
+        author: '',
+        question: '',
+        answer: ''
+      },
+      loading: false,
+      error: '',
+      success: ''
+    }
+  },
+  
+  mounted() {
+    // Component mounted - can add initialization logic here if needed
+  },
+  
+  methods: {
+    resetForm() {
+      this.formData.content = ''
+      this.formData.author = ''
+      this.formData.question = ''
+      this.formData.answer = ''
+      this.error = ''
+      this.success = ''
+    },
     
-    success.value = `${props.resourceType} created successfully!`
-    resetForm()
-  } catch (err: any) {
-    error.value = err.message || 'Failed to create item'
-  } finally {
-    loading.value = false
-  }
-}
+    handleSubmit(){
+      //do it christys way here
+      //making application/json content type form data 
+      const jsonString = JSON.stringify(this.formData);
+      const jsonBlob = new Blob([jsonString], { type: 'application/json' });
+      this.formData.append('data', jsonBlob);
 
-const resetForm = () => {
-  formData.content = ''
-  formData.author = ''
-  formData.question = ''
-  formData.answer = ''
-  error.value = ''
-  success.value = ''
-}
+      axios.post(`https://localhost:8080/${this.resourceType}`, this.formData, {
+        headers: {
+          'Bearer': `${this.jwt}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        if (response.status === 200) {
+          this.success = `${this.resourceType} created successfully!`;
+          this.resetForm();
+        } else {
+          this.error = `Failed to create ${this.resourceType}. Status: ${response.status}: ${response.statusText}`;
+        }
+        console.log('Response:', response.data);
+      }).catch(error => {
+        console.error('Error:', error);
+        this.error = error.status + ' ' + error.message || 'Failed to create item';
+      });
+    },
+
+    async handleSubmitBad() {
+      this.loading = true
+      this.error = ''
+      this.success = ''
+      
+      try {
+        // TODO: Replace with actual API call
+        // Example: await axios.post(`/api/${this.resourceType}`, this.formData)
+        //await new Promise(resolve => setTimeout(resolve, 500))
+        await axios.post(`https://localhost:8080/${this.resourceType}`, this.formData)
+        .then(response => {
+          console.log('Response:', response.data);
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+        this.success = `${this.resourceType} created successfully!`
+        this.resetForm()
+      } catch (err: any) {
+        this.error = err.message || 'Failed to create item'
+      } finally {
+        this.loading = false
+      }
+    }
+  }
+})
 </script>
+
 
 <style scoped>
 .create-component {
