@@ -13,3 +13,5 @@ all_the_buzz/entities/__pycache__/
 .coverage
 .pytest_cache/
 htmlcov/
+key.txt
+key.txt.pub
