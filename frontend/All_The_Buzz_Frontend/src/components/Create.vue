@@ -60,53 +60,101 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, reactive } from 'vue'
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
 
-interface Props {
-  resourceType: string
-}
-
-const props = defineProps<Props>()
-
-const formData = reactive({
-  content: '',
-  author: '',
-  question: '',
-  answer: ''
-})
-
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
-
-const handleSubmit = async () => {
-  loading.value = true
-  error.value = ''
-  success.value = ''
+export default defineComponent({
+  name: 'CreateComponent',
   
-  try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 500))
+  props: {
+    resourceType: {
+      type: String,
+      required: true
+    }
+  },
+  
+  data() {
+    return {
+      formData: {
+        content: '',
+        author: '',
+        question: '',
+        answer: ''
+      },
+      loading: false,
+      error: '',
+      success: ''
+    }
+  },
+  
+  mounted() {
+    // Component mounted - can add initialization logic here if needed
+  },
+  
+  methods: {
+    resetForm() {
+      this.formData.content = ''
+      this.formData.author = ''
+      this.formData.question = ''
+      this.formData.answer = ''
+      this.error = ''
+      this.success = ''
+    },
     
-    success.value = `${props.resourceType} created successfully!`
-    resetForm()
-  } catch (err: any) {
-    error.value = err.message || 'Failed to create item'
-  } finally {
-    loading.value = false
-  }
-}
+    handleSubmit(){
+      //do it christys way here
+      //making application/json content type form data 
+      const jsonString = JSON.stringify(this.formData);
+      const jsonBlob = new Blob([jsonString], { type: 'application/json' });
+      this.formData.append('data', jsonBlob);
 
-const resetForm = () => {
-  formData.content = ''
-  formData.author = ''
-  formData.question = ''
-  formData.answer = ''
-  error.value = ''
-  success.value = ''
-}
+      axios.post(`https://localhost:8080/${this.resourceType}`, this.formData, {
+        headers: {
+          'Bearer': `${this.jwt}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(response => {
+        if (response.status === 200) {
+          this.success = `${this.resourceType} created successfully!`;
+          this.resetForm();
+        } else {
+          this.error = `Failed to create ${this.resourceType}. Status: ${response.status}: ${response.statusText}`;
+        }
+        console.log('Response:', response.data);
+      }).catch(error => {
+        console.error('Error:', error);
+        this.error = error.status + ' ' + error.message || 'Failed to create item';
+      });
+    },
+
+    async handleSubmitBad() {
+      this.loading = true
+      this.error = ''
+      this.success = ''
+      
+      try {
+        // TODO: Replace with actual API call
+        // Example: await axios.post(`/api/${this.resourceType}`, this.formData)
+        //await new Promise(resolve => setTimeout(resolve, 500))
+        await axios.post(`https://localhost:8080/${this.resourceType}`, this.formData)
+        .then(response => {
+          console.log('Response:', response.data);
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+        this.success = `${this.resourceType} created successfully!`
+        this.resetForm()
+      } catch (err: any) {
+        this.error = err.message || 'Failed to create item'
+      } finally {
+        this.loading = false
+      }
+    }
+  }
+})
 </script>
+
 
 <style scoped>
 .create-component {
@@ -114,59 +162,34 @@ const resetForm = () => {
 }
 
 h2 {
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
   text-transform: capitalize;
+  font-size: var(--font-size-2xl);
 }
 
 form {
   max-width: 600px;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: border-color 0.2s;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
 .error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-medium);
 }
 
 .success {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-medium);
 }
 
 .button-group {
@@ -175,39 +198,50 @@ textarea:focus {
 }
 
 .submit-button {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--color-success);
+  color: var(--text-on-primary);
   padding: 0.75rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: #218838;
+  background-color: #047857;
+  transform: translateY(-1px);
+}
+
+.submit-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
 }
 
 .submit-button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .reset-button {
-  background-color: #6c757d;
-  color: white;
+  background-color: var(--color-gray-600);
+  color: var(--text-on-primary);
   padding: 0.75rem 2rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
 }
 
 .reset-button:hover {
-  background-color: #5a6268;
+  background-color: var(--color-primary-orange);
+}
+
+.reset-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
 }
 </style>
