@@ -3,6 +3,7 @@
 # See LICENSE for more details
 
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import json
 from typing import Callable, Any
 from functools import wraps
@@ -1968,6 +1969,10 @@ def establish_all_daos():
 def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
+    
+    # Enable CORS for all routes
+    CORS(app, resources={r"/*": {"origins": "*"}})
+    
     try:
         create_client_connection()
         establish_all_daos()
