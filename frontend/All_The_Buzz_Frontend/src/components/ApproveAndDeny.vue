@@ -31,7 +31,7 @@ export default defineComponent({
 		approveData() {
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/approve`, {}, {
 				headers: {
-					Authorization: `Bearer ${this.jwt}`
+					Bearer: `${this.jwt}`
 				}
 			})
 			.then(response => {
@@ -45,7 +45,7 @@ export default defineComponent({
 		denyData() {
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/deny`, {}, {
 				headers: {
-					Authorization: `Bearer ${this.jwt}`
+					Bearer: `${this.jwt}`
 				}
 			})
 			.then(response => {
