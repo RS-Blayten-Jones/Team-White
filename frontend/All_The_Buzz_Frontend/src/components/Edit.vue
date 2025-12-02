@@ -153,7 +153,7 @@ const cancelEdit = () => {
 }
 
 h2 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   text-transform: capitalize;
 }

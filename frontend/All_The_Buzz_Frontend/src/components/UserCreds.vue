@@ -68,57 +68,72 @@ const handleSubmit = () => {
 .user-creds {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
   text-align: left;
 }
 
 label {
-  font-weight: 600;
-  color: #333;
-  font-size: 0.9rem;
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
 }
 
 input {
+  width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  transition: border-color var(--transition-base), background-color var(--transition-base), color var(--transition-base);
+}
+
+input:hover {
+  border-color: var(--color-gray-400);
 }
 
 input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary-purple);
+  outline: 3px solid rgba(71, 57, 124, 0.2);
+  outline-offset: 0;
 }
 
 .submit-button {
-  background-color: #667eea;
-  color: white;
+  background-color: var(--color-primary-purple);
+  color: var(--text-on-primary);
   padding: 0.75rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 0.5rem;
+  transition: all var(--transition-base);
+  margin-top: var(--spacing-sm);
+  width: 100%;
 }
 
 .submit-button:hover {
-  background-color: #5568d3;
+  background-color: #3a2e63;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
 }
 
 .error-message {
-  color: #dc3545;
-  font-size: 0.9rem;
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
   margin: 0;
   text-align: center;
+  font-weight: var(--font-weight-medium);
 }
 </style>

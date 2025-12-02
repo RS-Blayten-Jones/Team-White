@@ -1,8 +1,8 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <h1>All The Buzz</h1>
-      <h2>Login</h2>
+  <div class="login-page">
+    <div class="login-card card">
+      <h1 class="login-title">All The Buzz</h1>
+      <h2 class="login-subtitle">Login</h2>
       <UserCreds @login="handleLogin" />
     </div>
   </div>
@@ -24,32 +24,46 @@ const handleLogin = (credentials: { username: string; password: string }) => {
 </script>
 
 <style scoped>
-.login-container {
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: var(--color-primary-purple);
+  padding: var(--spacing-md);
 }
 
 .login-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  min-width: 350px;
+  min-width: 400px;
+  max-width: 450px;
+  width: 100%;
   text-align: center;
 }
 
-h1 {
-  color: #667eea;
-  margin-bottom: 0.5rem;
-  font-size: 2rem;
+.login-title {
+  color: var(--color-primary-purple);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-4xl);
 }
 
-h2 {
-  color: #333;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+.login-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 768px) {
+  .login-card {
+    min-width: unset;
+  }
+  
+  .login-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .login-subtitle {
+    font-size: var(--font-size-xl);
+  }
 }
 </style>
