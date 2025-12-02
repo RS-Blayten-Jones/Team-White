@@ -38,36 +38,41 @@ const selectComponent = (value: string) => {
 <style scoped>
 .resource-toggle {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
 }
 
 .toggle-button {
   padding: 0.75rem 1.5rem;
-  background-color: #f8f9fa;
-  color: #495057;
-  border: 2px solid #dee2e6;
-  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
 }
 
 .toggle-button:hover {
-  background-color: #e9ecef;
-  border-color: #adb5bd;
+  background-color: var(--bg-tertiary);
+  border-color: var(--color-gray-400);
+}
+
+.toggle-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
 }
 
 .toggle-button.active {
-  background-color: #667eea;
-  color: white;
-  border-color: #667eea;
+  background-color: var(--color-primary-purple);
+  color: var(--text-on-primary);
+  border-color: var(--color-primary-purple);
 }
 
 .toggle-button.active:hover {
-  background-color: #5568d3;
-  border-color: #5568d3;
+  background-color: #3a2e63;
+  border-color: #3a2e63;
 }
 </style>
