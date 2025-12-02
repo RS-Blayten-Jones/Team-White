@@ -107,134 +107,122 @@ const fetchData = async () => {
 
 <style scoped>
 .get-component {
-  padding: 1rem;
+  padding: var(--spacing-md);
 }
 
 h2 {
-  color: #333;
-  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
   text-transform: capitalize;
+  font-size: var(--font-size-2xl);
 }
 
 .filters {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   align-items: flex-end;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-label {
-  font-weight: 600;
-  color: #555;
-  font-size: 0.9rem;
-}
-
-select,
-input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+.filters select,
+.filters input {
+  padding: 0.5rem 0.75rem;
 }
 
 .fetch-button {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--color-success);
+  color: var(--text-on-primary);
   padding: 0.5rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  white-space: nowrap;
 }
 
 .fetch-button:hover {
-  background-color: #218838;
+  background-color: #047857;
+  transform: translateY(-1px);
 }
 
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: #667eea;
-  font-size: 1.2rem;
+.fetch-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
 }
 
 .error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-}
-
-.no-results {
-  text-align: center;
-  padding: 3rem;
-  color: #6c757d;
-  font-size: 1.1rem;
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-medium);
 }
 
 .results h3 {
-  color: #333;
-  margin-bottom: 1rem;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-xl);
 }
 
 .items-grid {
   display: grid;
-  gap: 1rem;
+  gap: var(--spacing-md);
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .item-card {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  transition: box-shadow var(--transition-base), background-color var(--transition-base);
+}
+
+.item-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .item-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #dee2e6;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--border-color);
 }
 
 .item-id {
-  font-size: 0.85rem;
-  color: #6c757d;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .item-status {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
 }
 
 .item-status.approved {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .item-status.pending {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .item-content p {
-  margin: 0.5rem 0;
-  color: #333;
-  line-height: 1.5;
+  margin: var(--spacing-sm) 0;
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 </style>

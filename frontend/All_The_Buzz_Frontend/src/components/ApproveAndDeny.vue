@@ -67,3 +67,36 @@ export default defineComponent({
 	<span>&#10006;</span> DENY
 </button>
 </template>
+<style scoped>
+ .approve-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.approve-btn:hover {
+  background-color: #218838;
+}
+
+.deny-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.deny-btn:hover {
+  background-color: #c82333;
+}
+</style>
