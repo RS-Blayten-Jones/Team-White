@@ -105,11 +105,11 @@ export default defineComponent({
     handleSubmit(){
       //do it christys way here
       //making application/json content type form data 
-      const jsonString = JSON.stringify(this.formData);
-      const jsonBlob = new Blob([jsonString], { type: 'application/json' });
-      this.formData.append('data', jsonBlob);
+      //const jsonString = JSON.stringify(this.formData);
+      //const jsonBlob = new Blob([jsonString], { type: 'application/json' });
+      //this.formData.append('data', jsonBlob);
 
-      axios.post(`https://localhost:8080/${this.resourceType}`, this.formData, {
+      axios.post(`https://localhost:8080/${this.resourceType}`, JSON.stringify(this.formData), {
         headers: {
           'Bearer': `${this.jwt}`,
           'Content-Type': 'application/json'
