@@ -112,6 +112,7 @@ export default defineComponent({
       axios.post(`https://localhost:8080/${this.resourceType}`, JSON.stringify(this.formData), {
         headers: {
           'Bearer': `${this.jwt}`,
+          
           'Content-Type': 'application/json'
         }
       }).then(response => {
