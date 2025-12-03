@@ -1,3 +1,53 @@
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+	name: 'Delete',
+		props: {
+			id: {
+				type: String,
+				required: true
+			},
+			jwt: {
+				type: String,
+				required: true
+			},
+			category: {
+				type: String,
+				required: true
+			}
+		},
+    data() {
+		return {
+			msg: "",
+			apiData: {}
+		}
+	},
+	mounted() {
+		this.fetchData(this.id)
+	},
+	methods: {
+		DeleteData() {
+			axios.post(`http://localhost:8080/${this.category}/${this.id}/delete`, {}, {
+				headers: {
+					Authorization: `Bearer ${this.jwt}`
+				}
+			})
+			.then(response => {
+				this.apiData = response.data;
+				this.msg = '';
+			})
+			.catch(error => {
+				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+			})
+		},
+  }
+})
+
+
+
+</script>
 <template>
   <div class="delete-component">
     <h2>Delete {{ resourceType }}</h2>
@@ -63,7 +113,7 @@ const success = ref('')
 
 const fetchItem = async () => {
   if (!searchId.value) {
-    error.value = 'Please enter an ID'
+    error.value = 'Please enter content ID'
     return
   }
   
@@ -82,6 +132,9 @@ const fetchItem = async () => {
       author: 'John Doe',
       approved: true
     }
+
+     
+
   } catch (err: any) {
     error.value = err.message || 'Failed to fetch item'
   } finally {
