@@ -84,7 +84,8 @@ export default defineComponent({
       },
       loading: false,
       error: '',
-      success: ''
+      success: '',
+      jwt: 'eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJQYXRpZW5jZSIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo4NDksImRlcGFydG1lbnQiOiJJbmZvcm1hdGlvbiBUZWNobm9sb2d5IiwidGl0bGUiOiJNYW5hZ2VyIiwiZmlyc3RfbmFtZSI6IldhbGxpdyIsInN1YiI6IldhbGxpdyBQYXRpZW5jZSIsImlhdCI6MTc2NDc5NTkwMywiZXhwIjoxNzY0Nzk5NTAzfQ.IzQYNNtuSJmHr5fGbZ_2iKke11zZ6WjhALo9oYP72gs'
     }
   },
   
@@ -109,10 +110,18 @@ export default defineComponent({
       //const jsonBlob = new Blob([jsonString], { type: 'application/json' });
       //this.formData.append('data', jsonBlob);
 
-      axios.post(`https://localhost:8080/${this.resourceType}`, JSON.stringify(this.formData), {
+      const formData = {
+        level: 2,
+        content: {
+          type: "one liner",
+          text: "stupid joke inside create.vue at 3:07 pm"
+        },
+        language: "english"
+      }
+
+      axios.post(`http://localhost:8080/${this.resourceType}`, formData, { //changed to http but havent tested it as of 10:40am
         headers: {
           'Bearer': `${this.jwt}`,
-          
           'Content-Type': 'application/json'
         }
       }).then(response => {
@@ -127,30 +136,6 @@ export default defineComponent({
         console.error('Error:', error);
         this.error = error.status + ' ' + error.message || 'Failed to create item';
       });
-    },
-
-    async handleSubmitBad() {
-      this.loading = true
-      this.error = ''
-      this.success = ''
-      
-      try {
-        // TODO: Replace with actual API call
-        // Example: await axios.post(`/api/${this.resourceType}`, this.formData)
-        //await new Promise(resolve => setTimeout(resolve, 500))
-        await axios.post(`https://localhost:8080/${this.resourceType}`, this.formData)
-        .then(response => {
-          console.log('Response:', response.data);
-        }).catch(error => {
-          console.error('Error:', error);
-        });
-        this.success = `${this.resourceType} created successfully!`
-        this.resetForm()
-      } catch (err: any) {
-        this.error = err.message || 'Failed to create item'
-      } finally {
-        this.loading = false
-      }
     }
   }
 })

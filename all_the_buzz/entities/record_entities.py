@@ -227,7 +227,7 @@ class Joke(BaseRecord):
 
         # Content type One liners
         elif content["type"] not in ["one_liner", "qa"]:
-            raise ValueError("Not a valid type")
+            raise ValueError("Invalid content type")
         elif content["type"]=="one_liner":
             if "text" not in content:
                 raise ValueError("Missing text field for one liner joke")
