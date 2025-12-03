@@ -175,7 +175,7 @@ p {
    ======================================== */
 .card {
   background: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
+  /* border-radius: var(--border-radius-lg);*/
   box-shadow: var(--shadow-md);
   padding: var(--spacing-xl);
   transition: box-shadow var(--transition-base), background-color var(--transition-base);

@@ -1,11 +1,38 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import AppHeader from '@/components/AppHeader.vue'
+import ImageBanner from '@/components/ImageBanner.vue'
+import UserInfo from '@/components/UserInfo.vue'
+
+const router = useRouter()
+
+const navigateTo = (resource: string) => {
+  router.push({ name: resource })
+}
+
+const logout = () => {
+  // TODO: Implement logout logic
+  router.push({ name: 'login' })
+}
+</script>
 <template>
   <div class="resource-menu-page page-container">
     <AppHeader title="All The Buzz - Resource Menu" />
+    <ImageBanner
+      src="/banner.jpg"
+      text="ALL THE BUZZ"
+      outlineColor="#ff6600"
+    />
+    <div class="content-section">
+    <UserInfo
+        image="/person.jpg"
+        text="Welcome to the Hive!"
+        name="Karl Jones"
+        position="Manager"/>
     
     <div class="resource-menu-content content-wrapper">
       <div class="menu-header">
       </div>
-      
       <div class="resource-grid">
         <div 
           class="resource-card card card-jokes" 
@@ -59,29 +86,14 @@
           <p>Manage quotes database</p>
         </div>
       </div>
-      
+      </div>
+      </div>
       <div class="menu-footer">
         <button class="btn btn-danger logout-button" @click="logout">Logout</button>
       </div>
-    </div>
+    
   </div>
 </template>
-
-<script setup lang="ts">
-import { useRouter } from 'vue-router'
-import AppHeader from '@/components/AppHeader.vue'
-
-const router = useRouter()
-
-const navigateTo = (resource: string) => {
-  router.push({ name: resource })
-}
-
-const logout = () => {
-  // TODO: Implement logout logic
-  router.push({ name: 'login' })
-}
-</script>
 
 <style scoped>
 .resource-menu-page {
@@ -89,12 +101,43 @@ const logout = () => {
   min-height: 100vh;
 }
 
+
+/* Two-column content section layout */
+.content-section {
+  display: flex;
+  align-items:stretch;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height:100vh;
+}
+.content-section .content-col-small {
+  flex: 1 1 0%;
+  max-width: none;
+  max-height: 100%;
+}
+.content-section .content-col-large {
+  flex: 2 2 0%;
+  min-width: 0;
+  max-height: 100%;
+}
+@media (max-width: 900px) {
+  .content-section {
+    flex-direction: column;
+    
+  }
+  .content-section .content-col-small,
+  .content-section .content-col-large {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
 .resource-menu-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: var(--spacing-xl);
 }
 
@@ -111,7 +154,7 @@ const logout = () => {
 
 .resource-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-2xl);
   max-width: 1200px;
