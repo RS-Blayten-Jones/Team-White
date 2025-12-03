@@ -24,9 +24,6 @@ export default defineComponent({
 			apiData: {}
 		}
 	},
-	mounted() {
-		this.fetchData(this.id)
-	},
 	methods: {
 		approveData() {
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/approve`, {}, {
