@@ -1,5 +1,7 @@
 .venv/
+venv/
 .env
+env
 .vscode/
 .DS_Store
 all_the_buzz/logs/
@@ -13,3 +15,5 @@ all_the_buzz/entities/__pycache__/
 .coverage
 .pytest_cache/
 htmlcov/
+key.txt
+key.txt.pub

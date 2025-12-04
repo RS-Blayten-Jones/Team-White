@@ -68,7 +68,8 @@ _RESPONSE_MAP = {
     #record validation error
     "InvalidRecord": (400, "Record is either invalid or not in valid format"),
     "InvalidFilter": (400, "Filters are either invalid fields or not in valid format"),
-    "Missing required fields": (400, "Missing required fields")
+    "Missing required fields": (400, "Missing required fields"),
+    "Invalid content type": (400, "Invalid content field type, expected one_liner or qa")
 }
 
 class ResponseCode:
