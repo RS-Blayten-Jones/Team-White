@@ -266,6 +266,7 @@ class Token:
             ValueError: Token is too short
             ValueError: Token is too long
         """
+        print(token)
         if token is None:
             raise ValueError("Token can not be None")
         elif not isinstance(token, str):
