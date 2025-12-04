@@ -89,10 +89,6 @@ export default defineComponent({
     }
   },
   
-  mounted() {
-    // Component mounted - can add initialization logic here if needed
-  },
-  
   methods: {
     resetForm() {
       this.formData.content = ''
@@ -104,12 +100,6 @@ export default defineComponent({
     },
     
     handleSubmit(){
-      //do it christys way here
-      //making application/json content type form data 
-      //const jsonString = JSON.stringify(this.formData);
-      //const jsonBlob = new Blob([jsonString], { type: 'application/json' });
-      //this.formData.append('data', jsonBlob);
-
       const formData = {
         level: 2,
         content: {
