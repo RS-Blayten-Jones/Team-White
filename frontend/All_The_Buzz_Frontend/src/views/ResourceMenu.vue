@@ -23,8 +23,7 @@ const logout = () => {
       <div class="image-container">
       <div class ="overlay-text"> 
       <div class = "welcome-blurb">
-      <p id="welcome">Welcome to the hive, </p>
-      <p id="name"> Barbara!</p>
+      <p id="name"> Welcome to the hive, Karl!</p>
       </div>
       <p> This is your landing page for All The Buzz! Here you can access, add,
       and edit jokes, bios, quotes, and trivia. </p>
@@ -130,24 +129,14 @@ const logout = () => {
   
 }
 .welcome-blurb {
-  display:flex;
   flex-direction:row;
   align-items:center;
+  padding:.25em;
+  font-size:2em;
+  text-align:center;
 
 }
-#welcome {
-  flex:1.2;
-  font-size: 1.5em;
-  text-align:right;
-  padding:.25em;
-  font-family: 'Baguet Script', cursive !important;
-}
-#name {
-  flex:1;
-  font-size:2em;
-  text-align:left;
-  padding:.25em;
-}
+
 
 .resource-card {
   text-align: center;
@@ -181,6 +170,7 @@ const logout = () => {
 .image-container {
   position:relative;
   display: inline-block;
+  align: center;
 }
 
 #topical {

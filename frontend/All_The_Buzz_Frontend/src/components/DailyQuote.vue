@@ -27,7 +27,7 @@ export default defineComponent({
 	mounted() {
 		console.log("token", this.jwt);
 		this.getDailyQuote();
-		const images = ['img1.jpg']; // Add your filenames here
+		const images = ['img1.jpg','img2.jpg','img3.jpg','img4.jpg']; // Add your filenames here
   		const randomImg = images[Math.floor(Math.random() * images.length)];
   		this.bgImage = `/dailyquote/${randomImg}`;
 	},
