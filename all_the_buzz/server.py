@@ -3,6 +3,7 @@
 # See LICENSE for more details
 
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import json
 from typing import Callable, Any
 from functools import wraps
@@ -71,6 +72,10 @@ def authentication_middleware(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
         logger=LoggerFactory.get_general_logger()
+
+        # if request.method == 'OPTIONS':
+        #     return '', 200
+
         try:
             #get user token from request
             logger.debug("Getting token from request")
@@ -99,7 +104,8 @@ def authentication_middleware(f: Callable) -> Callable:
             kwargs['credentials'] = authentication_result
             logger.debug("successfully loaded credentials")
             return f(*args, **kwargs)
-        #returns 500 error if authentication result is something other than a ResponseCode object or a Credentials object
+        #returns AuthServerError error if authentication result is something other than a 
+        # ResponseCode object or a Credentials object
         status_code, body = ResponseCode("AuthServerError").to_http_response()
         return jsonify(body), status_code
     return decorated_function
@@ -123,7 +129,9 @@ def get_dao_set_credentials(credentials: Credentials, dao_classname: str):
     return dao
 
 def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
-    """Converts string values in the filter dictionary to their required types (e.g., int)."""
+    """
+    converts string values in the filter dictionary to their required types
+    """
     logger=LoggerFactory.get_general_logger()
     logger.debug("Converting filters to correct type")
     int_fields = ['level', 'birth_year', 'death_year']
@@ -134,7 +142,7 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             try:
                 type_safe_filter[key] = int(value)
             except ValueError:
-                logger.debug(f"Warning filter '{key}' recieved non-integer value '{value}'. Skipping")
+                logger.debug(f"WARNING filter '{key}' recieved non-integer value '{value}'. Skipping")
                 continue
         elif key in bool_fields:
             lower_value = value.lower()
@@ -143,7 +151,7 @@ def convert_filter_types(filter_dict: dict[str, str]) -> dict[str, Any]:
             elif lower_value in ('false','', ' '):
                 type_safe_filter[key] = False
             else:
-                logger.debug(f"WARNING: Filter '{key}' received non-bool value '{value}'. Skipping.")
+                logger.debug(f"WARNING: filter '{key}' received non-bool value '{value}'. Skipping.")
                 continue
         else:
             type_safe_filter[key] = value
@@ -172,7 +180,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
           if the user is unauthorized (handled by the credential check).
     """
     logger=LoggerFactory.get_general_logger()
-    logger.debug("Retrievign public jokes collection")
+    logger.debug("Retrieving public jokes collection")
     if credentials.title == 'Employee' or credentials.title == 'Manager':
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
         filter_dict = request.args.to_dict()
@@ -181,7 +189,6 @@ def retrieve_public_jokes_collection(credentials: Credentials):
             if type_safe_filter:
                 all_jokes = public_jokes_dao.get_by_fields(type_safe_filter)
             else:
-                all_jokes = []
                 public_jokes_dao.clear_credentials()
                 status_code, body = ResponseCode("InvalidFilter").to_http_response()
                 return jsonify(body), status_code
@@ -199,7 +206,7 @@ def retrieve_public_jokes_collection(credentials: Credentials):
 def create_a_new_joke(credentials: Credentials):
 
     """
-    Handles the creation of a new joke record (POST /jokes).
+    Creates a new joke record (POST /jokes).
 
     The behavior and target collection are strictly determined by the authenticated
     user's title:
@@ -608,19 +615,13 @@ def update_joke(joke_id: str, credentials: Credentials):
     if credentials.title == 'Manager':
         logger.debug("Update record as manager")
         public_jokes_dao = get_dao_set_credentials(credentials, "PublicJokeDAO")
-        #entity validation
         try:
             updated_joke = Joke.from_json_object(request_body)
         except Exception as e:
-            #entity validation fails
             status_code, body = ResponseCode(str(e)).to_http_response()
             return jsonify(body), status_code
-        #actual database update
         if isinstance(updated_joke, Joke):
             try:
-                print(joke_id)
-                get_response = public_jokes_dao.get_by_fields({'_id': str(joke_id)})
-                print(get_response)
                 dao_response = public_jokes_dao.update_record(str(joke_id), request_body)
                 public_jokes_dao.clear_credentials()
                 status_code, body = dao_response.to_http_response()
@@ -635,9 +636,7 @@ def update_joke(joke_id: str, credentials: Credentials):
             return jsonify(body), status_code
     elif credentials.title == 'Employee':
         logger.debug("Create new record as employee")
-        private_jokes_dao = DAOFactory.get_dao('PrivateJokeDAO')
-        private_jokes_dao.set_credentials(credentials)
-        #setting the OG id of the record to edit and setting is edit to true
+        private_jokes_dao = get_dao_set_credentials(credentials, 'PrivateJokeDAO')
         request_body["original_id"] = joke_id
         request_body["is_edit"] = True
         try:
@@ -2045,74 +2044,89 @@ def establish_all_daos():
 def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
+    
+    # Enable CORS for all routes
+    #CORS(app, resources={r"/*": {"origins": "*"}})
+    #CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+    
+
+    # @app.before_request
+    # def handle_preflight():
+    # if request.method == 'OPTIONS':
+    #     # Let Flask-CORS add the correct headers automatically
+    #     return '', 200
+
+
     try:
         create_client_connection()
         establish_all_daos()
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
-
+    
+    
     app.add_url_rule(
         "/jokes",
         view_func=retrieve_public_jokes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/pending-jokes",
         view_func=retrieve_private_jokes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes",
         view_func=create_a_new_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:joke_id>",
         view_func=update_joke,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>/approve",
         view_func=approve_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>/deny",
         view_func=deny_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/random-jokes/<int:amount>",
         view_func=retrieve_random_joke,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/short-quotes/<int:amount>",
         view_func=retrieve_short_quote,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes",
         view_func=create_a_new_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
 
     )
@@ -2120,90 +2134,90 @@ def create_app():
     app.add_url_rule(
         "/quotes/<string:quote_id>",
         view_func=update_quote,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes/<string:id>/approve",
         view_func=approve_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes/<string:id>/deny",
         view_func=deny_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-quotes",
         view_func=retrieve_private_quotes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-quotes/<int:amount>",
         view_func=retrieve_random_quote,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/daily-quotes",
         view_func=retrieve_daily_quote,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/trivias",
         view_func=retrieve_public_trivia_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias",
         view_func=create_a_new_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:trivia_id>",
         view_func=update_trivia,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:id>/approve",
         view_func=approve_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:id>/deny",
         view_func=deny_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-trivias",
         view_func=retrieve_private_trivias_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-trivias/<int:amount>",
         view_func=retrieve_random_trivia,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
@@ -2211,73 +2225,73 @@ def create_app():
     app.add_url_rule(
         "/bios",
         view_func=retrieve_public_bios_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios",
         view_func=create_a_new_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:bio_id>",
         view_func=update_bio,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:id>/approve",
         view_func=approve_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:id>/deny",
         view_func=deny_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-bios",
         view_func=retrieve_private_bios_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-bios/<int:amount>",
         view_func=retrieve_random_bio,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>",
         view_func=delete_joke,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/trivia/<string:id>",
         view_func=delete_trivia,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/quotes/<string:id>",
         view_func=delete_quote,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/bios/<string:id>",
         view_func=delete_bio,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     return app

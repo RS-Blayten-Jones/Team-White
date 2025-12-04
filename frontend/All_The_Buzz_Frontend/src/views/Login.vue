@@ -29,7 +29,7 @@ const handleLogin = (credentials: { username: string; password: string }) => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--color-primary-purple);
+  background: url('login.png') center center/cover no-repeat, var(--color-primary-purple);
   padding: var(--spacing-md);
 }
 
@@ -38,6 +38,7 @@ const handleLogin = (credentials: { username: string; password: string }) => {
   max-width: 450px;
   width: 100%;
   text-align: center;
+  background: rgba(255, 255, 255);
 }
 
 .login-title {

@@ -66,7 +66,7 @@ def test_content_missing_type():
 
 def test_content_invalid_type():
     joke = Joke(id="1" * 24, ref_id="2" * 24, is_edit=False, language="english")
-    with pytest.raises(ValueError, match="Not a valid type"):
+    with pytest.raises(ValueError, match="Invalid content type"):
         joke.content = {"type": "Wrong type", "question": "Why?", "answer": "Because"}
 
 def test_content_one_liner_text_missing():
