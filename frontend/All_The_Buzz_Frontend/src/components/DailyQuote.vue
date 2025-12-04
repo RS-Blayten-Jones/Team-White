@@ -1,11 +1,10 @@
 <template>
-	<div class="daily-quote">
+	<div class="daily-quote" :style="{ backgroundImage: `url(${bgImage})` }">
 		<blockquote>{{ quote.content }}</blockquote>
 		<cite>- {{ quote.author }}</cite>
 		
 	</div>
 </template>
-
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
@@ -21,12 +20,16 @@ export default defineComponent({
 	data() {
 		return {
 			msg: "",
-			quote: {}
+			quote: {},
+			bgImage: ''
 		}
 	},
 	mounted() {
 		console.log("token", this.jwt);
-		this.getDailyQuote()
+		this.getDailyQuote();
+		const images = ['img1.jpg', 'img2.jpg', 'img3.jpg']; // Add your filenames here
+  		const randomImg = images[Math.floor(Math.random() * images.length)];
+  		this.bgImage = `/dailyquote/${randomImg}`;
 	},
 	methods: {
 		getDailyQuote() {
@@ -49,6 +52,8 @@ export default defineComponent({
 
 <style scoped>
 .daily-quote {
+	background-size: cover;
+  	background-position: center;
 	flex:1;
 	text-align: center;
 	font-size: 1.25rem;
