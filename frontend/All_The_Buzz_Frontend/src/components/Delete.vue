@@ -24,9 +24,7 @@ export default defineComponent({
 			apiData: {}
 		}
 	},
-	mounted() {
-		this.fetchData(this.id)
-	},
+	
 	methods: {
 		DeleteData() {
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/delete`, {}, {
@@ -186,9 +184,9 @@ h2 {
 }
 
 .warning-box {
-  background-color: #fff3cd;
-  border: 1px solid #ffc107;
-  color: #856404;
+  background-color: #f75664;
+  border: 1px solid #131212;
+  color: #030101;
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 2rem;
@@ -216,6 +214,10 @@ label {
   color: #555;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
+}
+
+[data-theme="dark"] label {
+  color: white;
 }
 
 input {
