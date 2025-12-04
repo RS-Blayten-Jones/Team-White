@@ -107,7 +107,7 @@ const logout = () => {
 }
 #primary-content {
   flex: 3;
-  background: var(--bg-primary);
+  background: #FBE6C2;
   border-radius: 10px;
   padding: 2em;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
