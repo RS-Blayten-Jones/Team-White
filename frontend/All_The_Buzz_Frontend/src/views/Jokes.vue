@@ -1,20 +1,29 @@
+
 <template>
   <div class="jokes-page page-container">
     <AppHeader />
-    
+
     <main class="content-wrapper" role="main">
       <div class="page-header">
         <h1 class="page-title">Jokes Management</h1>
       </div>
-      
+
       <ResourceToggle v-model:activeComponent="activeComponent" />
-      
+
       <div class="content-area card">
-        <component :is="currentComponent" resource-type="jokes" />
+        <component
+          v-if="ready"
+          :is="currentComponent"
+          :is-manager="userIsManager"
+          :jwt="jwtToken"
+          :category="category"
+        />
+        <div v-else class="error">Loading auth/category…</div>
       </div>
     </main>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
@@ -35,6 +44,12 @@ const components = {
   delete: Delete,
   approve: ApproveAndDeny
 }
+
+const category = ref<string>('jokes')
+const userIsManager = ref<boolean>(true)
+const jwtToken = ref<string>('{"first_Name": "Auguste", "location": "United States", "id": 577,"last_Name": "Tweed","department": "Sales","title": "Manager","token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg2NDcwNiwiZXhwIjoxNzY0ODY4MzA2fQ.CYQGNZDjB_O1lsE3SirVzANOGnAiEE0AqtAHqHX0itg"}')
+
+const ready = computed(() => !!category.value && !!jwtToken.value)
 
 const currentComponent = computed(() => components[activeComponent.value as keyof typeof components])
 </script>
