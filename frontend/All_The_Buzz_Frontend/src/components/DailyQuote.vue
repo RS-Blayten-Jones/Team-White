@@ -25,13 +25,15 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.getRandomQuote()
+ 		console.log('JWT token received:', this.jwt);
+ 		this.getRandomQuote()
 	},
 	methods: {
 		getRandomQuote() {
+			console.log(this.jwt);
 			axios.post(`http://localhost:8080/daily-quote`, {}, {
 				headers: {
-					Bearer: `${this.jwt}`
+					'Bearer': `${this.jwt}`
 				}
 			})
 			.then(response => {
