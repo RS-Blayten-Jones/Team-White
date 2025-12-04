@@ -55,25 +55,26 @@ export default defineComponent({
   -webkit-text-stroke: 1px white;
 }
 .daily-quote {
-  aspect-ratio: 1/1; /* modern browsers */
-  background-size: cover;
-  background-position: center;
+  aspect-ratio: 1/1;                /* Always square */                  /* Height controlled by aspect-ratio */
+  background-size: cover;           /* Crop to fill square */
+  background-position: center;      /* Center image */
+  background-repeat: no-repeat;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+  align-items: center;
+  text-align: center;
+  font-size: 3rem;
+  color: var(--text-primary, #222);
+  margin: 2rem 0;
+  background: #d1c1e9ff;
+  padding: 1.5rem 2rem;
+  font-weight: bold;
+  flex: 1;    
+  width: 100%; /* Or a specific width */
+  height: 100%;                       /* Allow flex scaling */
 }
-.daily-quote {
-	background-size: cover;
-  	background-position: center;
-	flex:1;
-	text-align: center;
-	font-size: 3rem;
-	color: var(--text-primary, #222);
-	margin: 2rem 0;
-	background: #d1c1e9ff;
-	padding: 1.5rem 2rem;
-	font-weight: bold;
-	
-}
-
 blockquote {
 	font-style: italic;
 	margin-bottom: 0.5rem;
