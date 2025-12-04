@@ -70,7 +70,7 @@ const logout = () => {
           </div>
         </div>
       <div id="topical">
-      <DailyQuote/>
+      <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDg3NDE4MiwiZXhwIjoxNzY0ODc3NzgyfQ.vWhGwj2xt5TwaU2o9cVfkh9K7Bd9uGcuCqPwtvLbO1Q" />
       <div class="item-card">
       <p> funny joke here </p>
       </div>
