@@ -2048,7 +2048,9 @@ def create_app():
     # Enable CORS for all routes
     #CORS(app, resources={r"/*": {"origins": "*"}})
     #CORS(app)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True,
+        allow_headers=["Bearer", "Content-Type"],  # <-- allow your custom header
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     
 
     # @app.before_request

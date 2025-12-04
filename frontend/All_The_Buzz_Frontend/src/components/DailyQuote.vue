@@ -25,20 +25,22 @@ export default defineComponent({
 		}
 	},
 	mounted() {
+		console.log("token", this.jwt);
 		this.getRandomQuote()
 	},
 	methods: {
 		getRandomQuote() {
-			axios.post(`http://localhost:8080/daily-quote`, {}, {
+			console.log(this.jwt);
+			const auth ={headers:{Bearer: this.jwt, }}
+			axios.get(`http://localhost:8080/daily-quotes`, {
 				headers: {
-					Bearer: `${this.jwt}`
-				}
-			})
-			.then(response => {
+					'Bearer': `${this.jwt}`,
+					'Content-Type': 'application/json'
+        		}
+			}).then(response => {
 				this.quote = response.data;
 				this.msg = '';
-			})
-			.catch(error => {
+			}).catch(error => {
 				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
 			})
 		}
