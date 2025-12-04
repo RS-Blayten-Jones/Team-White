@@ -2,11 +2,48 @@
 	<div class="daily-quote">
 		<blockquote>"The only way to do great work is to love what you do."</blockquote>
 		<cite>- Steve Jobs</cite>
+		{{ quote }}
 	</div>
 </template>
 
-<script setup lang="ts">
-// No logic needed for hardcoded quote
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+	name: 'DailyQuote',
+		props: {
+			jwt: {
+				type: String,
+				required: true
+			}
+		},
+	data() {
+		return {
+			msg: "",
+			quote: {}
+		}
+	},
+	mounted() {
+		this.getRandomQuote()
+	},
+	methods: {
+		getRandomQuote() {
+			axios.post(`http://localhost:8080/daily-quote`, {}, {
+				headers: {
+					Bearer: `${this.jwt}`
+				}
+			})
+			.then(response => {
+				this.quote = response.data;
+				this.msg = '';
+			})
+			.catch(error => {
+				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+			})
+		}
+	}
+})
 </script>
 
 <style scoped>
