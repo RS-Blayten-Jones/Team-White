@@ -1,8 +1,8 @@
 <template>
 	<div class="daily-quote">
-		<blockquote>"The only way to do great work is to love what you do."</blockquote>
-		<cite>- Steve Jobs</cite>
-		{{ quote }}
+		<blockquote>{{ quote.content }}</blockquote>
+		<cite>- {{ quote.author }}</cite>
+		
 	</div>
 </template>
 
@@ -26,13 +26,12 @@ export default defineComponent({
 	},
 	mounted() {
 		console.log("token", this.jwt);
-		this.getRandomQuote()
+		this.getDailyQuote()
 	},
 	methods: {
-		getRandomQuote() {
+		getDailyQuote() {
 			console.log(this.jwt);
-			const auth ={headers:{Bearer: this.jwt, }}
-			axios.get(`http://localhost:8080/daily-quotes`, {
+			axios.get(`http://localhost:8081/daily-quotes`, {
 				headers: {
 					'Bearer': `${this.jwt}`,
 					'Content-Type': 'application/json'

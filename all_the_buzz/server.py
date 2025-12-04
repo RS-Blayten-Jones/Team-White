@@ -73,8 +73,8 @@ def authentication_middleware(f: Callable) -> Callable:
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
         logger=LoggerFactory.get_general_logger()
 
-        # if request.method == 'OPTIONS':
-        #     return '', 200
+        if request.method == 'OPTIONS':
+             return '', 200
 
         try:
             #get user token from request
@@ -2048,9 +2048,7 @@ def create_app():
     # Enable CORS for all routes
     #CORS(app, resources={r"/*": {"origins": "*"}})
     #CORS(app)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True,
-        allow_headers=["Bearer", "Content-Type"],  # <-- allow your custom header
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
     
 
     # @app.before_request
@@ -2299,7 +2297,7 @@ def create_app():
     return app
 
 def run():
-    port = 8080
+    port = 8081
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
 
