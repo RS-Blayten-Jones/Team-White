@@ -131,7 +131,7 @@ export default defineComponent({
       loading: false,
       error: '',
       success: '',
-      jwt: 'eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJQYXRpZW5jZSIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo4NDksImRlcGFydG1lbnQiOiJJbmZvcm1hdGlvbiBUZWNobm9sb2d5IiwidGl0bGUiOiJNYW5hZ2VyIiwiZmlyc3RfbmFtZSI6IldhbGxpdyIsInN1YiI6IldhbGxpdyBQYXRpZW5jZSIsImlhdCI6MTc2NDc5NTkwMywiZXhwIjoxNzY0Nzk5NTAzfQ.IzQYNNtuSJmHr5fGbZ_2iKke11zZ6WjhALo9oYP72gs'
+      jwt: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg4MDY3MCwiZXhwIjoxNzY0ODg0MjcwfQ.GCtoifZT1_iq8eqYeX1pD1wgPP3BjXH1vyiK_5KA50M'
     }
   },
   
