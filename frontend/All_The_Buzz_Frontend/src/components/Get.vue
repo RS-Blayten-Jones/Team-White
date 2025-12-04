@@ -1,108 +1,199 @@
 <template>
   <div class="get-component">
-    <h2>Get {{ resourceType }}</h2>
-    
+    <h2>{{ resourceType }} Actions</h2>
+
+    <!-- Error Message -->
+    <div v-if="msg" class="error">{{ msg }}</div>
+
     <div class="filters">
-      <div class="form-group">
-        <label for="filter-type">Filter By:</label>
-        <select id="filter-type" v-model="filterType">
-          <option value="all">All</option>
-          <option value="id">By ID</option>
-          <option value="random">Random</option>
-        </select>
-      </div>
-      
-      <div v-if="filterType === 'id'" class="form-group">
-        <label for="item-id">Item ID:</label>
-        <input
-          id="item-id"
-          v-model="itemId"
-          type="text"
-          placeholder="Enter ID"
-        />
-      </div>
-      
-      <button class="fetch-button" @click="fetchData">
-        {{ filterType === 'random' ? 'Get Random' : 'Fetch' }}
+      <button class="fetch-button" @click="getAllPub">
+        Get All {{ resourceType }}
       </button>
-    </div>
-    
-    <div v-if="loading" class="loading">Loading...</div>
-    
-    <div v-if="error" class="error">{{ error }}</div>
-    
-    <div v-if="items.length > 0" class="results">
-      <h3>Results ({{ items.length }})</h3>
-      <div class="items-grid">
-        <div v-for="item in items" :key="item._id" class="item-card">
-          <div class="item-header">
-            <span class="item-id">ID: {{ item._id }}</span>
-            <span :class="['item-status', item.approved ? 'approved' : 'pending']">
-              {{ item.approved ? 'Approved' : 'Pending' }}
-            </span>
-          </div>
-          <div class="item-content">
-            <p v-if="item.content">{{ item.content }}</p>
-            <p v-if="item.name"><strong>Name:</strong> {{ item.name }}</p>
-            <p v-if="item.author"><strong>Author:</strong> {{ item.author }}</p>
-            <p v-if="item.question"><strong>Question:</strong> {{ item.question }}</p>
-            <p v-if="item.answer"><strong>Answer:</strong> {{ item.answer }}</p>
-          </div>
+
+      <div>
+        <input type="number" v-model="randAmt" min="1" placeholder="Amount" />
+        <button class="fetch-button" @click="GetRand(randAmt)">
+          Get Random {{ resourceType }}
+        </button>
+      </div>
+
+      <button
+        v-if="isManager"
+        class="fetch-button"
+        @click="getAllPend"
+      >
+        Get All Pending {{ resourceType }}
+      </button>
+
+      <div>
+        <select v-model="difficulty">
+          <option disabled value="">Select Difficulty</option>
+          <option value="1">Level 1</option>
+          <option value="2">Level 2</option>
+          <option value="3">Level 3</option>
+        </select>
+        <button class="fetch-button" @click="GetByDiff(difficulty)">
+          Get by Difficulty
+        </button>
+      </div>
+
+      <div v-if="resourceType === 'quotes'">
+        <!-- Daily Quote -->
+        <button class="fetch-button" @click="GetDailyQuote">
+          Get Daily Quote
+        </button>
+
+        <!-- Short Quotes with amt -->
+        <div>
+          <input type="number" v-model="shortAmt" min="1" placeholder="Amount" />
+          <button class="fetch-button" @click="GetShortQuote(shortAmt)">
+            Get Short Quotes
+          </button>
         </div>
       </div>
     </div>
-    
-    <div v-else-if="!loading && !error" class="no-results">
-      No items to display. Click "Fetch" to load data.
+
+    <!-- Results -->
+    <div class="results" v-if="apiData && Object.keys(apiData).length">
+      <h3>Results:</h3>
+      <pre>{{ apiData }}</pre>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
 
-interface Props {
-  resourceType: string
-}
-
-const props = defineProps<Props>()
-
-const filterType = ref('all')
-const itemId = ref('')
-const items = ref<any[]>([])
-const loading = ref(false)
-const error = ref('')
-
-const fetchData = async () => {
-  loading.value = true
-  error.value = ''
-  items.value = []
-  
-  try {
-    // TODO: Replace with actual API calls
-    await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API delay
-    
-    // Mock data for demonstration
-    items.value = [
-      {
-        _id: '1',
-        content: `Sample ${props.resourceType} content`,
-        approved: true,
-        author: 'John Doe'
+export default defineComponent({
+	name: 'GetButton',
+		props: {
+			isManager: {
+        type: Boolean,
+        required: true
       },
-      {
-        _id: '2',
-        content: `Another ${props.resourceType} example`,
-        approved: false,
-        author: 'Jane Smith'
+			jwt: {
+				type: String,
+				required: true
+			},
+			resourceType: {
+				type: String,
+				required: true
+			}
+		},
+	data() {
+		return {
+			msg: "",
+			apiData: {}
+		}
+	},
+
+methods: {
+  getAllPub() {
+    
+    axios.get(`http://localhost:8080/${this.resourceType}`, {
+      headers: {
+        'Bearer': `${this.jwt}`
       }
-    ]
-  } catch (err: any) {
-    error.value = err.message || 'Failed to fetch data'
-  } finally {
-    loading.value = false
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
+  },
+
+  getAllPend() {
+    axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
+      headers: {
+        'Bearer': `${this.jwt}`
+      }
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
+  },
+
+  GetRand(amt) {
+    axios.get(`http://localhost:8080/random-${this.resourceType}/${amt}`, {
+      headers: {
+        'Bearer': `${this.jwt}`
+      }
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
+  },
+
+  GetByDiff(level) {
+    if (this.resourceType !== 'jokes') {
+      this.msg = 'GetByDiff is only available for resourceType "jokes".';
+      return;
+    }
+    axios.get(`http://localhost:8080/${this.resourceType}`, {
+      params: { level: level },
+      headers: {
+        'Bearer': `${this.jwt}`
+      }
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
+  },
+
+  GetDailyQuote() {
+    if (this.resourceType !== 'quotes') {
+      this.msg = 'Daily Quote is only available for resourceType "quotes".';
+      return;
+    }
+    axios.get(`http://localhost:8080/daily-quotes`, {
+      headers: {
+        'Bearer': `${this.jwt}`
+      }
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
+  },
+
+  GetShortQuote(amt) {
+    if (this.resourceType !== 'quotes') {
+      this.msg = 'Short Quote is only available for resourceType "quotes".';
+      return;
+    }
+    axios.get(`http://localhost:8080/short-quotes/${amt}`, {
+      headers: {
+        'Bearer': `${this.jwt}`
+      }
+    })
+    .then(response => {
+      this.apiData = response.data;
+      this.msg = '';
+    })
+    .catch(error => {
+      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+    });
   }
 }
+})
 </script>
 
 <style scoped>

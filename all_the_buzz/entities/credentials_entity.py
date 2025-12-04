@@ -273,6 +273,7 @@ class Token:
         elif len(token) == 0:
             raise ValueError("No token provided")
         elif len(token) < 250:
+            print(token)
             raise ValueError("Token is too short")
         elif len(token) > 400:
             raise ValueError("Token is too long")
