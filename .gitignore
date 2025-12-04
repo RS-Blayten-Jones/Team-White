@@ -13,3 +13,4 @@ all_the_buzz/entities/__pycache__/
 .coverage
 .pytest_cache/
 htmlcov/
+frontend/All_The_Buzz_Frontent/node_modules
