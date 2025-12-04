@@ -14,7 +14,7 @@
         <component
           v-if="ready"
           :is="currentComponent"
-          :is-manager="userIsManager"
+          :isManager="userIsManager"
           :jwt="jwtToken"
           :category="category"
         />
@@ -47,7 +47,7 @@ const components = {
 
 const category = ref<string>('jokes')
 const userIsManager = ref<boolean>(true)
-const jwtToken = ref<string>('{"first_Name": "Auguste", "location": "United States", "id": 577,"last_Name": "Tweed","department": "Sales","title": "Manager","token": "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg2NDcwNiwiZXhwIjoxNzY0ODY4MzA2fQ.CYQGNZDjB_O1lsE3SirVzANOGnAiEE0AqtAHqHX0itg"}')
+const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg3NTYzNywiZXhwIjoxNzY0ODc5MjM3fQ.ItHN686SKQciAaOpkeHQcLdq8Maic--rr5pWYBD4-lM')
 
 const ready = computed(() => !!category.value && !!jwtToken.value)
 
