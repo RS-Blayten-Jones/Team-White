@@ -70,10 +70,7 @@ const logout = () => {
           </div>
         </div>
       <div id="topical">
-      <div class="item-card">
-      <p> Here we are blah blah blah</p>
-      <p> Name Here </p>
-      </div>
+      <DailyQuote/>
       <div class="item-card">
       <p> funny joke here </p>
       </div>
@@ -110,7 +107,7 @@ const logout = () => {
 }
 #primary-content {
   flex: 3;
-  background: #FBE6C2;
+  background: var(--bg-primary);
   border-radius: 10px;
   padding: 2em;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);

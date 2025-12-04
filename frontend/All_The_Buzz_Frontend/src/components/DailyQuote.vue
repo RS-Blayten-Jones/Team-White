@@ -11,6 +11,7 @@
 
 <style scoped>
 .daily-quote {
+	flex:1;
 	text-align: center;
 	font-size: 1.25rem;
 	color: var(--text-primary, #222);
