@@ -73,8 +73,8 @@ def authentication_middleware(f: Callable) -> Callable:
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
         logger=LoggerFactory.get_general_logger()
 
-        # if request.method == 'OPTIONS':
-        #     return '', 200
+        if request.method == 'OPTIONS':
+            return '', 200
 
         try:
             #get user token from request
