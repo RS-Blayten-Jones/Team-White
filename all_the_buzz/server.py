@@ -72,6 +72,10 @@ def authentication_middleware(f: Callable) -> Callable:
     @wraps(f)
     def decorated_function(*args: Any, **kwargs: Any) -> Any:
         logger=LoggerFactory.get_general_logger()
+
+        # if request.method == 'OPTIONS':
+        #     return '', 200
+
         try:
             #get user token from request
             logger.debug("Getting token from request")
@@ -2042,76 +2046,87 @@ def create_app():
     app = MyFlask(__name__)
     
     # Enable CORS for all routes
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    #CORS(app, resources={r"/*": {"origins": "*"}})
+    #CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
     
+
+    # @app.before_request
+    # def handle_preflight():
+    # if request.method == 'OPTIONS':
+    #     # Let Flask-CORS add the correct headers automatically
+    #     return '', 200
+
+
     try:
         create_client_connection()
         establish_all_daos()
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
-
+    
+    
     app.add_url_rule(
         "/jokes",
         view_func=retrieve_public_jokes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/pending-jokes",
         view_func=retrieve_private_jokes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes",
         view_func=create_a_new_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:joke_id>",
         view_func=update_joke,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>/approve",
         view_func=approve_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>/deny",
         view_func=deny_joke,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/random-jokes/<int:amount>",
         view_func=retrieve_random_joke,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/short-quotes/<int:amount>",
         view_func=retrieve_short_quote,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes",
         view_func=retrieve_public_quotes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes",
         view_func=create_a_new_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
 
     )
@@ -2119,90 +2134,90 @@ def create_app():
     app.add_url_rule(
         "/quotes/<string:quote_id>",
         view_func=update_quote,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes/<string:id>/approve",
         view_func=approve_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/quotes/<string:id>/deny",
         view_func=deny_quote,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-quotes",
         view_func=retrieve_private_quotes_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-quotes/<int:amount>",
         view_func=retrieve_random_quote,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/daily-quotes",
         view_func=retrieve_daily_quote,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/trivias",
         view_func=retrieve_public_trivia_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias",
         view_func=create_a_new_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:trivia_id>",
         view_func=update_trivia,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:id>/approve",
         view_func=approve_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/trivias/<string:id>/deny",
         view_func=deny_trivia,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-trivias",
         view_func=retrieve_private_trivias_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-trivias/<int:amount>",
         view_func=retrieve_random_trivia,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
@@ -2210,73 +2225,73 @@ def create_app():
     app.add_url_rule(
         "/bios",
         view_func=retrieve_public_bios_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios",
         view_func=create_a_new_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:bio_id>",
         view_func=update_bio,
-        methods=["PUT"],
+        methods=["PUT", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:id>/approve",
         view_func=approve_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/bios/<string:id>/deny",
         view_func=deny_bio,
-        methods=["POST"],
+        methods=["POST", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/pending-bios",
         view_func=retrieve_private_bios_collection,
-        methods=["GET"],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
 
     app.add_url_rule(
         "/random-bios/<int:amount>",
         view_func=retrieve_random_bio,
-        methods=['GET'],
+        methods=["GET", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/jokes/<string:id>",
         view_func=delete_joke,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/trivia/<string:id>",
         view_func=delete_trivia,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/quotes/<string:id>",
         view_func=delete_quote,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     app.add_url_rule(
         "/bios/<string:id>",
         view_func=delete_bio,
-        methods=["DELETE"],
+        methods=["DELETE", "OPTIONS"],
         provide_automatic_options=False
     )
     return app
