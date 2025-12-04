@@ -16,9 +16,9 @@
           :is="currentComponent"
           :isManager="userIsManager"
           :jwt="jwtToken"
-          :category="category"
+          :resourceType="resourceType"
         />
-        <div v-else class="error">Loading auth/category…</div>
+        <div v-else class="error">Loading auth/resourceType…</div>
       </div>
     </main>
   </div>
@@ -45,11 +45,11 @@ const components = {
   approve: ApproveAndDeny
 }
 
-const category = ref<string>('jokes')
+const resourceType = ref<string>('jokes')
 const userIsManager = ref<boolean>(true)
-const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg3NTYzNywiZXhwIjoxNzY0ODc5MjM3fQ.ItHN686SKQciAaOpkeHQcLdq8Maic--rr5pWYBD4-lM')
+const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg4MDY3MCwiZXhwIjoxNzY0ODg0MjcwfQ.GCtoifZT1_iq8eqYeX1pD1wgPP3BjXH1vyiK_5KA50M')
 
-const ready = computed(() => !!category.value && !!jwtToken.value)
+const ready = computed(() => !!resourceType.value && !!jwtToken.value)
 
 const currentComponent = computed(() => components[activeComponent.value as keyof typeof components])
 </script>

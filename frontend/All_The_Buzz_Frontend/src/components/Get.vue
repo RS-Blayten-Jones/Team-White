@@ -1,19 +1,19 @@
 <template>
   <div class="get-component">
-    <h2>{{ category }} Actions</h2>
+    <h2>{{ resourceType }} Actions</h2>
 
     <!-- Error Message -->
     <div v-if="msg" class="error">{{ msg }}</div>
 
     <div class="filters">
       <button class="fetch-button" @click="getAllPub">
-        Get All {{ category }}
+        Get All {{ resourceType }}
       </button>
 
       <div>
         <input type="number" v-model="randAmt" min="1" placeholder="Amount" />
         <button class="fetch-button" @click="GetRand(randAmt)">
-          Get Random {{ category }}
+          Get Random {{ resourceType }}
         </button>
       </div>
 
@@ -22,7 +22,7 @@
         class="fetch-button"
         @click="getAllPend"
       >
-        Get All Pending {{ category }}
+        Get All Pending {{ resourceType }}
       </button>
 
       <div>
@@ -37,7 +37,7 @@
         </button>
       </div>
 
-      <div v-if="category === 'quotes'">
+      <div v-if="resourceType === 'quotes'">
         <!-- Daily Quote -->
         <button class="fetch-button" @click="GetDailyQuote">
           Get Daily Quote
@@ -76,7 +76,7 @@ export default defineComponent({
 				type: String,
 				required: true
 			},
-			category: {
+			resourceType: {
 				type: String,
 				required: true
 			}
@@ -91,9 +91,9 @@ export default defineComponent({
 methods: {
   getAllPub() {
     
-    axios.get(`http://localhost:8080/${this.category}`, {
+    axios.get(`http://localhost:8080/${this.resourceType}`, {
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
@@ -106,9 +106,9 @@ methods: {
   },
 
   getAllPend() {
-    axios.get(`http://localhost:8080/pending-${this.category}`, {
+    axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
@@ -121,9 +121,9 @@ methods: {
   },
 
   GetRand(amt) {
-    axios.get(`http://localhost:8080/random-${this.category}/${amt}`, {
+    axios.get(`http://localhost:8080/random-${this.resourceType}/${amt}`, {
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
@@ -136,14 +136,14 @@ methods: {
   },
 
   GetByDiff(level) {
-    if (this.category !== 'jokes') {
-      this.msg = 'GetByDiff is only available for category "jokes".';
+    if (this.resourceType !== 'jokes') {
+      this.msg = 'GetByDiff is only available for resourceType "jokes".';
       return;
     }
-    axios.get(`http://localhost:8080/${this.category}`, {
+    axios.get(`http://localhost:8080/${this.resourceType}`, {
       params: { level: level },
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
@@ -156,13 +156,13 @@ methods: {
   },
 
   GetDailyQuote() {
-    if (this.category !== 'quotes') {
-      this.msg = 'Daily Quote is only available for category "quotes".';
+    if (this.resourceType !== 'quotes') {
+      this.msg = 'Daily Quote is only available for resourceType "quotes".';
       return;
     }
     axios.get(`http://localhost:8080/daily-quotes`, {
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
@@ -175,13 +175,13 @@ methods: {
   },
 
   GetShortQuote(amt) {
-    if (this.category !== 'quotes') {
-      this.msg = 'Short Quote is only available for category "quotes".';
+    if (this.resourceType !== 'quotes') {
+      this.msg = 'Short Quote is only available for resourceType "quotes".';
       return;
     }
     axios.get(`http://localhost:8080/short-quotes/${amt}`, {
       headers: {
-        Authorization: `Bearer ${this.jwt}`
+        'Bearer': `${this.jwt}`
       }
     })
     .then(response => {
