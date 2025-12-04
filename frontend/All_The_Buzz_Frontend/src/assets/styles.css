@@ -3,6 +3,7 @@
 /* ========================================
    Color Palette (From Design System)
    ======================================== */
+
 :root {
   /* Primary Colors */
   --color-primary-dark: #002E4B;      /* Dark Blue */
@@ -36,7 +37,7 @@
   
   /* Theme Colors (Light Mode Default) */
   --bg-primary: #F9FAFB;
-  --bg-secondary: #FFFFFF;
+  --bg-secondary: #7554d224;
   --bg-tertiary: #F3F4F6;
   --text-primary: #111827;
   --text-secondary: #4B5563;
@@ -88,7 +89,7 @@
 /* Dark Mode Theme */
 [data-theme="dark"] {
   --bg-primary: #111827;
-  --bg-secondary: #1F2937;
+  --bg-secondary: #1f293785;
   --bg-tertiary: #374151;
   --text-primary: #F9FAFB;
   --text-secondary: #D1D5DB;

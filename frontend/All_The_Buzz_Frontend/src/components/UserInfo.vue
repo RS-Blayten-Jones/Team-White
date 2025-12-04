@@ -41,25 +41,23 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #EE9500;
-  padding: 1.5em 2em;
+  background: linear-gradient(rgba(255, 140, 0, 0.6), rgba(255, 140, 0, 0.6)), url('/banner.png') center/cover no-repeat;
+  padding: 4em 4em;
   box-shadow: 0 2px 12px rgba(0,0,0,0.12);
   color: #fff;
-  min-width: 500px;
+  
 }
 .user-image {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 2em;
   border: 3px solid #fff;
 }
 .user-details {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5em;
 }
 .user-text {
   font-size: 1.5em;
