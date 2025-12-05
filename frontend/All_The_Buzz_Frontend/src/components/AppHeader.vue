@@ -78,7 +78,7 @@ const logout = () => {
 .app-header {
   background-color: var(--color-primary-orange);
   color: var(--text-on-dark);
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-sm) var(--spacing-xl);
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
@@ -86,13 +86,12 @@ const logout = () => {
 }
 
 .app-header-content {
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-md);
-}
+  }
 
 .app-header-title {
   font-size: var(--font-size-2xl);
