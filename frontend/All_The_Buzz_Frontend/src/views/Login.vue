@@ -11,16 +11,79 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import UserCreds from '@/components/UserCreds.vue'
+import { exchangeTokenForCredentials, type Credentials } from '@/authClient'
+
+const AUTH_URI = "http://172.16.0.51:8080/auth_service/api/auth/verify"
 
 const router = useRouter()
 
-const handleLogin = (credentials: { username: string; password: string }) => {
+function setCookie(name: string, value: string, maxAgeSeconds?: number){
+  const parts = [`${name}=${encodeURIComponent(value)}`, 'path=/']
+  if (maxAgeSeconds) {
+    parts.push(`max-age=${maxAgeSeconds}`) //max age is how long it takes the cookie to expire
+  }
+  document.cookie = parts.join('; ')
+}
+
+
+async function handleLogin(credentials: { username: string; password: string }) {
   // TODO: Implement actual authentication logic
   console.log('Login attempt:', credentials)
   
-  // For now, navigate to ResourceMenu on any login attempt
+  try {
+    // --- Step 1: (Simulated) obtain token from login server ---
+    // Normally you would call loginUri with credentials and get back a token:
+    // const loginRes = await axios.post(LOGIN_URI, credentials)
+    // const token = loginRes.data.token
+
+    // For now, use hardcoded token as requested:
+    const hardcodedJwt = '826s398719asd12jsdhf4'
+    const token = hardcodedJwt
+
+    // --- Step 2: Exchange token for Credentials using your auth server ---
+    const authRes = await exchangeTokenForCredentials(AUTH_URI, token)
+    // Handle the ResponseCode cases your Python could retur
+
+    if ('code' in authRes) {
+        // These match your Python ResponseCode returns
+      switch (authRes.code) {
+        case 'InvalidToken':
+          throw new Error('Invalid token format')
+        case 'ConfigLoadError':
+          throw new Error('Failed to load auth config')
+        case 'ServerConnectionError':
+          throw new Error('Authentication server unreachable')
+        case 'AuthServerError':
+          throw new Error('Authentication server error')
+        case 'UnauthorizedToken':
+          throw new Error('Unauthorized token')
+        default:
+          throw new Error('Unknown authentication error')
+      }
+    }
+    // --- Step 3: We have valid Credentials ---
+    const creds = authRes as Credentials
+    // For now we only need role + persist the JWT
+    // Persist for 1 hour; adjust as needed.
+    setCookie('jwt', token, 3600)
+    setCookie('role', creds.role, 3600)
+  } catch (error: any) {
+    console.error('Login failed:', error)
+    alert(`Login failed: ${error.message}`)
+  }
   router.push({ name: 'resource-menu' })
 }
+
+  //if authentication is successful, set the cookie here 
+  //const hardcodedJwt = '826s398719asd12jsdhf4'
+  //const hardcodedRole = 'Manager' // or 'Employee
+  //setCookie('jwt', hardcodedJwt, 3600) //sets cookie to expire in 1 hour (3600 seconds)
+  //setCookie('role', hardcodedRole, 3600) //sets cookie to expire in 1 hour (3600 seconds)
+  //setCookie('jwt', hardcodedJwt)
+  //setCookie('role', hardcodedRole)
+
+
+  // router.push({ name: 'resource-menu' })
 </script>
 
 <style scoped>

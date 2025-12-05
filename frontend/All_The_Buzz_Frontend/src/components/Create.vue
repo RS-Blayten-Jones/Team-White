@@ -114,6 +114,10 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
+
+//const role = getCookie('role')
+//const token = getCookie('jwt')
 
 export default defineComponent({
   name: 'CreateComponent',
@@ -142,7 +146,7 @@ export default defineComponent({
       loading: false,
       error: '',
       success: '',
-      jwt: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg4MDY3MCwiZXhwIjoxNzY0ODg0MjcwfQ.GCtoifZT1_iq8eqYeX1pD1wgPP3BjXH1vyiK_5KA50M'
+      jwt: ''
     }
   },
   
@@ -169,7 +173,15 @@ export default defineComponent({
     handleSubmit(){
       let formData = this.formatDataByResourceType(this.resourceType);
       console.log('Formatted Data:', formData);
-      //return;
+
+      //console.log('JWT Token:', this.jwt);
+      //console.log('Role:', role);
+      
+      const role = getCookie('role')
+      const token = getCookie('jwt')
+      console.log('cookies before request:', { role, token })
+
+      return;
       axios.post(`http://localhost:8080/${this.resourceType}`, formData, { //changed to http but havent tested it as of 10:40am
         headers: {
           'Bearer': `${this.jwt}`,
