@@ -1,3 +1,51 @@
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+	name: 'Delete',
+		props: {
+			id: {
+				type: String,
+				required: true
+			},
+			jwt: {
+				type: String,
+				required: true
+			},
+			category: {
+				type: String,
+				required: true
+			}
+		},
+    data() {
+		return {
+			msg: "",
+			apiData: {}
+		}
+	},
+	
+	methods: {
+		DeleteData() {
+			axios.post(`http://localhost:8080/${this.category}/${this.id}/delete`, {}, {
+				headers: {
+					Authorization: `Bearer ${this.jwt}`
+				}
+			})
+			.then(response => {
+				this.apiData = response.data;
+				this.msg = '';
+			})
+			.catch(error => {
+				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
+			})
+		},
+  }
+})
+
+
+
+</script>
 <template>
   <div class="delete-component">
     <h2>Delete {{ resourceType }}</h2>
@@ -63,7 +111,7 @@ const success = ref('')
 
 const fetchItem = async () => {
   if (!searchId.value) {
-    error.value = 'Please enter an ID'
+    error.value = 'Please enter content ID'
     return
   }
   
@@ -82,6 +130,9 @@ const fetchItem = async () => {
       author: 'John Doe',
       approved: true
     }
+
+     
+
   } catch (err: any) {
     error.value = err.message || 'Failed to fetch item'
   } finally {
@@ -133,9 +184,9 @@ h2 {
 }
 
 .warning-box {
-  background-color: #fff3cd;
-  border: 1px solid #ffc107;
-  color: #856404;
+  background-color: #f75664;
+  border: 1px solid #131212;
+  color: #030101;
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 2rem;
@@ -163,6 +214,10 @@ label {
   color: #555;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
+}
+
+[data-theme="dark"] label {
+  color: white;
 }
 
 input {
