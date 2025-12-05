@@ -1,3 +1,4 @@
+
 <template>
   <div class="get-component">
     <h2>{{ resourceType }} Actions</h2>
@@ -11,7 +12,7 @@
       </button>
 
       <div>
-        <input type="number" v-model="randAmt" min="1" placeholder="Amount" />
+        <input type="number" v-model.number="randAmt" min="1" placeholder="Amount" />
         <button class="fetch-button" @click="GetRand(randAmt)">
           Get Random {{ resourceType }}
         </button>
@@ -26,11 +27,11 @@
       </button>
 
       <div>
-        <select v-model="difficulty">
+        <select v-model.number="difficulty">
           <option disabled value="">Select Difficulty</option>
-          <option value="1">Level 1</option>
-          <option value="2">Level 2</option>
-          <option value="3">Level 3</option>
+          <option :value="1">difficulty 1</option>
+          <option :value="2">difficulty 2</option>
+          <option :value="3">difficulty 3</option>
         </select>
         <button class="fetch-button" @click="GetByDiff(difficulty)">
           Get by Difficulty
@@ -45,7 +46,7 @@
 
         <!-- Short Quotes with amt -->
         <div>
-          <input type="number" v-model="shortAmt" min="1" placeholder="Amount" />
+          <input type="number" v-model.number="shortAmt" min="1" placeholder="Amount" />
           <button class="fetch-button" @click="GetShortQuote(shortAmt)">
             Get Short Quotes
           </button>
@@ -53,208 +54,277 @@
       </div>
     </div>
 
-    
-  <!-- Results -->
-  <div class="results" v-if="rows.length">
-    <h3>Results:</h3>
-    <DataTable
-      :data="rows"
-      :columns="preferredColumns"
-      :headerMap="headers"
-      :hiddenColumns="hidden"
-      :getRowKey="getRowKey"
-    />
-  </div>
+    <!-- Results -->
+    <div class="results" v-if="rows.length">
+      <h3>Results:</h3>
 
+      
+      <DataTable
+        :data="rows"
+        :columns="preferredColumns"
+        :headerMap="headers"
+        :hiddenColumns="hidden"
+        :getRowKey="getRowKey"
+      >
+        <template #cell="{ row, column, value }">
+          <template v-if="resourceType === 'jokes' && column === 'content'">
+            <!-- Defensive guards in case content is missing -->
+            <template v-if="row && row.content && row.content.type">
+              <!-- ONE-LINER -->
+              <div v-if="row.content.type === 'one_liner'" class="one-liner-content">
+                {{ row.content.text }}
+              </div>
+
+              <!-- Q & A -->
+              <div
+                v-else-if="row.content.type === 'qa'"
+                class="qa-content"
+                tabindex="0"
+                aria-live="polite"
+              >
+                <div class="question">
+                  <strong>Q:</strong> {{ row.content.question }}
+                  <small v-if="row.language" class="muted"> ({{ row.language }})</small>
+                  <small class="hint">Hover or focus to reveal answer</small>
+                </div>
+
+                <div class="answer" aria-hidden="true">
+                  <strong>A:</strong> {{ row.content.answer }}
+                </div>
+              </div>
+
+              <!-- Fallback for unknown type -->
+              <div v-else>
+                {{ value }}
+              </div>
+            </template>
+
+            <!-- If content is missing -->
+            <template v-else>
+              {{ value }}
+            </template>
+          </template>
+
+          <!-- Default rendering for other columns -->
+          <template v-else>
+            {{ value }}
+          </template>
+        </template>
+      </DataTable>
+
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
-import DataTable from '@/components/DataTable.vue'
+import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
 
 export default defineComponent({
-	name: 'GetButton',
+  name: 'GetButton',
   components: { DataTable },
-		props: {
-			isManager: {
-        type: Boolean,
-        required: true
-      },
-			jwt: {
-				type: String,
-				required: true
-			},
-			resourceType: {
-				type: String,
-				required: true
-			}
-		},
-	data() {
-		return {
-			msg: "",
-			apiData: {},
-      shortAmt: 0,
-      amt: 0,
-      randAmt: 0,
-      difficulty: ''
-		}
+  props: {
+    isManager: { type: Boolean, required: true },
+    jwt: { type: String, required: true },
+    resourceType: { type: String, required: true }
   },
-	computed: {
+  data() {
+    return {
+      msg: "",
+      apiData: {},
+      shortAmt: 1,
+      amt: 1,
+      randAmt: 1,
+      difficulty: '' as number | ''
+    }
+  },
+  computed: {
     // Normalize apiData into an array for the table
     rows(): any[] {
       const d = this.apiData
-      if (Array.isArray(d)) return d
-      if (d && Array.isArray((d as any).items)) return (d as any).items
-      if (d && Array.isArray((d as any).data)) return (d as any).data
-      // If API returns single object, show it as one-row table
-      if (d && typeof d === 'object' && Object.keys(d).length) return [d]
-      return []
+      let arr: any[] = []
+      if (Array.isArray(d)) arr = d
+      else if (d && Array.isArray((d as any).items)) arr = (d as any).items
+      else if (d && Array.isArray((d as any).data)) arr = (d as any).data
+      else if (d && typeof d === 'object' && Object.keys(d).length) arr = [d]
+      else return []
+
+      // Minimal normalization for jokes to avoid duplicate difficulty + keep native fields for slot
+      if (this.resourceType === 'jokes') {
+        return arr.map((row: any) => {
+          const copy: any = { ...row }
+          // prefer 'difficulty'; derive from 'level' if needed
+          if (copy.level != null && copy.difficulty == null) copy.difficulty = copy.level
+          // language normalization
+          if (!copy.language && copy.lang) copy.language = copy.lang
+          // do NOT delete question/answer/text — we need them in the slot
+          // BUT prevent extra visible 'level' column
+          delete copy.level
+          return copy
+        })
+      }
+
+      return arr
     },
-    // Optional: control preferred column order per resource type
+
     preferredColumns(): string[] {
       switch (this.resourceType) {
         case 'jokes':
-          return ['id', 'text', 'level', 'status', 'author', 'createdAt']
+          // Use 'level' (your payload), not 'difficulty'.
+          // Keep 'content' and 'explanation' as you requested.
+          return ['difficulty', 'language', 'content', 'explanation']
         case 'quotes':
-          return ['id', 'text', 'author', 'length', 'createdAt']
+          return ['text', 'author', 'length', 'createdAt']
         default:
-          return [] // let DataTable auto-discover
+          return []
       }
     },
-    // Optional: provide nicer headers
+
     headers(): Record<string, string> {
       return {
-        id: 'ID',
+        // For jokes: remap 'level' to a friendly header
+        language: 'Language',
+        content: 'Content',
+        explanation: 'Explanation',
+
+        // Quotes
         text: this.resourceType === 'quotes' ? 'Quote' : 'Text',
-        level: 'Difficulty',
         status: 'Status',
         author: 'Author',
         length: 'Length',
         createdAt: 'Created'
       }
     },
-    // Optional: hide noisy columns
+
     hidden(): string[] {
-      return ['internalNotes', 'metadata'] // example; tune to your API
+      // Hide _id (nested id), keep content visible (we render it via slot).
+      const base = ['_id']
+      return base
     }
   },
 
+  
 
-methods: {
-  getAllPub() {
+  methods: {
+    getAllPub() {
+      axios.get(`http://localhost:8080/${this.resourceType}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
     
-    axios.get(`http://localhost:8080/${this.resourceType}`, {
-      headers: {
-        'Bearer': `${this.jwt}`
+    getRowKey(row: any, index: number) {
+      // Prefer Mongo-style OID if present
+      const oid = row?._id?.$oid
+      if (oid) return oid
+      return row.id ?? `${this.resourceType}-${index}`
+    },
+
+
+    getAllPend() {
+      axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    GetRand(amt: string | number) {
+      const n = Number(amt)
+      axios.get(`http://localhost:8080/random-${this.resourceType}/${n}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    GetByDiff(difficulty: string | number) {
+      if (this.resourceType !== 'jokes') {
+        this.msg = 'GetByDiff is only available for resourceType "jokes".'
+        return
       }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
-  },
+      const n = Number(difficulty)
+      axios.get(`http://localhost:8080/${this.resourceType}`, {
+        params: { difficulty: n },
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
 
-
-  getRowKey(row: any, index: number) {
-    return row.id ?? `${this.resourceType}-${index}`
-  },
-
-
-  getAllPend() {
-    axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
-      headers: {
-        'Bearer': `${this.jwt}`
+    GetDailyQuote() {
+      if (this.resourceType !== 'quotes') {
+        this.msg = 'Daily Quote is only available for resourceType "quotes".'
+        return
       }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
-  },
+      axios.get(`http://localhost:8080/daily-quotes`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
 
-  GetRand(amt: string | number) {
-    axios.get(`http://localhost:8080/random-${this.resourceType}/${amt}`, {
-      headers: {
-        'Bearer': `${this.jwt}`
+    GetShortQuote(amt: string | number) {
+      if (this.resourceType !== 'quotes') {
+        this.msg = 'Short Quote is only available for resourceType "quotes".'
+        return
       }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
-  },
-
-  GetByDiff(level: string | number) {
-    if (this.resourceType !== 'jokes') {
-      this.msg = 'GetByDiff is only available for resourceType "jokes".';
-      return;
+      const n = Number(amt)
+      axios.get(`http://localhost:8080/short-quotes/${n}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        this.apiData = response.data
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
     }
-    axios.get(`http://localhost:8080/${this.resourceType}`, {
-      params: { level: level },
-      headers: {
-        'Bearer': `${this.jwt}`
-      }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
-  },
-
-  GetDailyQuote() {
-    if (this.resourceType !== 'quotes') {
-      this.msg = 'Daily Quote is only available for resourceType "quotes".';
-      return;
-    }
-    axios.get(`http://localhost:8080/daily-quotes`, {
-      headers: {
-        'Bearer': `${this.jwt}`
-      }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
-  },
-
-  GetShortQuote(amt: string | number) {
-    if (this.resourceType !== 'quotes') {
-      this.msg = 'Short Quote is only available for resourceType "quotes".';
-      return;
-    }
-    axios.get(`http://localhost:8080/short-quotes/${amt}`, {
-      headers: {
-        'Bearer': `${this.jwt}`
-      }
-    })
-    .then(response => {
-      this.apiData = response.data;
-      this.msg = '';
-    })
-    .catch(error => {
-      this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-    });
   }
-}
 })
 </script>
+
 
 <style scoped>
 .get-component {
@@ -376,4 +446,39 @@ h2 {
   color: var(--text-primary);
   line-height: 1.6;
 }
+
+/* optional polish */
+.muted {
+  color: var(--text-secondary);
+  margin-left: 0.25rem;
+  font-size: 0.85em;
+}
+.question {
+  margin-bottom: 0.25rem;
+}
+
+.qa-content .answer {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 180ms ease, filter 180ms ease;
+  user-select: none;
+}
+.qa-content:hover .answer,
+.qa-content:focus-within .answer {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+.muted {
+  color: var(--text-secondary);
+  margin-left: 0.25rem;
+  font-size: 0.85em;
+}
+.hint {
+  margin-left: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+}
+
 </style>
