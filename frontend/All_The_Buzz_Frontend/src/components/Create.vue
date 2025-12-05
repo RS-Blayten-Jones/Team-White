@@ -4,17 +4,49 @@
     
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
-        <label for="content">Content:</label>
+        <label for="type-dropdown" v-if="resourceType === 'jokes'">Select a joke type</label>
+        <select id="type-dropdown" v-if="resourceType === 'jokes'" v-model="formData.content.type" required>
+          <option value="one_liner">One Liner</option>
+          <option value="qa">Question and Answer</option>
+        </select>
+        <label for="difficulty-dropdown" v-if="resourceType === 'jokes'" >Select Difficulty Level</label>
+        <select id="difficulty-dropdown" v-if="resourceType === 'jokes'" v-model="formData.level" required>
+          <option value="1">Level 1</option>
+          <option value="2">Level 2</option>
+          <option value="3">Level 3</option>
+        </select>
+        <textarea v-if="resourceType === 'jokes' && formData.level == 3" 
+          v-model="formData.explanation"
+          rows="4"
+          placeholder="Enter explanation for difficult joke..."
+        ></textarea>
+
         <textarea
           id="content"
-          v-model="formData.content"
+          v-if="formData.content.type == 'one_liner'"
+          v-model="formData.content.text"
           rows="4"
-          placeholder="Enter content..."
+          :placeholder="`Enter ${getSingularResourceName(resourceType)}...`"
           required
         ></textarea>
+
+        <div v-if="formData.content.type == 'qa'">
+          <input
+            v-model="formData.question"
+            type="text"
+            placeholder="Enter question..."
+            required
+          />
+          <input
+            v-model="formData.answer"
+            type="text"
+            placeholder="Enter answer..."
+            required
+          />
+        </div>
       </div>
       
-      <div class="form-group">
+      <div class="form-group" v-if="resourceType === 'quotes'">
         <label for="author">Author:</label>
         <input
           id="author"
@@ -25,7 +57,7 @@
         />
       </div>
       
-      <div v-if="resourceType === 'trivia'" class="form-group">
+      <div v-if="resourceType === 'trivias'" class="form-group">
         <label for="question">Question:</label>
         <input
           id="question"
@@ -34,8 +66,7 @@
           placeholder="Enter question"
         />
       </div>
-      
-      <div v-if="resourceType === 'trivia'" class="form-group">
+      <div v-if="resourceType === 'trivias'" class="form-group">
         <label for="answer">Answer:</label>
         <input
           id="answer"
@@ -43,6 +74,15 @@
           type="text"
           placeholder="Enter answer"
         />
+      </div>
+      <div class="form-group">
+        <input
+          v-model="formData.language"
+          type="text"
+          placeholder="Enter language"
+          required
+        >
+        </input>
       </div>
       
       <div v-if="error" class="error">{{ error }}</div>
@@ -77,10 +117,16 @@ export default defineComponent({
   data() {
     return {
       formData: {
-        content: '',
+        content: {
+          type: "",
+          text: ""
+        },
         author: '',
         question: '',
-        answer: ''
+        answer: '',
+        level: 0,
+        explanation: '',
+        language: ''
       },
       loading: false,
       error: '',
@@ -89,36 +135,30 @@ export default defineComponent({
     }
   },
   
-  mounted() {
-    // Component mounted - can add initialization logic here if needed
-  },
-  
   methods: {
     resetForm() {
-      this.formData.content = ''
+      this.formData.content = {
+        type: "",
+        text: ""
+      }
       this.formData.author = ''
       this.formData.question = ''
       this.formData.answer = ''
       this.error = ''
       this.success = ''
     },
-    
-    handleSubmit(){
-      //do it christys way here
-      //making application/json content type form data 
-      //const jsonString = JSON.stringify(this.formData);
-      //const jsonBlob = new Blob([jsonString], { type: 'application/json' });
-      //this.formData.append('data', jsonBlob);
-
-      const formData = {
-        level: 2,
-        content: {
-          type: "one_liner",
-          text: "stupid joke inside create.vue at 3:07 pm"
-        },
-        language: "english"
+    getSingularResourceName(resourceType: string): string {
+      if (resourceType.endsWith('ies')) {
+        return resourceType.slice(0, -3) + 'y';
+      } else if (resourceType.endsWith('s')) {
+        return resourceType.slice(0, -1);
       }
-
+      return resourceType;
+    },
+    handleSubmit(){
+      let formData = this.formatDataByResourceType(this.resourceType);
+      console.log('Formatted Data:', formData);
+      return;
       axios.post(`http://localhost:8080/${this.resourceType}`, formData, { //changed to http but havent tested it as of 10:40am
         headers: {
           'Bearer': `${this.jwt}`,
@@ -136,6 +176,30 @@ export default defineComponent({
         console.error('Error:', error);
         this.error = error.status + ' ' + error.message || 'Failed to create item';
       });
+    },
+    formatDataByResourceType(resourceType: string) {
+      if (resourceType === 'jokes' && this.formData.content.type === 'one_liner') {
+        return {
+          level: this.formData.level,
+          content: {
+            type: this.formData.content.type,
+            text: this.formData.content.text
+          },
+          language: this.formData.language
+        }
+      }
+      else if (resourceType === 'jokes' && this.formData.content.type === 'qa') {
+        return {
+          level: this.formData.level,
+          content: {
+            type: this.formData.content.type,
+            question: this.formData.question,
+            answer: this.formData.answer
+          },
+          language: this.formData.language,
+          explanation: this.formData.level == 3 ? this.formData.explanation : ""
+        }
+      }
     }
   }
 })
@@ -156,6 +220,10 @@ h2 {
 
 form {
   max-width: 600px;
+}
+
+.form-group {
+  color: red;
 }
 
 .error {

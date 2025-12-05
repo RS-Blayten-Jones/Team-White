@@ -93,7 +93,11 @@ export default defineComponent({
 	data() {
 		return {
 			msg: "",
-			apiData: {}
+			apiData: {},
+      shortAmt: 0,
+      amt: 0,
+      randAmt: 0,
+      difficulty: ''
 		}
   },
 	computed: {
@@ -175,7 +179,7 @@ methods: {
     });
   },
 
-  GetRand(amt) {
+  GetRand(amt: string | number) {
     axios.get(`http://localhost:8080/random-${this.resourceType}/${amt}`, {
       headers: {
         'Bearer': `${this.jwt}`
@@ -190,7 +194,7 @@ methods: {
     });
   },
 
-  GetByDiff(level) {
+  GetByDiff(level: string | number) {
     if (this.resourceType !== 'jokes') {
       this.msg = 'GetByDiff is only available for resourceType "jokes".';
       return;
@@ -229,7 +233,7 @@ methods: {
     });
   },
 
-  GetShortQuote(amt) {
+  GetShortQuote(amt: string | number) {
     if (this.resourceType !== 'quotes') {
       this.msg = 'Short Quote is only available for resourceType "quotes".';
       return;
