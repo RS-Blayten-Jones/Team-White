@@ -53,17 +53,26 @@
       </div>
     </div>
 
-    <!-- Results -->
-    <div class="results" v-if="apiData && Object.keys(apiData).length">
-      <h3>Results:</h3>
-      <pre>{{ apiData }}</pre>
-    </div>
+    
+  <!-- Results -->
+  <div class="results" v-if="rows.length">
+    <h3>Results:</h3>
+    <DataTable
+      :data="rows"
+      :columns="preferredColumns"
+      :headerMap="headers"
+      :hiddenColumns="hidden"
+      :getRowKey="getRowKey"
+    />
+  </div>
+
   </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import DataTable from './DataTable.vue'
 
 export default defineComponent({
 	name: 'GetButton',
@@ -86,7 +95,47 @@ export default defineComponent({
 			msg: "",
 			apiData: {}
 		}
-	},
+  },
+	computed: {
+    // Normalize apiData into an array for the table
+    rows(): any[] {
+      const d = this.apiData
+      if (Array.isArray(d)) return d
+      if (d && Array.isArray((d as any).items)) return (d as any).items
+      if (d && Array.isArray((d as any).data)) return (d as any).data
+      // If API returns single object, show it as one-row table
+      if (d && typeof d === 'object' && Object.keys(d).length) return [d]
+      return []
+    },
+    // Optional: control preferred column order per resource type
+    preferredColumns(): string[] {
+      switch (this.resourceType) {
+        case 'jokes':
+          return ['id', 'text', 'level', 'status', 'author', 'createdAt']
+        case 'quotes':
+          return ['id', 'text', 'author', 'length', 'createdAt']
+        default:
+          return [] // let DataTable auto-discover
+      }
+    },
+    // Optional: provide nicer headers
+    headers(): Record<string, string> {
+      return {
+        id: 'ID',
+        text: this.resourceType === 'quotes' ? 'Quote' : 'Text',
+        level: 'Difficulty',
+        status: 'Status',
+        author: 'Author',
+        length: 'Length',
+        createdAt: 'Created'
+      }
+    },
+    // Optional: hide noisy columns
+    hidden(): string[] {
+      return ['internalNotes', 'metadata'] // example; tune to your API
+    }
+  },
+
 
 methods: {
   getAllPub() {
@@ -104,6 +153,12 @@ methods: {
       this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
     });
   },
+
+
+  getRowKey(row: any, index: number) {
+    return row.id ?? `${this.resourceType}-${index}`
+  },
+
 
   getAllPend() {
     axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
