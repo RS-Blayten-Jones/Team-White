@@ -72,10 +72,11 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
-import DataTable from './DataTable.vue'
+import DataTable from '@/components/DataTable.vue'
 
 export default defineComponent({
 	name: 'GetButton',
+  components: { DataTable },
 		props: {
 			isManager: {
         type: Boolean,
