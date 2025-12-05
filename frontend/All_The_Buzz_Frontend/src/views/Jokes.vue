@@ -104,7 +104,7 @@ beeSound.loop = false
 
 const resourceType = ref<string>('jokes')
 const userIsManager = ref<boolean>(true)
-const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk1MjMwOCwiZXhwIjoxNzY0OTU1OTA4fQ.h1Pgao8br_9c_fpG9TBS9J_t6SiOszkd_oNDoF7fAXw')
+const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
 
 const ready = computed(() => !!resourceType.value && !!jwtToken.value)
 
