@@ -258,7 +258,7 @@ onUnmounted(() => {
 }
 
 .content-area {
-  min-height: 500px;
+  min-height: 600px;
   width:800px ;
   position: relative;
   backdrop-filter: blur(10px);
@@ -291,7 +291,8 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 140px;
+  height: 175px;
+  width: 175px;
 }
 
 .mini-card:hover {
@@ -305,8 +306,8 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 

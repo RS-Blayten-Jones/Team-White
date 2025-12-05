@@ -21,7 +21,14 @@
       <div class="main-content-layout">
         <div class="content-area card">
           <Transition name="fade-slide" mode="out-in">
-            <component :is="currentComponent" :key="activeComponent" resource-type="jokes" />
+            <component
+          v-if="ready"
+          :is="currentComponent"
+          :isManager="userIsManager"
+          :jwt="jwtToken"
+          :resourceType="resourceType"
+        />
+        <div v-else class="error">Loading auth/resourceType…</div>
           </Transition>
         </div>
         
