@@ -45,7 +45,18 @@
           />
         </div>
       </div>
-      
+
+      <div class="form-group" v-if="resourceType === 'quotes'">
+        <label for="content">Quote:</label>
+        <textarea
+          id="content"
+          v-model="formData.content.text"
+          type="text"
+          placeholder="Enter quote"
+          rows="4"
+          required
+        ></textarea>
+      </div>
       <div class="form-group" v-if="resourceType === 'quotes'">
         <label for="author">Author:</label>
         <input
@@ -158,7 +169,7 @@ export default defineComponent({
     handleSubmit(){
       let formData = this.formatDataByResourceType(this.resourceType);
       console.log('Formatted Data:', formData);
-      return;
+      //return;
       axios.post(`http://localhost:8080/${this.resourceType}`, formData, { //changed to http but havent tested it as of 10:40am
         headers: {
           'Bearer': `${this.jwt}`,
@@ -223,7 +234,7 @@ form {
 }
 
 .form-group {
-  color: red;
+  /* color: red; */
 }
 
 .error {
