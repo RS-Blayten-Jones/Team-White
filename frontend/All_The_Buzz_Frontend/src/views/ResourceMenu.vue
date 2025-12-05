@@ -2,9 +2,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import ImageBanner from '@/components/ImageBanner.vue'
 import UserInfo from '@/components/UserInfo.vue'
 import DailyQuote from '@/components/DailyQuote.vue'
+import GetRandomJoke from '@/components/GetRandomJoke.vue'
 
 const router = useRouter()
 
@@ -63,8 +63,7 @@ onUnmounted(() => {
       <div class="image-container">
       <div class ="overlay-text"> 
       <div class = "welcome-blurb">
-      <p id="welcome">Welcome to the hive, </p>
-      <p id="name"> Barbara!</p>
+      <p id="name"> Welcome to the hive, Karl!</p>
       </div>
       <p> This is your landing page for All The Buzz! Here you can access, add,
       and edit jokes, bios, quotes, and trivia. </p>
@@ -109,15 +108,15 @@ onUnmounted(() => {
           </div>
         </div>
       <div id="topical">
-      <DailyQuote/>
+      <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
       <div class="item-card">
-      <p> funny joke here </p>
+      <GetRandomJoke jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
       </div>
       </div>
     </div>
     <UserInfo id="side-bar"
             image="/person.jpg"
-            text="Welcome to the Hive!"
+            text="Hi there!"
             name="Karl Jones"
             position="Manager"/>
             
@@ -178,24 +177,14 @@ onUnmounted(() => {
   
 }
 .welcome-blurb {
-  display:flex;
   flex-direction:row;
   align-items:center;
+  padding:.25em;
+  font-size:2em;
+  text-align:center;
 
 }
-#welcome {
-  flex:1.2;
-  font-size: 1.5em;
-  text-align:right;
-  padding:.25em;
-  font-family: 'Baguet Script', cursive !important;
-}
-#name {
-  flex:1;
-  font-size:2em;
-  text-align:left;
-  padding:.25em;
-}
+
 
 .resource-card {
   text-align: center;
@@ -229,6 +218,7 @@ onUnmounted(() => {
 .image-container {
   position:relative;
   display: inline-block;
+  align: center;
 }
 
 #topical {
@@ -236,7 +226,7 @@ onUnmounted(() => {
 }
 
 .item-card {
-  background-color:white;
+  background: #e3f2fd;           /* Light blue background */
   padding:1em;
   margin:2em;
   text-align:center;
