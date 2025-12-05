@@ -186,6 +186,10 @@ label {
   font-size: 0.9rem;
 }
 
+[data-theme="dark"] label {
+  color: white;
+}
+
 input[type="text"],
 textarea {
   width: 100%;

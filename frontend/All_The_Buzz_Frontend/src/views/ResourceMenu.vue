@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import UserInfo from '@/components/UserInfo.vue'
@@ -6,6 +7,13 @@ import DailyQuote from '@/components/DailyQuote.vue'
 import GetRandomJoke from '@/components/GetRandomJoke.vue'
 
 const router = useRouter()
+
+// Cute bee mouse following
+const cuteBeeX = ref(Math.random() * window.innerWidth)
+const cuteBeeY = ref(Math.random() * window.innerHeight)
+let cuteBeeAnimationId: number | null = null
+const mouseX = ref(0)
+const mouseY = ref(0)
 
 const navigateTo = (resource: string) => {
   router.push({ name: resource })
@@ -15,6 +23,37 @@ const logout = () => {
   // TODO: Implement logout logic
   router.push({ name: 'login' })
 }
+
+// Mouse tracking
+const handleMouseMove = (e: MouseEvent) => {
+  mouseX.value = e.clientX
+  mouseY.value = e.clientY
+}
+
+// Cute bee follows mouse with smooth delay
+const animateCuteBee = () => {
+  // Smooth follow with easing
+  const dx = mouseX.value - cuteBeeX.value
+  const dy = mouseY.value - cuteBeeY.value
+  
+  // Adjust speed (0.05 = slower follow, 0.2 = faster follow)
+  cuteBeeX.value += dx * 0.08
+  cuteBeeY.value += dy * 0.08
+  
+  cuteBeeAnimationId = requestAnimationFrame(animateCuteBee)
+}
+
+onMounted(() => {
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', handleMouseMove)
+  if (cuteBeeAnimationId !== null) {
+    cancelAnimationFrame(cuteBeeAnimationId)
+  }
+})
 </script>
 <template> 
   <AppHeader title="Buzzword Software - Media Feed" />
@@ -86,6 +125,14 @@ const logout = () => {
   </div>
   <div class="menu-footer"> 
   copyright 2025</div>
+  
+  <!-- Randomly flying cute bee -->
+  <img 
+    src="/cute-bee.png" 
+    alt="Cute Bee" 
+    class="cute-bee"
+    :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
+  />
 </template>
 
 <style scoped>
@@ -187,5 +234,15 @@ const logout = () => {
   font-style: italic;
 }
 
+/* Cute bee - mouse following */
+.cute-bee {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  z-index: 99;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  transition: all 0.1s linear;
+}
 
 </style>
