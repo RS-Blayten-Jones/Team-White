@@ -1,4 +1,3 @@
-
 <template>
   <div class="jokes-page page-container">
     <AppHeader />
@@ -16,20 +15,13 @@
         </div>
       </div>
 
-      <ResourceToggle v-model:activeComponent="activeComponent" />
-      
       <div class="main-content-layout">
+      <div>
         <div class="content-area card">
-          <Transition name="fade-slide" mode="out-in">
-            <component
-          v-if="ready"
-          :is="currentComponent"
-          :isManager="userIsManager"
-          :jwt="jwtToken"
-          :resourceType="resourceType"
-        />
-        <div v-else class="error">Loading auth/resourceType…</div>
-          </Transition>
+          <CreateComponent resourceType="jokes"/> 
+          <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+          </div>
+          <GetButton isManager="True" jwt="joajlgja" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -51,10 +43,8 @@
     </main>
     
     <!-- Bee-themed decorative elements -->
-    <div class="honeycomb-bg" aria-hidden="true"></div>
     
     <!-- Bee hive decoration -->
-    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -82,8 +72,8 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import ResourceToggle from '@/components/ResourceToggle.vue'
-import Get from '@/components/Get.vue'
-import Create from '@/components/Create.vue'
+import GetButton from '@/components/Get.vue'
+import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
 import Delete from '@/components/Delete.vue'
 import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
@@ -107,13 +97,6 @@ let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 
-const components = {
-  get: Get,
-  create: Create,
-  edit: Edit,
-  delete: Delete,
-  approve: ApproveAndDeny
-}
 
 const resourceType = ref<string>('jokes')
 const userIsManager = ref<boolean>(true)
@@ -131,8 +114,8 @@ const releaseBee = () => {
   // Calculate center of beehive (300px width, positioned at right: -30px, top: 10px)
   const hiveWidth = 300
   const hiveHeight = 300 // approximate height
-  const hiveCenterX = window.innerWidth + 30 - (hiveWidth / 2)
-  const hiveCenterY = 10 + (hiveHeight / 2)
+  const hiveCenterX = window.innerWidth / 4
+  const hiveCenterY = window.innerHeight /2
   
   const bee: Bee = {
     id: beeIdCounter++,
@@ -273,8 +256,7 @@ onUnmounted(() => {
 }
 
 .content-area {
-  min-height: 600px;
-  width:800px ;
+  display: flex;
   position: relative;
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
@@ -387,13 +369,10 @@ onUnmounted(() => {
 
 /* Bee hive decoration */
 .bee-hive {
-  position: fixed;
-  top: 10px;
-  right: -30px;
-  width: 300px;
+  max-height:10rem;
+  width: auto;
   height: auto;
   z-index: 50;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
 }
