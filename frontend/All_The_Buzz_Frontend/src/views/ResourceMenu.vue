@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import UserInfo from '@/components/UserInfo.vue'
 import DailyQuote from '@/components/DailyQuote.vue'
+import GetRandomJoke from '@/components/GetRandomJoke.vue'
 
 const router = useRouter()
 
@@ -70,13 +71,13 @@ const logout = () => {
       <div id="topical">
       <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDg4NDg0OCwiZXhwIjoxNzY0ODg4NDQ4fQ.b4bf8ZCtccOGjQtQrYlLwMHAKE1Jx_5DCpp6K8LPiQ8" />
       <div class="item-card">
-      <p> funny joke here </p>
+      <GetRandomJoke jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDg4NDg0OCwiZXhwIjoxNzY0ODg4NDQ4fQ.b4bf8ZCtccOGjQtQrYlLwMHAKE1Jx_5DCpp6K8LPiQ8" />
       </div>
       </div>
     </div>
     <UserInfo id="side-bar"
             image="/person.jpg"
-            text="Welcome to the Hive!"
+            text="Hi there!"
             name="Karl Jones"
             position="Manager"/>
             
