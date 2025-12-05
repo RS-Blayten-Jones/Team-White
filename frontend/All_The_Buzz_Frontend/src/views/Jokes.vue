@@ -19,9 +19,8 @@
       <div>
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
-          <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
           </div>
-          <GetButton isManager="True" jwt="joajlgja" resourceType="jokes"/>
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -45,6 +44,7 @@
     <!-- Bee-themed decorative elements -->
     
     <!-- Bee hive decoration -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -97,12 +97,24 @@ let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 
+// Audio for bee buzzing
+const beeSound = new Audio('/bee-buzz.mp3')
+beeSound.loop = false
+
 
 const resourceType = ref<string>('jokes')
 const userIsManager = ref<boolean>(true)
 const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk1MjMwOCwiZXhwIjoxNzY0OTU1OTA4fQ.h1Pgao8br_9c_fpG9TBS9J_t6SiOszkd_oNDoF7fAXw')
 
 const ready = computed(() => !!resourceType.value && !!jwtToken.value)
+
+const components = {
+  get: GetButton,
+  create: CreateComponent,
+  edit: Edit,
+  delete: Delete,
+  approve: ApproveAndDeny
+}
 
 const currentComponent = computed(() => components[activeComponent.value as keyof typeof components])
 
@@ -111,11 +123,12 @@ const navigateTo = (resource: string) => {
 }
 
 const releaseBee = () => {
+  console.log('Bee release triggered!')
   // Calculate center of beehive (300px width, positioned at right: -30px, top: 10px)
   const hiveWidth = 300
   const hiveHeight = 300 // approximate height
-  const hiveCenterX = window.innerWidth / 4
-  const hiveCenterY = window.innerHeight /2
+  const hiveCenterX = window.innerWidth + 30 - (hiveWidth / 2)
+  const hiveCenterY = 10 + (hiveHeight / 2)
   
   const bee: Bee = {
     id: beeIdCounter++,
@@ -123,11 +136,27 @@ const releaseBee = () => {
     y: hiveCenterY
   }
   
+  console.log('Adding bee:', bee)
   flyingBees.value.push(bee)
+  console.log('Total bees:', flyingBees.value.length)
+  
+  // Play bee sound with increasing volume based on number of bees
+  // Volume increases with each bee, capped at 1.0
+  const baseVolume = 0.6
+  const volumeIncrease = 0.1
+  const newVolume = Math.min(1.0, baseVolume + (flyingBees.value.length - 1) * volumeIncrease)
+  
+  console.log('Playing sound at volume:', newVolume)
+  // Clone the audio to allow multiple simultaneous plays
+  const buzzSound = beeSound.cloneNode() as HTMLAudioElement
+  buzzSound.volume = newVolume
+  buzzSound.play().catch(err => console.error('Audio play failed:', err))
+  
   animateBee(bee, hiveCenterX, hiveCenterY)
 }
 
 const animateBee = (bee: Bee, startX: number, startY: number) => {
+  console.log('Starting animation for bee:', bee.id)
   const duration = 4000
   const startTime = Date.now()
   
@@ -161,6 +190,7 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
       requestAnimationFrame(animate)
     } else {
       // Remove bee from array when animation completes
+      console.log('Animation complete for bee:', bee.id)
       const index = flyingBees.value.findIndex(b => b.id === bee.id)
       if (index > -1) {
         flyingBees.value.splice(index, 1)
@@ -275,6 +305,8 @@ onUnmounted(() => {
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
+  z-index: 10;
+  position: relative;
 }
 
 .mini-card {
@@ -369,10 +401,13 @@ onUnmounted(() => {
 
 /* Bee hive decoration */
 .bee-hive {
-  max-height:10rem;
-  width: auto;
+  position: fixed;
+  top: 10px;
+  right: -30px;
+  width: 300px;
   height: auto;
-  z-index: 50;
+  z-index: 5;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
 }
