@@ -69,9 +69,9 @@ const logout = () => {
           </div>
         </div>
       <div id="topical">
-      <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDg4NDg0OCwiZXhwIjoxNzY0ODg4NDQ4fQ.b4bf8ZCtccOGjQtQrYlLwMHAKE1Jx_5DCpp6K8LPiQ8" />
+      <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
       <div class="item-card">
-      <GetRandomJoke jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDg4NDg0OCwiZXhwIjoxNzY0ODg4NDQ4fQ.b4bf8ZCtccOGjQtQrYlLwMHAKE1Jx_5DCpp6K8LPiQ8" />
+      <GetRandomJoke jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
       </div>
       </div>
     </div>
@@ -179,7 +179,7 @@ const logout = () => {
 }
 
 .item-card {
-  background-color:white;
+  background: #e3f2fd;           /* Light blue background */
   padding:1em;
   margin:2em;
   text-align:center;
