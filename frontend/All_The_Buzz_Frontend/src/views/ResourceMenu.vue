@@ -153,7 +153,7 @@ onUnmounted(() => {
 }
 #primary-content {
   flex: 3;
-  background: #FBE6C2;
+  background: var(--bg-yellow);
   border-radius: 10px;
   padding: 2em;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -219,8 +219,11 @@ onUnmounted(() => {
   position:relative;
   display: inline-block;
   align: center;
+  background-color: var(--bg-primary);
 }
-
+.overlay-text{
+  background-color: var(--bg-primary);
+}
 #topical {
   display:flex;
 }

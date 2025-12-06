@@ -21,7 +21,7 @@
           <CreateComponent resourceType="bios"/> 
           <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
           </div>
-          <GetButton isManager="True" jwt="joajlgja" resourceType="bios"/>
+          <GetButton isManager=True jwt="joajlgja" resourceType="bios"/>
         </div>
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">

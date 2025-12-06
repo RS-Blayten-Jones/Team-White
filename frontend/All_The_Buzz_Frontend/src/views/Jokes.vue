@@ -21,7 +21,7 @@
           <CreateComponent resourceType="jokes"/> 
           <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
           </div>
-          <GetButton isManager="True" jwt="joajlgja" resourceType="jokes"/>
+          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
