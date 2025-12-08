@@ -20,7 +20,7 @@
         <div class="content-area card">
           <CreateComponent resourceType="bios"/> 
           </div>
-          <GetButton :isManager="true" jwt="joajlgja" resourceType="bios"/>
+          <GetButton isManager=True jwt="joajlgja" resourceType="bios"/>
         </div>
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
