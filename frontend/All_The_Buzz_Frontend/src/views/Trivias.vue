@@ -18,10 +18,9 @@
       <div class="main-content-layout">
       <div>
         <div class="content-area card">
-          <CreateComponent resourceType="bios"/> 
-          <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+          <CreateComponent resourceType="trivias"/> 
           </div>
-          <GetButton isManager="True" jwt="joajlgja" resourceType="bios"/>
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="bios"/>
         </div>
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
@@ -41,6 +40,8 @@
       </div>
     </main>
     
+    <!-- Bee hive decoration (behind all content) -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
         
     <!-- Flying bees -->
     <img 
@@ -66,7 +67,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import ResourceToggle from '@/components/ResourceToggle.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
@@ -92,6 +92,10 @@ let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 
+// Audio for bee buzzing
+const beeSound = new Audio('/bee-buzz.mp3')
+beeSound.loop = false
+
 const navigateTo = (resource: string) => {
   router.push({ name: resource })
 }
@@ -100,8 +104,8 @@ const releaseBee = () => {
   // Calculate center of beehive (300px width, positioned at right: -30px, top: 10px)
   const hiveWidth = 300
   const hiveHeight = 300 // approximate height
-  const hiveCenterX = window.innerWidth /4
-  const hiveCenterY = window.innerHeight /2
+  const hiveCenterX = window.innerWidth + 30 - (hiveWidth / 2)
+  const hiveCenterY = 10 + (hiveHeight / 2)
   
   const bee: Bee = {
     id: beeIdCounter++,
@@ -110,6 +114,16 @@ const releaseBee = () => {
   }
   
   flyingBees.value.push(bee)
+  
+  // Play bee sound with increasing volume based on number of bees
+  const baseVolume = 0.6
+  const volumeIncrease = 0.1
+  const newVolume = Math.min(1.0, baseVolume + (flyingBees.value.length - 1) * volumeIncrease)
+  
+  const buzzSound = beeSound.cloneNode() as HTMLAudioElement
+  buzzSound.volume = newVolume
+  buzzSound.play().catch(err => console.log('Audio play failed:', err))
+  
   animateBee(bee, hiveCenterX, hiveCenterY)
 }
 
@@ -256,6 +270,8 @@ onUnmounted(() => {
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
+  z-index: 10;
+  position: relative;
 }
 
 .mini-card {
@@ -350,10 +366,12 @@ onUnmounted(() => {
 
 /* Bee hive decoration */
 .bee-hive {
-  max-height:10rem;
-  width: auto;
+  position: fixed;
+  top: 10px;
+  right: -30px;
+  width: 300px;
   height: auto;
-  z-index: 50;
+  z-index: 5;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;

@@ -2297,7 +2297,7 @@ def create_app():
     return app
 
 def run():
-    port = 8081
+    port = 8080
     print(f"Server running on port {port}")
     app.run(host='0.0.0.0', port=port)
 

@@ -105,6 +105,18 @@
             </template>
           </template>
 
+          <!-- Actions column with delete button -->
+          <template v-else-if="column === 'actions'">
+            <DeleteButton
+              :id="getItemId(row)"
+              :category="resourceType"
+              :jwt="jwt"
+              :isManager="isManager"
+              @deleted="handleDeleted"
+              @error="handleDeleteError"
+            />
+          </template>
+
           <!-- Default rendering for other columns -->
           <template v-else>
             {{ value }}
@@ -120,10 +132,11 @@
 import axios from 'axios'
 import { defineComponent } from 'vue'
 import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
+import DeleteButton from '@/components/Delete.vue'
 
 export default defineComponent({
   name: 'GetButton',
-  components: { DataTable },
+  components: { DataTable, DeleteButton },
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
@@ -173,11 +186,11 @@ export default defineComponent({
         case 'jokes':
           // Use 'level' (your payload), not 'difficulty'.
           // Keep 'content' and 'explanation' as you requested.
-          return ['difficulty', 'language', 'content', 'explanation']
+          return ['difficulty', 'language', 'content', 'explanation', 'actions']
         case 'quotes':
-          return ['text', 'author', 'length', 'createdAt']
+          return ['text', 'author', 'length', 'createdAt', 'actions']
         default:
-          return []
+          return ['actions']
       }
     },
 
@@ -193,7 +206,10 @@ export default defineComponent({
         status: 'Status',
         author: 'Author',
         length: 'Length',
-        createdAt: 'Created'
+        createdAt: 'Created',
+        
+        // Actions column
+        actions: 'Actions'
       }
     },
 
@@ -228,6 +244,46 @@ export default defineComponent({
       const oid = row?._id?.$oid
       if (oid) return oid
       return row.id ?? `${this.resourceType}-${index}`
+    },
+
+    getItemId(row: any): string {
+      // Extract the ID from the row - handle both _id.$oid and direct id
+      if (row?._id?.$oid) {
+        return row._id.$oid
+      }
+      if (row?.id) {
+        return String(row.id)
+      }
+      if (row?._id) {
+        return String(row._id)
+      }
+      return ''
+    },
+
+    handleDeleted(payload: { id: string }) {
+      // Remove the deleted item from the current data
+      if (Array.isArray(this.apiData)) {
+        this.apiData = this.apiData.filter((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId !== payload.id
+        })
+      } else if (this.apiData && Array.isArray((this.apiData as any).items)) {
+        (this.apiData as any).items = (this.apiData as any).items.filter((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId !== payload.id
+        })
+      } else if (this.apiData && Array.isArray((this.apiData as any).data)) {
+        (this.apiData as any).data = (this.apiData as any).data.filter((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId !== payload.id
+        })
+      }
+      // Optionally show success message
+      this.msg = ''
+    },
+
+    handleDeleteError(message: string) {
+      this.msg = message
     },
 
 

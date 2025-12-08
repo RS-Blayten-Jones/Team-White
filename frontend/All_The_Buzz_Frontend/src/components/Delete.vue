@@ -1,339 +1,117 @@
-<script lang="ts">
-import axios from 'axios'
-import { defineComponent } from 'vue'
 
-export default defineComponent({
-	name: 'Delete',
-		props: {
-			id: {
-				type: String,
-				required: true
-			},
-			jwt: {
-				type: String,
-				required: true
-			},
-			category: {
-				type: String,
-				required: true
-			}
-		},
-    data() {
-		return {
-			msg: "",
-			apiData: {}
-		}
-	},
-	
-	methods: {
-		DeleteData() {
-			axios.post(`http://localhost:8080/${this.category}/${this.id}/delete`, {}, {
-				headers: {
-					Authorization: `Bearer ${this.jwt}`
-				}
-			})
-			.then(response => {
-				this.apiData = response.data;
-				this.msg = '';
-			})
-			.catch(error => {
-				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
-			})
-		},
-  }
-})
-
-
-
-</script>
 <template>
-  <div class="delete-component">
-    <h2>Delete {{ resourceType }}</h2>
-    
-    <div class="warning-box">
-      <strong>⚠️ Warning:</strong> Deletion is permanent and cannot be undone.
-    </div>
-    
-    <div class="search-section">
-      <div class="form-group">
-        <label for="delete-id">Item ID:</label>
-        <input
-          id="delete-id"
-          v-model="searchId"
-          type="text"
-          placeholder="Enter ID to delete"
-        />
-      </div>
-      <button class="search-button" @click="fetchItem">Search</button>
-    </div>
-    
-    <div v-if="loading" class="loading">Loading...</div>
-    
-    <div v-if="item" class="item-preview">
-      <h3>Item Preview</h3>
-      <div class="item-details">
-        <p><strong>ID:</strong> {{ item._id }}</p>
-        <p><strong>Content:</strong> {{ item.content }}</p>
-        <p><strong>Author:</strong> {{ item.author }}</p>
-        <p><strong>Status:</strong> {{ item.approved ? 'Approved' : 'Pending' }}</p>
-      </div>
-      
-      <div v-if="error" class="error">{{ error }}</div>
-      <div v-if="success" class="success">{{ success }}</div>
-      
-      <div class="button-group">
-        <button class="delete-button" @click="handleDelete" :disabled="deleting">
-          {{ deleting ? 'Deleting...' : 'Delete Item' }}
-        </button>
-        <button class="cancel-button" @click="cancelDelete">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Only visible if user is a manager -->
+  <button
+    v-if="isManager"
+    class="delete-btn"
+    :title="tooltip"
+    :aria-label="tooltip"
+    @click="onDeleteClick"
+    :disabled="deleting"
+  >
+    <!-- Red X icon (inline SVG) -->
+    <svg
+      class="icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.71a1 1 0 0 0-1.41 1.41L10.59 12l-4.89 4.88a1 1 0 1 0 1.41 1.41L12 13.41l4.88 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.88a1 1 0 0 0 0-1.41z"
+        fill="currentColor"
+      />
+    </svg>
+  </button>
 </template>
 
 <script setup lang="ts">
+import axios from 'axios'
 import { ref } from 'vue'
 
 interface Props {
-  resourceType: string
+  /** Item id to delete */
+  id: string
+  /** Category segment used in your endpoint */
+  category: string
+  /** JWT used in header (kept as 'Bearer' per your original) */
+  jwt: string
+  /** Controls visibility: only show for managers */
+  isManager: boolean
+  /** Optional tooltip (default: "Delete") */
+  tooltip?: string
 }
 
 const props = defineProps<Props>()
+const emit = defineEmits<{
+  (e: 'deleted', payload: { id: string }): void
+  (e: 'error', message: string): void
+}>()
 
-const searchId = ref('')
-const item = ref<any>(null)
-const loading = ref(false)
 const deleting = ref(false)
-const error = ref('')
-const success = ref('')
+const tooltip = props.tooltip ?? 'Delete'
 
-const fetchItem = async () => {
-  if (!searchId.value) {
-    error.value = 'Please enter content ID'
-    return
-  }
-  
-  loading.value = true
-  error.value = ''
-  success.value = ''
-  
-  try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    // Mock data
-    item.value = {
-      _id: searchId.value,
-      content: `Sample ${props.resourceType} content`,
-      author: 'John Doe',
-      approved: true
-    }
 
-     
+async function onDeleteClick() {
+  if (deleting.value) return
 
-  } catch (err: any) {
-    error.value = err.message || 'Failed to fetch item'
-  } finally {
-    loading.value = false
-  }
-}
+  const confirmed = window.confirm(
+    'Are you sure you want to permanently delete this item?\nThis action cannot be undone.'
+  )
+  if (!confirmed) return
 
-const handleDelete = async () => {
-  if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) {
-    return
-  }
-  
   deleting.value = true
-  error.value = ''
-  success.value = ''
-  
   try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    success.value = 'Item deleted successfully!'
-    setTimeout(() => {
-      cancelDelete()
-    }, 2000)
-  } catch (err: any) {
-    error.value = err.message || 'Failed to delete item'
+    const url = `http://localhost:8080/${props.category}/${props.id}`
+
+    const headers = { 'Bearer': `${props.jwt}` } // MOD
+
+    await axios.delete(url, { headers }) // MOD
+
+    emit('deleted', { id: props.id })
+  } catch (error: any) {
+    const status = error?.response?.status ?? 'Unknown'
+    const message = `Error: Status Code = ${status}`
+    emit('error', message)
+    console.error(message, error)
   } finally {
     deleting.value = false
   }
 }
 
-const cancelDelete = () => {
-  item.value = null
-  searchId.value = ''
-  error.value = ''
-  success.value = ''
-}
 </script>
 
 <style scoped>
-.delete-component {
-  padding: 1rem;
-}
-
-h2 {
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  text-transform: capitalize;
-}
-
-.warning-box {
-  background-color: #f75664;
-  border: 1px solid #131212;
-  color: #030101;
-  padding: 1rem;
+/* Small, table-friendly button */
+.delete-btn {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dc3545; /* red border */
   border-radius: 4px;
-  margin-bottom: 2rem;
-}
-
-.search-section {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end;
-  margin-bottom: 2rem;
-  max-width: 600px;
-}
-
-.search-section .form-group {
-  flex: 1;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-[data-theme="dark"] label {
-  color: white;
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.search-button {
-  background-color: #007bff;
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border: none;
-  border-radius: 4px;
+  background-color: #f8d7da; /* light red bg */
+  color: #dc3545;             /* red icon color */
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
-  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.search-button:hover {
-  background-color: #0056b3;
-}
-
-.loading {
-  text-align: center;
-  padding: 2rem;
-  color: #667eea;
-  font-size: 1.2rem;
-}
-
-.item-preview {
-  max-width: 600px;
-  background-color: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
-}
-
-.item-preview h3 {
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.item-details p {
-  margin: 0.5rem 0;
-  color: #333;
-  line-height: 1.6;
-}
-
-.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 1rem;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
-.success {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 1rem;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
-.button-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.delete-button {
-  background-color: #dc3545;
+.delete-btn:hover:not(:disabled) {
+  background-color: #dc3545; /* red */
   color: white;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  border-color: #dc3545;
 }
 
-.delete-button:hover:not(:disabled) {
-  background-color: #c82333;
-}
-
-.delete-button:disabled {
+.delete-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.cancel-button {
-  background-color: #6c757d;
-  color: white;
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.cancel-button:hover {
-  background-color: #5a6268;
+.icon {
+  width: 14px;
+  height: 14px;
 }
 </style>
