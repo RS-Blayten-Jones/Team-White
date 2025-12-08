@@ -20,7 +20,7 @@
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
           </div>
-          <GetButton :isManager="true" jwt="joajlgja" resourceType="jokes"/>
+          <GetButton :isManager="true" jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJDb3RlcyIsImxvY2F0aW9uIjoiSmFwYW4iLCJpZCI6MzQsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiU2FsZXMgQWdlbnQiLCJmaXJzdF9uYW1lIjoiTWFyaW5hIiwic3ViIjoiTWFyaW5hIENvdGVzIiwiaWF0IjoxNzY1MjI3MTI4LCJleHAiOjE3NjUyMzA3Mjh9.6NscKuBdwFaRHknj5GZU0hkaoJ7VLMjH9rDqQwbVpi8" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
