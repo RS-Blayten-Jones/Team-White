@@ -25,6 +25,7 @@
         
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
+          
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
             <span>Quotes</span>

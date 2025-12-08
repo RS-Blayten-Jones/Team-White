@@ -16,4 +16,5 @@ all_the_buzz/entities/__pycache__/
 .pytest_cache/
 htmlcov/
 key.txt
-key.txt.pubfrontend/All_The_Buzz_Frontent/node_modules
+key.txt.pub
+frontend/All_The_Buzz_Frontent/node_modules
