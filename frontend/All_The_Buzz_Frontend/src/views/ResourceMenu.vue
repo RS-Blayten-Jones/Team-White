@@ -153,7 +153,7 @@ onUnmounted(() => {
 }
 #primary-content {
   flex: 3;
-  background: #FBE6C2;
+  background: var(--bg-yellow);
   border-radius: 10px;
   padding: 2em;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -191,7 +191,6 @@ onUnmounted(() => {
   flex: 1;
   padding: 1em 0em;
   margin: 1em;
-  background: var(--color-primary-orange);
   box-shadow: 0 2px 12px rgba(0,0,0,0.12);
   border-radius: 5px;
   position: relative;
@@ -211,7 +210,18 @@ onUnmounted(() => {
   border-radius: 12px;
   margin-bottom: 1em;
 }
-
+#joke.resource-card {
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
+}
+#bios.resource-card {
+  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+}
+#trivia.resource-card {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
+}
+#quotes.resource-card {
+  background: linear-gradient(135deg, var(--color-primary-magenta) 0%, var(--color-primary-coral) 100%);
+}
 .resource-card:hover {
   background-color: var(--color-gray-400);
 }
@@ -219,8 +229,11 @@ onUnmounted(() => {
   position:relative;
   display: inline-block;
   align: center;
+  background-color: var(--bg-primary);
 }
-
+.overlay-text{
+  background-color: var(--bg-primary);
+}
 #topical {
   display:flex;
 }

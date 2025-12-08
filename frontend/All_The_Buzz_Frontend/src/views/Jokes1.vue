@@ -1,33 +1,19 @@
 <template>
-  <div class="bios-page page-container">
+  <div class="jokes-page page-container">
     <AppHeader />
-    
+
     <main class="content-wrapper" role="main">
       <div class="page-header">
         <div class="page-title-wrapper">
           <div class="icon-wrapper">
-            <img src="/bio-icon.png" alt="Bios" class="resource-icon" />
+            <img src="/joke-icon.png" alt="Jokes" class="resource-icon" />
           </div>
           <div>
-            <h1 class="page-title">Bios Management</h1>
-            <p class="page-subtitle">A bee’s biography is short: Buzzed in. Stung out.</p>
+            <h1 class="page-title">Jokes Management</h1>
+            <p class="page-subtitle">Bees are terrible comedians—every punchline ends with a buzzkill</p>
           </div>
-        </div>
-      </div>
-      
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="bios"/> 
-          </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="bios"/>
-        </div>
-        <!-- Mini Resource Cards -->
-        <div class="mini-resource-cards">
-          <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
-            <img src="/joke-icon.png" alt="Jokes" />
-            <span>Jokes</span>
-          </div>
+          <div class="mini-resource-cards">
+          
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
             <span>Quotes</span>
@@ -36,15 +22,32 @@
             <img src="/trivia-icon.png" alt="Trivia" />
             <span>Trivia</span>
           </div>
+          <div class="mini-card" @click="navigateTo('bios')" tabindex="0" role="button">
+            <img src="/bio-icon.png" alt="Bios" />
+            <span>Bios</span>
+          </div>
         </div>
+        </div>
+      </div>
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="jokes"/> 
+        </div>
+          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
+      </div>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+        
+        
       </div>
     </main>
     
     <!-- Bee-themed decorative elements -->
-    <div class="honeycomb-bg" aria-hidden="true"></div>
     
     <!-- Bee hive decoration -->
-    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -65,6 +68,7 @@
     />
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -101,13 +105,28 @@ const beeSound = new Audio('/bee-buzz.mp3')
 beeSound.loop = false
 
 
+const resourceType = ref<string>('jokes')
+const userIsManager = ref<boolean>(true)
+const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
 
+const ready = computed(() => !!resourceType.value && !!jwtToken.value)
+
+const components = {
+  get: GetButton,
+  create: CreateComponent,
+  edit: Edit,
+  delete: Delete,
+  approve: ApproveAndDeny
+}
+
+const currentComponent = computed(() => components[activeComponent.value as keyof typeof components])
 
 const navigateTo = (resource: string) => {
   router.push({ name: resource })
 }
 
 const releaseBee = () => {
+  console.log('Bee release triggered!')
   // Calculate center of beehive (300px width, positioned at right: -30px, top: 10px)
   const hiveWidth = 300
   const hiveHeight = 300 // approximate height
@@ -120,21 +139,27 @@ const releaseBee = () => {
     y: hiveCenterY
   }
   
+  console.log('Adding bee:', bee)
   flyingBees.value.push(bee)
+  console.log('Total bees:', flyingBees.value.length)
   
   // Play bee sound with increasing volume based on number of bees
+  // Volume increases with each bee, capped at 1.0
   const baseVolume = 0.6
   const volumeIncrease = 0.1
   const newVolume = Math.min(1.0, baseVolume + (flyingBees.value.length - 1) * volumeIncrease)
   
+  console.log('Playing sound at volume:', newVolume)
+  // Clone the audio to allow multiple simultaneous plays
   const buzzSound = beeSound.cloneNode() as HTMLAudioElement
   buzzSound.volume = newVolume
-  buzzSound.play().catch(err => console.log('Audio play failed:', err))
+  buzzSound.play().catch(err => console.error('Audio play failed:', err))
   
   animateBee(bee, hiveCenterX, hiveCenterY)
 }
 
 const animateBee = (bee: Bee, startX: number, startY: number) => {
+  console.log('Starting animation for bee:', bee.id)
   const duration = 4000
   const startTime = Date.now()
   
@@ -168,6 +193,7 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
       requestAnimationFrame(animate)
     } else {
       // Remove bee from array when animation completes
+      console.log('Animation complete for bee:', bee.id)
       const index = flyingBees.value.findIndex(b => b.id === bee.id)
       if (index > -1) {
         flyingBees.value.splice(index, 1)
@@ -211,7 +237,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.bios-page {
+.jokes-page {
   background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -229,9 +255,9 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
   align-items: center;
@@ -242,9 +268,9 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
+  width: 3rem;
+  height: 3rem;
+  color: var(--text-on-dark);
 }
 
 .page-title {
@@ -262,8 +288,11 @@ onUnmounted(() => {
   margin-top: var(--spacing-xs);
 }
 
-.card {
-  display:flex;
+.content-area {
+  display: flex;
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
 }
 
 .main-content-layout {
@@ -275,7 +304,6 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  flex-direction: column;
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
@@ -287,15 +315,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+  gap: 0.3rem;
+  padding: 0.2rem 2rem;
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 175px;
-  width: 175px;
+  height: 5rem;
+  width: 5rem;
 }
 
 .mini-card:hover {
@@ -304,13 +332,13 @@ onUnmounted(() => {
 }
 
 .mini-card:focus {
-  outline: 2px solid var(--color-primary-purple);
+  outline: 2px solid var(--color-primary-orange);
   outline-offset: 2px;
 }
 
 .mini-card img {
-  width: 100px;
-  height: 100px;
+  width: 3rem;
+  height: 3rem;
   object-fit: contain;
 }
 
@@ -363,7 +391,7 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 10px;
+  top: 2rem;
   right: -30px;
   width: 300px;
   height: auto;
@@ -435,5 +463,20 @@ onUnmounted(() => {
     width: 200px;
     height: 200px;
   }
+  
+  .bee-hive {
+    top: 80px;
+    right: 60px;
+    width: 180px;
+  }
+}
+
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;      /* distance from top */
+  right: 2rem;    /* distance from right */
+  width: 120px;   /* or use rem/vw for responsive */
+  height: auto;
+  z-index: 100;   /* above most elements */
 }
 </style>

@@ -210,7 +210,7 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.page-header {
+.page-header { 
   margin-bottom: var(--spacing-xl);
   animation: slideDown 0.5s ease-out;
 }

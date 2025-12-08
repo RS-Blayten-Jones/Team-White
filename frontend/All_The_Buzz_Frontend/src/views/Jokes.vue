@@ -20,11 +20,12 @@
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
           </div>
-          <GetButton :isManager="true" jwt="joajlgja" resourceType="jokes"/>
+          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
+          
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
             <span>Quotes</span>
