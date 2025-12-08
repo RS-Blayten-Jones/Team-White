@@ -20,7 +20,7 @@
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
           </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
+          <GetButton isManager=True jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTb3V0aGFuIiwibG9jYXRpb24iOiJKYXBhbiIsImlkIjo1NTgsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJDdXJ0Iiwic3ViIjoiQ3VydCBTb3V0aGFuIiwiaWF0IjoxNzY1MjI4NjI0LCJleHAiOjE3NjUyMzIyMjR9.wdjcB6rXjqVRUBG0V-OZM3Z1FE6VqtljNOOEw-VeSOw" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -103,7 +103,7 @@ beeSound.loop = false
 
 
 const resourceType = ref<string>('jokes')
-const userIsManager = ref<boolean>(true)
+const userIsManager = ref<Boolean>(true)
 const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
 
 const ready = computed(() => !!resourceType.value && !!jwtToken.value)

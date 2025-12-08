@@ -50,6 +50,7 @@ const emit = defineEmits<{
 const deleting = ref(false)
 const tooltip = props.tooltip ?? 'Delete'
 
+
 async function onDeleteClick() {
   if (deleting.value) return
 
@@ -60,23 +61,23 @@ async function onDeleteClick() {
 
   deleting.value = true
   try {
-    const url = `http://localhost:8080/${props.category}/${props.id}/delete`
+    const url = `http://localhost:8080/${props.category}/${props.id}`
 
-    const headers = { 'Bearer': `${props.jwt}` }
+    const headers = { 'Bearer': `${props.jwt}` } // MOD
 
-    await axios.post(url, {}, { headers })
+    await axios.delete(url, { headers }) // MOD
 
     emit('deleted', { id: props.id })
   } catch (error: any) {
     const status = error?.response?.status ?? 'Unknown'
     const message = `Error: Status Code = ${status}`
     emit('error', message)
-    // Optional: still log the error for debugging
     console.error(message, error)
   } finally {
     deleting.value = false
   }
 }
+
 </script>
 
 <style scoped>
