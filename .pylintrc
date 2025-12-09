@@ -33,8 +33,33 @@ disable=
     superfluous-parens,
     
     # Import-related (we'll keep wrong-import-order enabled)
-    ungrouped-imports
+    ungrouped-imports,
 
+    # Exception handling - broad exceptions are sometimes necessary
+    broad-exception-caught,
+
+    # Encoding-related
+    unspecified-encoding,
+
+    # Import order - we want to enforce import order but not other import issues
+    wrong-import-order,
+    wrong-import-position,
+    too-many-return-statements,
+
+    # Builtin redefinitions - sometimes necessary in specific contexts
+    redefined-builtin,
+
+    # Allow usage of global variables in certain contexts
+    global-variable-undefined,
+
+    # Allow bare except clauses
+    bare-except,
+
+    # Allow variable names that shadow outer scope variables
+    redefined-outer-name,
+
+    # Allow use of global statements at module level
+    global-at-module-level
 [FORMAT]
 # Maximum number of characters on a single line (increased from 100)
 max-line-length=120

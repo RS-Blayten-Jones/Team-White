@@ -72,7 +72,7 @@ app.add_url_rule("/random-jokes/<int:amount>", view_func=retrieve_random_joke, m
  # TEST THE ROUTE
 @app.route("/test")
 @authentication_middleware
-def test_route(**kwargs):
+def mock_test_route(**kwargs):
     credentials = kwargs.get("credentials")
     return jsonify({"message": "success", "user": credentials.fName})
 

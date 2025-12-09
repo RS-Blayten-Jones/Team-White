@@ -104,7 +104,7 @@ def authentication_middleware(f: Callable) -> Callable:
             kwargs['credentials'] = authentication_result
             logger.debug("successfully loaded credentials")
             return f(*args, **kwargs)
-        #returns AuthServerError error if authentication result is something other than a 
+        #returns AuthServerError error if authentication result is something other than a
         # ResponseCode object or a Credentials object
         status_code, body = ResponseCode("AuthServerError").to_http_response()
         return jsonify(body), status_code
@@ -1219,7 +1219,7 @@ def delete_joke(credentials: Credentials, id: str):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
-    
+
 @authentication_middleware
 def approve_quote(credentials: Credentials, id: str):
     """
@@ -1498,7 +1498,7 @@ def delete_trivia(credentials: Credentials, id: str):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
-    
+
 @authentication_middleware
 def approve_bio(credentials: Credentials, id: str):
     """
@@ -1639,7 +1639,7 @@ def delete_bio(credentials: Credentials, id: str):
     else:
         status_code, body = ResponseCode("Unauthorized").to_http_response()
         return jsonify(body), status_code
-    
+
 @authentication_middleware
 def retrieve_random_joke(credentials: Credentials, amount: int):
     """
@@ -2048,15 +2048,15 @@ def options_handler_anypath(path=None):
 def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
-    
+
     # Enable CORS for all routes
     #CORS(app, resources={r"/*": {"origins": "*"}})
     #CORS(app)
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://172.16.0.51:5173"]}}, 
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://172.16.0.51:5173"]}},
          supports_credentials=True,
          allow_headers=["Content-Type", "Bearer"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
-    
+
 
     def proxy_auth_verify():
             import requests
@@ -2082,7 +2082,7 @@ def create_app():
                 return jsonify(resp.json()), resp.status_code
             except Exception as e:
                 return jsonify({"code": "AuthServerError", "message": str(e)}), 502
-    
+
     app.add_url_rule("/auth/verify", view_func=proxy_auth_verify,
             methods=["POST", "OPTIONS"], provide_automatic_options=False)
 
@@ -2093,7 +2093,7 @@ def create_app():
     except Exception as e:
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
-    
+
 
     app.add_url_rule(
         "/<path:path>",
@@ -2110,7 +2110,7 @@ def create_app():
         provide_automatic_options=False
     )
 
-    
+
     app.add_url_rule(
         "/jokes",
         view_func=retrieve_public_jokes_collection,

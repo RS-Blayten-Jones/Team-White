@@ -41,4 +41,3 @@ def sanitize_json(content):
         return text
     else:
         return content
-
