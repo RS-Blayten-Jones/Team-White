@@ -5,6 +5,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import UserInfo from '@/components/UserInfo.vue'
 import DailyQuote from '@/components/DailyQuote.vue'
 import GetRandomJoke from '@/components/GetRandomJoke.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
 
@@ -15,14 +16,36 @@ let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 
+// Get JWT and role from cookies
+const jwt = ref<string>('')
+const role = ref<string>('')
+
+onMounted(() => {
+  // Get cookies on mount
+  jwt.value = getCookie('jwt') || ''
+  role.value = getCookie('role') || ''
+  
+  // If no JWT, redirect to login
+  if (!jwt.value) {
+    router.push({ name: 'login' })
+    return
+  }
+  
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
+
 const navigateTo = (resource: string) => {
-  router.push({ name: resource })
+  // Pass jwt and role as route params when navigating
+  router.push({ 
+    name: resource,
+    params: {
+      jwt: jwt.value,
+      role: role.value
+    }
+  })
 }
 
-const logout = () => {
-  // TODO: Implement logout logic
-  router.push({ name: 'login' })
-}
 
 // Mouse tracking
 const handleMouseMove = (e: MouseEvent) => {
@@ -43,17 +66,13 @@ const animateCuteBee = () => {
   cuteBeeAnimationId = requestAnimationFrame(animateCuteBee)
 }
 
-onMounted(() => {
-  window.addEventListener('mousemove', handleMouseMove)
-  animateCuteBee()
-})
-
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
   if (cuteBeeAnimationId !== null) {
     cancelAnimationFrame(cuteBeeAnimationId)
   }
 })
+
 </script>
 <template> 
   <AppHeader title="Buzzword Software - Media Feed" />
@@ -108,9 +127,9 @@ onUnmounted(() => {
           </div>
         </div>
       <div id="topical">
-      <DailyQuote jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
+      <DailyQuote :jwt="jwt" />
       <div class="item-card">
-      <GetRandomJoke jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NDk1MTA4OSwiZXhwIjoxNzY0OTU0Njg5fQ.vRJppBl2jugKtbn6CHc7kkhkx4DBW2RX-k-SdwKAoc8" />
+      <GetRandomJoke :jwt="jwt" />
       </div>
       </div>
     </div>

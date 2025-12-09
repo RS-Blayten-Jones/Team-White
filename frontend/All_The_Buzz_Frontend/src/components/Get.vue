@@ -150,9 +150,10 @@
           <template v-else-if="column === 'actions'">
             <div class="action-buttons">
               <EditButton
-                :item="row"
+                :id="getItemId(row)"
                 :category="resourceType"
                 :jwt="jwt"
+                :body="row"
                 :isEditMode="isEditMode"
                 @updated="handleUpdated"
                 @error="handleEditError"
@@ -408,28 +409,15 @@ export default defineComponent({
       }
     },
 
-    async handleUpdated(payload: { id: string; data: any; category: string; jwt: string }) {
-      // Call the UpdateOnClick function from Edit.vue
-      try {
-        const url = `http://localhost:8080/${payload.category}/${payload.id}/update`
-        const headers = { 'Bearer': payload.jwt }
-
-        await axios.post(url, payload.data, { headers })
-
-        this.msg = ''
-        // Update the original data to reflect the saved changes
+    async handleUpdated(payload: { id: string }) {
+      // Update was successful via EditButton
+      // Update the original data to reflect the saved changes
+      if (this.originalData !== null) {
         this.originalData = JSON.parse(JSON.stringify(this.apiData))
-        
-        // Optionally show success message
-        console.log('Item updated successfully:', payload.id)
-        
-        // Refresh the data to show updated values
-        // You can call the appropriate get method here if needed
-      } catch (error: any) {
-        const status = error?.response?.status ?? 'Unknown'
-        this.msg = `Update Error: Status Code = ${status}`
-        console.error('Update failed:', error)
       }
+      
+      this.msg = ''
+      console.log('Item updated successfully:', payload.id)
     },
 
     handleEditError(message: string) {
@@ -475,7 +463,7 @@ export default defineComponent({
       }
       const n = Number(difficulty)
       axios.get(`http://localhost:8080/${this.resourceType}`, {
-        params: { difficulty: n },
+        params: { level: n },
         headers: {
           'Bearer': `${this.jwt}`
         }
