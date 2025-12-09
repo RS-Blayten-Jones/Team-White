@@ -6,7 +6,8 @@ export function getCookie(name: string): string | undefined {
     for (let c of cookies) {
         c = c.trim()
         if (c.startsWith(target)) {
-        return decodeURIComponent(c.substring(target.length))
+            console.log('Cookie: ', name, 'Value: ', decodeURIComponent(c.substring(target.length)))
+            return decodeURIComponent(c.substring(target.length))
         }
     }
 }

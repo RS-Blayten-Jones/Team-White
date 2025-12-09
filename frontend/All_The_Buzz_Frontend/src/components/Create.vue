@@ -111,10 +111,42 @@
         required
         />
       </div>
-      
+      <div class="form-group" v-if="resourceType === 'bios'">
+        <label for="bioParagraph">Paragraph:</label>
+        <textarea
+          id="bioParagraph"
+          v-model="formData.paragraph"
+          type="text"
+          placeholder="Enter Biography Paragraph"
+          rows="4"
+          required
+        ></textarea>
+      </div>
+      <div class="form-group" v-if="resourceType === 'bios'">
+        <label for="bioSummary">Summary:</label>
+        <textarea
+          id="bioSummary"
+          v-model="formData.summary"
+          type="text"
+          placeholder="Enter Biography Summary"
+          rows="1"
+          required
+        ></textarea>
+      </div>
+      <div class="form-group" v-if="resourceType === 'quotes'">
+        <label for="content">Quote:</label>
+        <textarea
+          id="content"
+          v-model="formData.content.text"
+          type="text"
+          placeholder="Enter quote"
+          rows="4"
+          required
+        ></textarea>
+      </div>
       <div v-if="resourceType === 'bios'" class="form-group" >
         <label for="website_url">Enter your website URL:</label>
-        <input type="url" id="website_url" name="website_url" placeholder="https://example.com" required>
+        <input type="url" id="website_url" name="website_url" v-model="formData.sourceURL" placeholder="https://example.com" required>
       </div>
       <div class="form-group">
         <input
@@ -212,6 +244,7 @@ export default defineComponent({
       console.log('cookies before request:', { role, token })
 
       // return;
+      console.log("data about to be sent: ", formattedData)
       axios.post(`http://localhost:8080/${this.resourceType}`, formattedData, {
         headers: {
           'Bearer': `${token}`,
@@ -271,7 +304,11 @@ export default defineComponent({
         return {
           birth_year: this.formData.birthYear,
           death_year: this.formData.deathYear,
-          name: this.formData.name
+          name: this.formData.name,
+          paragraph: this.formData.paragraph,
+          summary: this.formData.summary,
+          source_url: this.formData.sourceURL,
+          language: this.formData.language
         }
       }
     }
