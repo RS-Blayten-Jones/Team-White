@@ -4,6 +4,12 @@
       <h1 class="login-title">All The Buzz</h1>
       <h2 class="login-subtitle">Login</h2>
       <UserCreds @login="handleLogin" />
+      
+      <!-- DEV BYPASS BUTTON - Comment out for production -->
+      <button class="dev-bypass-btn" @click="devBypass">
+        🐝 DEV BYPASS (No Auth)
+      </button>
+      <!-- END DEV BYPASS -->
     </div>
   </div>
 </template>
@@ -37,7 +43,7 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // const token = loginRes.data.token
 
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTMxNDc1MSwiZXhwIjoxNzY1MzE4MzUxfQ.5vC_HTJZ1flLRNJWyzx1i6tsRWUyyTTJtMsOTIKh2Jo' //PUT TOKEN HERE!
+    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTb3V0aGFuIiwibG9jYXRpb24iOiJKYXBhbiIsImlkIjo1NTgsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJDdXJ0Iiwic3ViIjoiQ3VydCBTb3V0aGFuIiwiaWF0IjoxNzY1MzA2ODg2LCJleHAiOjE3NjUzMTA0ODZ9.WzOFV3-XDWkMCjcSs7yxOsIeTgKRO1P6x1jtEbPKs-c' //PUT TOKEN HERE!
     const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
@@ -76,6 +82,17 @@ async function handleLogin(credentials: { username: string; password: string }) 
   }
   router.push({ name: 'resource-menu' })
 }
+
+// DEV BYPASS FUNCTION - Comment out for production
+function devBypass() {
+  console.log('🐝 DEV BYPASS: Skipping authentication')
+  // Set dummy cookies for development
+  setCookie('jwt', 'dev-bypass-token', 3600)
+  setCookie('role', 'Manager', 3600)
+  router.push({ name: 'resource-menu' })
+}
+// END DEV BYPASS
+
 </script>
 
 <style scoped>
@@ -108,6 +125,32 @@ async function handleLogin(credentials: { username: string; password: string }) 
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
 }
+
+/* DEV BYPASS BUTTON - Comment out for production */
+.dev-bypass-btn {
+  width: 100%;
+  margin-top: var(--spacing-lg);
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  border: 2px dashed #ff6f00;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dev-bypass-btn:hover {
+  background: linear-gradient(135deg, #ffca28 0%, #ffa726 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+.dev-bypass-btn:active {
+  transform: translateY(0);
+}
+/* END DEV BYPASS BUTTON */
 
 @media (max-width: 768px) {
   .login-card {

@@ -778,4 +778,3 @@ class Bio(BaseRecord):
         if self.summary is not None:
             record_dict["summary"]=self.summary
         return record_dict
-
