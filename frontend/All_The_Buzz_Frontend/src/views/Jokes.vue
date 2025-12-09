@@ -43,15 +43,6 @@
       </div>
       
       
-
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="jokes"/> 
-        </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
-      </div>
-      </div>
       </main>
 
       <div class ="right-hand-side">
