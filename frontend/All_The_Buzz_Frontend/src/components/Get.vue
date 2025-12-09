@@ -334,21 +334,36 @@ export default defineComponent({
     handleDeleted(payload: { id: string }) {
       // Remove the deleted item from the current data
       if (Array.isArray(this.apiData)) {
-        this.apiData = this.apiData.filter((item: any) => {
+        const index = this.apiData.findIndex((item: any) => {
           const itemId = this.getItemId(item)
-          return itemId !== payload.id
+          return itemId === payload.id
         })
+        if (index > -1) {
+          this.apiData.splice(index, 1)
+        }
       } else if (this.apiData && Array.isArray((this.apiData as any).items)) {
-        (this.apiData as any).items = (this.apiData as any).items.filter((item: any) => {
+        const index = (this.apiData as any).items.findIndex((item: any) => {
           const itemId = this.getItemId(item)
-          return itemId !== payload.id
+          return itemId === payload.id
         })
+        if (index > -1) {
+          (this.apiData as any).items.splice(index, 1)
+        }
       } else if (this.apiData && Array.isArray((this.apiData as any).data)) {
-        (this.apiData as any).data = (this.apiData as any).data.filter((item: any) => {
+        const index = (this.apiData as any).data.findIndex((item: any) => {
           const itemId = this.getItemId(item)
-          return itemId !== payload.id
+          return itemId === payload.id
         })
+        if (index > -1) {
+          (this.apiData as any).data.splice(index, 1)
+        }
       }
+      
+      // Update the backup if in edit mode
+      if (this.originalData !== null) {
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+      }
+      
       // Optionally show success message
       this.msg = ''
     },
