@@ -366,7 +366,21 @@ export default defineComponent({
       } else {
         // Exiting edit mode - restore the original data (revert changes)
         if (this.originalData !== null) {
-          this.apiData = JSON.parse(JSON.stringify(this.originalData))
+          // Replace the entire apiData object to trigger reactivity
+          const restored = JSON.parse(JSON.stringify(this.originalData))
+          // Handle different data structures
+          if (Array.isArray(this.apiData)) {
+            this.apiData.length = 0
+            restored.forEach((item: any) => (this.apiData as any).push(item))
+          } else if (Array.isArray((this.apiData as any).items)) {
+            (this.apiData as any).items.length = 0
+            restored.items.forEach((item: any) => (this.apiData as any).items.push(item))
+          } else if (Array.isArray((this.apiData as any).data)) {
+            (this.apiData as any).data.length = 0
+            restored.data.forEach((item: any) => (this.apiData as any).data.push(item))
+          } else {
+            this.apiData = restored
+          }
           this.originalData = null
         }
         this.isEditMode = false
