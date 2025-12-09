@@ -40,7 +40,6 @@
             <span>Bios</span>
           </div>
         </div>
-        </div>
       </div>
       
       

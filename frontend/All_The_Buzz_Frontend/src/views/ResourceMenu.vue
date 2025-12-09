@@ -6,7 +6,6 @@ import UserInfo from '@/components/UserInfo.vue'
 import DailyQuote from '@/components/DailyQuote.vue'
 import GetRandomJoke from '@/components/GetRandomJoke.vue'
 import { getCookie } from '@/utils/cookies'
-import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
 
@@ -69,7 +68,6 @@ const animateCuteBee = () => {
 const welcomeText=ref("")
 const fName=getCookie("f_name")
 const lName=getCookie("l_name")
-const role=getCookie("role")
 const sideBarName=ref("")
 const sideBarRole=ref("")
 
