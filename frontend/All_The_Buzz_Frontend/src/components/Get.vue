@@ -236,17 +236,16 @@ export default defineComponent({
       else return []
 
       // Minimal normalization for jokes to avoid duplicate difficulty + keep native fields for slot
+      // IMPORTANT: Mutate the original objects instead of creating copies so edits are preserved
       if (this.resourceType === 'jokes') {
-        return arr.map((row: any) => {
-          const copy: any = { ...row }
+        arr.forEach((row: any) => {
           // prefer 'difficulty'; derive from 'level' if needed
-          if (copy.level != null && copy.difficulty == null) copy.difficulty = copy.level
+          if (row.level != null && row.difficulty == null) row.difficulty = row.level
           // language normalization
-          if (!copy.language && copy.lang) copy.language = copy.lang
+          if (!row.language && row.lang) row.language = row.lang
           // do NOT delete question/answer/text — we need them in the slot
           // BUT prevent extra visible 'level' column
-          delete copy.level
-          return copy
+          delete row.level
         })
       }
 
@@ -362,10 +361,14 @@ export default defineComponent({
       if (!this.isEditMode) {
         // Entering edit mode - save a deep copy of the current data
         this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        console.log('Saved original data:', this.originalData)
         this.isEditMode = true
       } else {
         // Exiting edit mode - restore the original data (revert changes)
         if (this.originalData !== null) {
+          console.log('Restoring from:', this.originalData)
+          console.log('Current apiData before restore:', JSON.parse(JSON.stringify(this.apiData)))
+          
           // Replace the entire apiData object to trigger reactivity
           const restored = JSON.parse(JSON.stringify(this.originalData))
           // Handle different data structures
@@ -381,6 +384,8 @@ export default defineComponent({
           } else {
             this.apiData = restored
           }
+          
+          console.log('Current apiData after restore:', JSON.parse(JSON.stringify(this.apiData)))
           this.originalData = null
         }
         this.isEditMode = false
