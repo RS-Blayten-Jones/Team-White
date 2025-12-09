@@ -463,7 +463,7 @@ export default defineComponent({
       }
       const n = Number(difficulty)
       axios.get(`http://localhost:8080/${this.resourceType}`, {
-        params: { difficulty: n },
+        params: { level: n },
         headers: {
           'Bearer': `${this.jwt}`
         }
