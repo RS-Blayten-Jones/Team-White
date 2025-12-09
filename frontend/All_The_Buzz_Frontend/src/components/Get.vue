@@ -99,6 +99,7 @@
               <div
                 v-else-if="row.content.type === 'qa'"
                 class="qa-content"
+                :class="{ 'edit-mode-qa': isEditMode }"
                 :tabindex="isEditMode ? -1 : 0"
                 aria-live="polite"
               >
@@ -219,7 +220,8 @@ export default defineComponent({
       randAmt: 1,
       difficulty: '' as number | '',
       isEditMode: false,
-      editableRows: {} as Record<string, any>
+      editableRows: {} as Record<string, any>,
+      originalData: null as any // Store original data for reverting
     }
   },
   computed: {
@@ -357,9 +359,17 @@ export default defineComponent({
     },
 
     toggleEditMode() {
-      this.isEditMode = !this.isEditMode
-      if (this.isEditMode) {
-        // Create a deep copy of current data for editing
+      if (!this.isEditMode) {
+        // Entering edit mode - save a deep copy of the current data
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        this.isEditMode = true
+      } else {
+        // Exiting edit mode - restore the original data (revert changes)
+        if (this.originalData !== null) {
+          this.apiData = JSON.parse(JSON.stringify(this.originalData))
+          this.originalData = null
+        }
+        this.isEditMode = false
         this.editableRows = {}
       }
     },
@@ -373,6 +383,9 @@ export default defineComponent({
         await axios.post(url, payload.data, { headers })
 
         this.msg = ''
+        // Update the original data to reflect the saved changes
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        
         // Optionally show success message
         console.log('Item updated successfully:', payload.id)
         
@@ -666,6 +679,13 @@ h2 {
 }
 .qa-content:hover .answer,
 .qa-content:focus-within .answer {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+/* Always show answer in edit mode */
+.qa-content.edit-mode-qa .answer {
   opacity: 1;
   filter: blur(0);
   user-select: text;
