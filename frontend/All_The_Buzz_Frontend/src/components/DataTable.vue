@@ -151,6 +151,7 @@ export default defineComponent({
       return String(val)
     }
 
+    // Make rows reactive by using a computed property
     const rows = computed(() => props.data)
 
     return {
