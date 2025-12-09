@@ -15,13 +15,19 @@
         </div>
       </div>
       
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="trivias"/> 
-          </div>
-          <GetButton :isManager="true" jwt="joajlgja" resourceType="bios"/>
+    <div class="main-content-layout">
+      <div style="width:100%" >
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+
+        <div class="content-area">
+          <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
+          <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton v-show="toggleComponent" :isManager="true" jwt="" resourceType="trivias"/>
         </div>
+          <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+      </div>
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
@@ -72,6 +78,7 @@ import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
 import Delete from '@/components/Delete.vue'
 import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
 
@@ -170,6 +177,14 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
   
   requestAnimationFrame(animate)
 }
+
+
+// === Toggle flag for Create/Get ===
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
+
 
 // Mouse tracking
 const handleMouseMove = (e: MouseEvent) => {
