@@ -71,6 +71,10 @@ async function handleLogin(credentials: { username: string; password: string }) 
     const creds = authRes as Credentials
     // For now we only need role + persist the JWT
     // Persist for 1 hour; adjust as needed.
+    if (authRes.title != 'Manager'){
+      authRes.title = 'Employee'
+    }
+
     setCookie('jwt', token, 3600)
     setCookie('role', authRes.title , 3600)
   } catch (error: any) {
