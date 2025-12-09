@@ -64,7 +64,7 @@ methods: {
 
 <style>
 .random-joke {
-  background: #e3f2fd;           /* Light blue background */
+  background: #51a4e0;           /* Light blue background */
   padding: 2rem 2.5rem;
   font-size: 1.5rem;               /* Larger font */
   color: #222;

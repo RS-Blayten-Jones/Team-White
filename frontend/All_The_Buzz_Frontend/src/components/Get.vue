@@ -1,7 +1,7 @@
 
 <template>
   <div class="get-component">
-    <h2>{{ resourceType }} Actions</h2>
+    <h2>Get {{ resourceType }} </h2>
 
     <!-- Error Message -->
     <div v-if="msg" class="error">{{ msg }}</div>

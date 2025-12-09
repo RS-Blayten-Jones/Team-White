@@ -1,7 +1,8 @@
 <template>
   <div class="bios-page page-container">
     <AppHeader />
-    
+
+    <div class="primary-content">
     <main class="content-wrapper" role="main">
       <div class="page-header">
         <div class="page-title-wrapper">
@@ -10,20 +11,10 @@
           </div>
           <div>
             <h1 class="page-title">Bios Management</h1>
-            <p class="page-subtitle">A bee’s biography is short: Buzzed in. Stung out.</p>
+            <p class="page-subtitle">A bee's biography is short: Buzzed in. Stung out.</p>
           </div>
-        </div>
-      </div>
-      
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="bios"/> 
-          </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="bios"/>
-        </div>
-        <!-- Mini Resource Cards -->
-        <div class="mini-resource-cards">
+          <div class="mini-resource-cards">
+          
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
             <span>Jokes</span>
@@ -37,14 +28,30 @@
             <span>Trivia</span>
           </div>
         </div>
+        </div>
       </div>
-    </main>
+      
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="bios"/> 
+        </div>
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="bios"/>
+      </div>
+      </div>
+      </main>
+
+      <div class ="right-hand-side">
+        <img src="/tree.png" alt="tree" class="tree"/>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+      </div>
+      </div>
+
     
     <!-- Bee-themed decorative elements -->
-    <div class="honeycomb-bg" aria-hidden="true"></div>
-    
-    <!-- Bee hive decoration -->
-    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -229,8 +236,8 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 3rem;
+  height: 3rem;
   background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -242,9 +249,9 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
+  width: 3rem;
+  height: 3rem;
+  color: var(--text-on-dark);
 }
 
 .page-title {
@@ -275,7 +282,6 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  flex-direction: column;
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
@@ -287,15 +293,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 2rem;
+  gap: 0.3rem;
+  padding: 0.2rem 2rem;
   background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 175px;
-  width: 175px;
+  height: 5rem;
+  width: 5rem;
 }
 
 .mini-card:hover {
@@ -309,8 +315,8 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 100px;
-  height: 100px;
+  width: 3rem;
+  height: 3rem;
   object-fit: contain;
 }
 
@@ -322,6 +328,21 @@ onUnmounted(() => {
 }
 
 
+
+.content-area {
+  display: flex;
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+.primary-content {
+  display:flex;
+}
+.main-content-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
 
 /* Animations */
 @keyframes slideDown {
@@ -363,11 +384,11 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 10px;
-  right: -30px;
-  width: 300px;
+  top: 2rem;
+  right: 2rem;
+  width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 6;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -431,9 +452,39 @@ onUnmounted(() => {
     font-size: var(--font-size-2xl);
   }
   
-  .honeycomb-bg {
-    width: 200px;
-    height: 200px;
+  .bee-hive {
+    top: 80px;
+    right: 60px;
+    width: 180px;
   }
 }
+
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;      /* distance from top */
+  right: 4rem;    /* distance from right */
+  width: 100%;   /* or use rem/vw for responsive */
+  height: auto;
+  z-index: 99;   /* above most elements */
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
+}
+
+
 </style>

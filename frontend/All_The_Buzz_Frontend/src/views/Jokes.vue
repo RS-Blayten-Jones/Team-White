@@ -399,11 +399,11 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 5rem;
-  right: 3rem;
+  top: 2rem;
+  right: 2rem;
   width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 6;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -481,6 +481,24 @@ onUnmounted(() => {
   width: 100%;   /* or use rem/vw for responsive */
   height: auto;
   z-index: 99;   /* above most elements */
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
 }
 
 
