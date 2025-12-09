@@ -23,15 +23,18 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios'
 import { ref } from 'vue'
 
 interface Props {
-  /** Item data to edit */
-  item: any
+  /** Item id to edit */
+  id: string
   /** Category segment used in your endpoint */
   category: string
-  /** JWT used in header */
+  /** JWT used in header (kept as 'Bearer' per your original) */
   jwt: string
+  /** The body/data of the entry to edit */
+  body: any
   /** Whether edit mode is enabled */
   isEditMode: boolean
   /** Optional tooltip (default: "Save Changes") */
@@ -40,7 +43,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'updated', payload: { id: string; data: any }): void
+  (e: 'updated', payload: { id: string }): void
   (e: 'error', message: string): void
 }>()
 
@@ -50,22 +53,30 @@ const tooltip = props.tooltip ?? 'Save Changes'
 async function onEditClick() {
   if (saving.value || !props.isEditMode) return
 
+  const confirmed = window.confirm(
+    'Are you sure you want to save these changes?'
+  )
+  if (!confirmed) return
+
   saving.value = true
   try {
-    // Emit the update event with the item data
-    emit('updated', { 
-      id: props.item._id?.$oid || props.item.id, 
-      data: props.item,
-      category: props.category,
-      jwt: props.jwt
-    })
+    const url = `http://localhost:8080/${props.category}/${props.id}`
+
+    const headers = { 'Bearer': `${props.jwt}` }
+
+    await axios.put(url, props.body, { headers })
+
+    emit('updated', { id: props.id })
+  } catch (error: any) {
+    const status = error?.response?.status ?? 'Unknown'
+    const message = `Error: Status Code = ${status}`
+    emit('error', message)
+    console.error(message, error)
   } finally {
-    // Keep button disabled briefly to prevent double-clicks
-    setTimeout(() => {
-      saving.value = false
-    }, 1000)
+    saving.value = false
   }
 }
+
 </script>
 
 <style scoped>

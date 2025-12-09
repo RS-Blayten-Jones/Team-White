@@ -4,6 +4,12 @@
       <h1 class="login-title">All The Buzz</h1>
       <h2 class="login-subtitle">Login</h2>
       <UserCreds @login="handleLogin" />
+      
+      <!-- DEV BYPASS BUTTON - Comment out for production -->
+      <button class="dev-bypass-btn" @click="devBypass">
+        🐝 DEV BYPASS (No Auth)
+      </button>
+      <!-- END DEV BYPASS -->
     </div>
   </div>
 </template>
@@ -73,6 +79,17 @@ async function handleLogin(credentials: { username: string; password: string }) 
   }
   router.push({ name: 'resource-menu' })
 }
+
+// DEV BYPASS FUNCTION - Comment out for production
+function devBypass() {
+  console.log('🐝 DEV BYPASS: Skipping authentication')
+  // Set dummy cookies for development
+  setCookie('jwt', 'dev-bypass-token', 3600)
+  setCookie('role', 'Manager', 3600)
+  router.push({ name: 'resource-menu' })
+}
+// END DEV BYPASS
+
 </script>
 
 <style scoped>
@@ -105,6 +122,32 @@ async function handleLogin(credentials: { username: string; password: string }) 
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
 }
+
+/* DEV BYPASS BUTTON - Comment out for production */
+.dev-bypass-btn {
+  width: 100%;
+  margin-top: var(--spacing-lg);
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  border: 2px dashed #ff6f00;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dev-bypass-btn:hover {
+  background: linear-gradient(135deg, #ffca28 0%, #ffa726 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+.dev-bypass-btn:active {
+  transform: translateY(0);
+}
+/* END DEV BYPASS BUTTON */
 
 @media (max-width: 768px) {
   .login-card {
