@@ -2,6 +2,7 @@
   <div class="jokes-page page-container">
     <AppHeader />
 
+    <div class="primary-content">
     <main class="content-wrapper" role="main">
       <div class="page-header">
         <div class="page-title-wrapper">
@@ -27,8 +28,29 @@
             <span>Bios</span>
           </div>
         </div>
+        </div>
       </div>
-    </main>
+      
+      
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="jokes"/> 
+        </div>
+          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
+      </div>
+      </div>
+      </main>
+
+      <div class ="right-hand-side">
+        <img src="/tree.png" alt="tree" class="tree"/>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+      </div>
+      </div>
+
     
     <!-- Bee-themed decorative elements -->
     
@@ -278,7 +300,9 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
 }
-
+.primary-content {
+  display:flex;
+}
 .main-content-layout {
   display: flex;
   gap: 1.5rem;
@@ -375,9 +399,9 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 2rem;
-  right: -30px;
-  width: 300px;
+  top: 5rem;
+  right: 3rem;
+  width: 13rem;
   height: auto;
   z-index: 5;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
@@ -443,11 +467,6 @@ onUnmounted(() => {
     font-size: var(--font-size-2xl);
   }
   
-  .honeycomb-bg {
-    width: 200px;
-    height: 200px;
-  }
-  
   .bee-hive {
     top: 80px;
     right: 60px;
@@ -458,9 +477,11 @@ onUnmounted(() => {
 .fixed-right-image {
   position: fixed;
   top: 2rem;      /* distance from top */
-  right: 2rem;    /* distance from right */
-  width: 120px;   /* or use rem/vw for responsive */
+  right: 4rem;    /* distance from right */
+  width: 100%;   /* or use rem/vw for responsive */
   height: auto;
-  z-index: 100;   /* above most elements */
+  z-index: 99;   /* above most elements */
 }
+
+
 </style>
