@@ -194,33 +194,6 @@
       </DataTable>
 
 
-      <div v-if="showPendingTable && pendingJokes.length" class="results pending-results">
-        <div class="results-header">
-          <h3>Pending Jokes:</h3>
-        </div>
-        <DataTable
-          :data="pendingJokes"
-          :columns="preferredColumns"
-          :headerMap="headers"
-          :hiddenColumns="hidden"
-          :getRowKey="getRowKey"
-        >
-          <template #cell="{ row, column, value }">
-            <template v-if="column === 'actions'">
-              <ApproveAndDeny
-                :id="getItemId(row)"
-                :jwt="jwt"
-                @approved="getAllPend"
-                @denied="getAllPend"
-              />
-            </template>
-            <template v-else>
-              <span>{{ value }}</span>
-            </template>
-          </template>
-        </DataTable>
-      </div>
-
     </div>
   </div>
 </template>
@@ -248,8 +221,6 @@ export default defineComponent({
       amt: 1,
       randAmt: 1,
       difficulty: '' as number | '',
-      pendingJokes: [],
-      showPendingTable: false,
       isEditMode: false,
       editableRows: {} as Record<string, any>,
       originalData: null as any // Store original data for reverting
@@ -463,7 +434,6 @@ export default defineComponent({
       })
       .then(response => {
         this.apiData = response.data
-        this.showPendingTable = true
         this.msg = ''
       })
       .catch(error => {

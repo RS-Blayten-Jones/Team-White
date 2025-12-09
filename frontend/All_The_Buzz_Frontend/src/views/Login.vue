@@ -43,7 +43,7 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // const token = loginRes.data.token
 
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTMxNTUxNiwiZXhwIjoxNzY1MzE5MTE2fQ.Je-Sa0yIP_F0e-bg5z0j7jOMIL2yiPi6095r7e1FtKI' //PUT TOKEN HERE!
+    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJQYXRpZW5jZSIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo4NDksImRlcGFydG1lbnQiOiJJbmZvcm1hdGlvbiBUZWNobm9sb2d5IiwidGl0bGUiOiJNYW5hZ2VyIiwiZmlyc3RfbmFtZSI6IldhbGxpdyIsInN1YiI6IldhbGxpdyBQYXRpZW5jZSIsImlhdCI6MTc2NTMxNzE0OSwiZXhwIjoxNzY1MzIwNzQ5fQ.Qp9eMbSCSO9YWwPgpY5_2PPLwSnL0fSyI-xfpaIH5Ts' //PUT TOKEN HERE!
     const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
