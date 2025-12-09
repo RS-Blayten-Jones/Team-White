@@ -63,6 +63,9 @@ async function onEditClick() {
     // Create a copy of the body to modify
     const requestBody = { ...props.body }
     
+    // Remove _id field - MongoDB doesn't allow updating _id
+    delete requestBody._id
+    
     // Transform 'difficulty' back to 'level' for jokes
     if (props.category === 'jokes' && 'difficulty' in requestBody) {
       const difficultyValue = Number(requestBody.difficulty)
