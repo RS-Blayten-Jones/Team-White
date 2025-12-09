@@ -59,11 +59,12 @@
       <div class="results-header">
         <h3>Results:</h3>
         <button 
+          v-if="!showingPending"
           class="mode-toggle-btn" 
           @click="toggleEditMode"
           :class="{ 'write-mode': isEditMode }"
         >
-          {{ isEditMode ? '📝 Write Mode' : '👁️ Read Mode' }}
+          {{ isEditMode ? '👁️ Read Mode' : '📝 Write Mode'  }}
         </button>
       </div>
 
@@ -149,7 +150,14 @@
           <!-- Actions column with edit and delete buttons -->
           <template v-else-if="column === 'actions'">
             <div class="action-buttons">
+              <ApproveAndDeny 
+                v-if="showingPending"
+                :id="getItemId(row)"
+                :category="resourceType"
+                @action-complete="handleApproveDeny"
+                />
               <EditButton
+                v-if="!showingPending"
                 :id="getItemId(row)"
                 :category="resourceType"
                 :jwt="jwt"
@@ -159,6 +167,7 @@
                 @error="handleEditError"
               />
               <DeleteButton
+                v-if="!showingPending"
                 :id="getItemId(row)"
                 :category="resourceType"
                 :jwt="jwt"
@@ -193,6 +202,7 @@
         </template>
       </DataTable>
 
+
     </div>
   </div>
 </template>
@@ -203,10 +213,11 @@ import { defineComponent } from 'vue'
 import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
 import DeleteButton from '@/components/Delete.vue'
 import EditButton from '@/components/EditButton.vue'
+import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
 
 export default defineComponent({
   name: 'GetButton',
-  components: { DataTable, DeleteButton, EditButton },
+  components: { DataTable, DeleteButton, EditButton, ApproveAndDeny },
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
@@ -222,7 +233,8 @@ export default defineComponent({
       difficulty: '' as number | '',
       isEditMode: false,
       editableRows: {} as Record<string, any>,
-      originalData: null as any // Store original data for reverting
+      originalData: null as any, // Store original data for reverting
+      showingPending: false
     }
   },
   computed: {
@@ -296,13 +308,24 @@ export default defineComponent({
 
   methods: {
     getAllPub() {
+      this.showingPending = false 
       axios.get(`http://localhost:8080/${this.resourceType}`, {
         headers: {
           'Bearer': `${this.jwt}`
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -432,15 +455,34 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.showingPending = true
+        console.log(this.showingPending)
         this.msg = ''
       })
       .catch(error => {
         this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
       })
     },
+    handleApproveDeny({ action, id }: { action: string, id: string }) {
+      // Optionally show a confirmation message
+      this.msg = `Item ${id} was ${action}.`
+      // Refresh the pending table
+      this.getAllPend()
+    },
 
     GetRand(amt: string | number) {
+      this.showingPending = false 
       const n = Number(amt)
       axios.get(`http://localhost:8080/random-${this.resourceType}/${n}`, {
         headers: {
@@ -448,7 +490,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Backend returns a JSON string instead of object, so parse it if needed
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -457,6 +509,7 @@ export default defineComponent({
     },
 
     GetByDiff(difficulty: string | number) {
+      this.showingPending = false 
       if (this.resourceType !== 'jokes') {
         this.msg = 'GetByDiff is only available for resourceType "jokes".'
         return
@@ -469,7 +522,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -478,6 +541,7 @@ export default defineComponent({
     },
 
     GetDailyQuote() {
+      this.showingPending = false 
       if (this.resourceType !== 'quotes') {
         this.msg = 'Daily Quote is only available for resourceType "quotes".'
         return
@@ -488,7 +552,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -497,6 +571,7 @@ export default defineComponent({
     },
 
     GetShortQuote(amt: string | number) {
+      this.showingPending = false 
       if (this.resourceType !== 'quotes') {
         this.msg = 'Short Quote is only available for resourceType "quotes".'
         return
@@ -508,7 +583,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = response.data
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
