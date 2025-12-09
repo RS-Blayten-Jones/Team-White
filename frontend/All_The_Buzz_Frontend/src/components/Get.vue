@@ -77,29 +77,59 @@
         :isEditMode="isEditMode"
       >
         <template #cell="{ row, column, value }">
+          <!-- Special rendering for jokes content -->
           <template v-if="resourceType === 'jokes' && column === 'content'">
             <!-- Defensive guards in case content is missing -->
             <template v-if="row && row.content && row.content.type">
               <!-- ONE-LINER -->
               <div v-if="row.content.type === 'one_liner'" class="one-liner-content">
-                {{ row.content.text }}
+                <template v-if="isEditMode">
+                  <input 
+                    v-model="row.content.text" 
+                    class="cell-input"
+                    type="text"
+                  />
+                </template>
+                <template v-else>
+                  {{ row.content.text }}
+                </template>
               </div>
 
               <!-- Q & A -->
               <div
                 v-else-if="row.content.type === 'qa'"
                 class="qa-content"
-                tabindex="0"
+                :tabindex="isEditMode ? -1 : 0"
                 aria-live="polite"
               >
                 <div class="question">
-                  <strong>Q:</strong> {{ row.content.question }}
+                  <strong>Q:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.question" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.question }}
+                  </template>
                   <small v-if="row.language" class="muted"> ({{ row.language }})</small>
-                  <small class="hint">Hover or focus to reveal answer</small>
+                  <small v-if="!isEditMode" class="hint">Hover or focus to reveal answer</small>
                 </div>
 
-                <div class="answer" aria-hidden="true">
-                  <strong>A:</strong> {{ row.content.answer }}
+                <div class="answer" :aria-hidden="!isEditMode">
+                  <strong>A:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.answer" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.answer }}
+                  </template>
                 </div>
               </div>
 
@@ -137,9 +167,26 @@
             </div>
           </template>
 
-          <!-- Default rendering for other columns -->
+          <!-- All other columns - editable in write mode -->
           <template v-else>
-            {{ value }}
+            <!-- Editable cell in write mode -->
+            <div v-if="isEditMode" class="editable-cell">
+              <input
+                v-if="typeof value === 'string' || typeof value === 'number'"
+                v-model="row[column]"
+                class="cell-input"
+                :type="typeof value === 'number' ? 'number' : 'text'"
+              />
+              <textarea
+                v-else-if="typeof value === 'object' && value !== null"
+                v-model="row[column]"
+                class="cell-textarea"
+                rows="2"
+              ></textarea>
+              <span v-else>{{ value }}</span>
+            </div>
+            <!-- Regular display in read mode -->
+            <span v-else>{{ value }}</span>
           </template>
         </template>
       </DataTable>
@@ -633,6 +680,35 @@ h2 {
   margin-left: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.8em;
+}
+
+.editable-cell {
+  width: 100%;
+}
+
+.cell-input,
+.cell-textarea {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.cell-input:focus,
+.cell-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 2px rgba(238, 149, 0, 0.15);
+}
+
+.cell-textarea {
+  resize: vertical;
+  min-height: 50px;
 }
 
 </style>
