@@ -56,7 +56,16 @@
 
     <!-- Results -->
     <div class="results" v-if="rows.length">
-      <h3>Results:</h3>
+      <div class="results-header">
+        <h3>Results:</h3>
+        <button 
+          class="mode-toggle-btn" 
+          @click="toggleEditMode"
+          :class="{ 'write-mode': isEditMode }"
+        >
+          {{ isEditMode ? '📝 Write Mode' : '👁️ Read Mode' }}
+        </button>
+      </div>
 
       
       <DataTable
@@ -65,6 +74,7 @@
         :headerMap="headers"
         :hiddenColumns="hidden"
         :getRowKey="getRowKey"
+        :isEditMode="isEditMode"
       >
         <template #cell="{ row, column, value }">
           <template v-if="resourceType === 'jokes' && column === 'content'">
@@ -105,16 +115,26 @@
             </template>
           </template>
 
-          <!-- Actions column with delete button -->
+          <!-- Actions column with edit and delete buttons -->
           <template v-else-if="column === 'actions'">
-            <DeleteButton
-              :id="getItemId(row)"
-              :category="resourceType"
-              :jwt="jwt"
-              :isManager="isManager"
-              @deleted="handleDeleted"
-              @error="handleDeleteError"
-            />
+            <div class="action-buttons">
+              <EditButton
+                :item="row"
+                :category="resourceType"
+                :jwt="jwt"
+                :isEditMode="isEditMode"
+                @updated="handleUpdated"
+                @error="handleEditError"
+              />
+              <DeleteButton
+                :id="getItemId(row)"
+                :category="resourceType"
+                :jwt="jwt"
+                :isManager="isManager"
+                @deleted="handleDeleted"
+                @error="handleDeleteError"
+              />
+            </div>
           </template>
 
           <!-- Default rendering for other columns -->
@@ -133,10 +153,11 @@ import axios from 'axios'
 import { defineComponent } from 'vue'
 import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
 import DeleteButton from '@/components/Delete.vue'
+import EditButton from '@/components/EditButton.vue'
 
 export default defineComponent({
   name: 'GetButton',
-  components: { DataTable, DeleteButton },
+  components: { DataTable, DeleteButton, EditButton },
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
@@ -149,7 +170,9 @@ export default defineComponent({
       shortAmt: 1,
       amt: 1,
       randAmt: 1,
-      difficulty: '' as number | ''
+      difficulty: '' as number | '',
+      isEditMode: false,
+      editableRows: {} as Record<string, any>
     }
   },
   computed: {
@@ -283,6 +306,39 @@ export default defineComponent({
     },
 
     handleDeleteError(message: string) {
+      this.msg = message
+    },
+
+    toggleEditMode() {
+      this.isEditMode = !this.isEditMode
+      if (this.isEditMode) {
+        // Create a deep copy of current data for editing
+        this.editableRows = {}
+      }
+    },
+
+    async handleUpdated(payload: { id: string; data: any; category: string; jwt: string }) {
+      // Call the UpdateOnClick function from Edit.vue
+      try {
+        const url = `http://localhost:8080/${payload.category}/${payload.id}/update`
+        const headers = { 'Bearer': payload.jwt }
+
+        await axios.post(url, payload.data, { headers })
+
+        this.msg = ''
+        // Optionally show success message
+        console.log('Item updated successfully:', payload.id)
+        
+        // Refresh the data to show updated values
+        // You can call the appropriate get method here if needed
+      } catch (error: any) {
+        const status = error?.response?.status ?? 'Unknown'
+        this.msg = `Update Error: Status Code = ${status}`
+        console.error('Update failed:', error)
+      }
+    },
+
+    handleEditError(message: string) {
       this.msg = message
     },
 
@@ -444,6 +500,48 @@ h2 {
   color: var(--text-primary);
   margin-bottom: var(--spacing-md);
   font-size: var(--font-size-xl);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.mode-toggle-btn {
+  background-color: var(--color-primary-orange);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mode-toggle-btn:hover {
+  background-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.mode-toggle-btn.write-mode {
+  background-color: #059669;
+}
+
+.mode-toggle-btn.write-mode:hover {
+  background-color: #047857;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .items-grid {
