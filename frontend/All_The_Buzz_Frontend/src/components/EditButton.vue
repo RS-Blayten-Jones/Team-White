@@ -60,11 +60,29 @@ async function onEditClick() {
 
   saving.value = true
   try {
+    // Create a copy of the body to modify
+    const requestBody = { ...props.body }
+    
+    // Transform 'difficulty' back to 'level' for jokes
+    if (props.category === 'jokes' && 'difficulty' in requestBody) {
+      const difficultyValue = Number(requestBody.difficulty)
+      
+      // Validate difficulty is a number between 1-3
+      if (isNaN(difficultyValue) || difficultyValue < 1 || difficultyValue > 3) {
+        emit('error', 'Difficulty must be a number between 1 and 3')
+        return
+      }
+      
+      // Rename difficulty to level
+      requestBody.level = difficultyValue
+      delete requestBody.difficulty
+    }
+    
     const url = `http://localhost:8080/${props.category}/${props.id}`
 
     const headers = { 'Bearer': `${props.jwt}` }
 
-    await axios.put(url, props.body, { headers })
+    await axios.put(url, requestBody, { headers })
 
     emit('updated', { id: props.id })
   } catch (error: any) {
