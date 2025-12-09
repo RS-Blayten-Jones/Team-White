@@ -20,7 +20,7 @@
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
           </div>
-          <GetButton isManager=True jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTb3V0aGFuIiwibG9jYXRpb24iOiJKYXBhbiIsImlkIjo1NTgsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJDdXJ0Iiwic3ViIjoiQ3VydCBTb3V0aGFuIiwiaWF0IjoxNzY1MjUzMjQ3LCJleHAiOjE3NjUyNTY4NDd9.CcIuvNrISdWctX4nfyHb62ZJH3x-QWpXWfFsMqs-QdM" resourceType="jokes"/>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -70,15 +70,17 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
 import Delete from '@/components/Delete.vue'
 import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
+const route = useRoute()
 
 interface Bee {
   id: number
@@ -100,6 +102,29 @@ const mouseY = ref(0)
 // Audio for bee buzzing
 const beeSound = new Audio('/bee-buzz.mp3')
 beeSound.loop = false
+
+// Get JWT and role from cookies (fallback to route params)
+const jwt = ref<string>('')
+const role = ref<string>('')
+const isManager = ref<boolean>(false)
+
+onMounted(() => {
+  // Try to get from cookies first, then route params
+  jwt.value = getCookie('jwt') || (route.params.jwt as string) || ''
+  role.value = getCookie('role') || (route.params.role as string) || ''
+  
+  // Determine if user is manager based on role
+  isManager.value = role.value.toLowerCase() === 'manager'
+  
+  // If no JWT, redirect to login
+  if (!jwt.value) {
+    router.push({ name: 'login' })
+    return
+  }
+  
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
 
 const components = {
   get: GetButton,
