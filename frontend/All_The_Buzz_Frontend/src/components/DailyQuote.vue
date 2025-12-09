@@ -8,15 +8,10 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
 
 export default defineComponent({
 	name: 'DailyQuote',
-		props: {
-			jwt: {
-				type: String,
-				required: true
-			}
-		},
 	data() {
 		return {
 			msg: "",
@@ -32,9 +27,10 @@ export default defineComponent({
 	},
 	methods: {
 		getDailyQuote() {
+			const token = getCookie('jwt')
 			axios.get(`http://localhost:8080/daily-quotes`, {
 				headers: {
-					'Bearer': `${this.jwt}`,
+					'Bearer': `${token}`,
 					'Content-Type': 'application/json'
         		}
 			}).then(response => {

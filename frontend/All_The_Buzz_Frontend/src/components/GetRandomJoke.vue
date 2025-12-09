@@ -1,15 +1,10 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
 
 export default defineComponent({
 	name: 'GetRandomJoke',
-		props: {
-			jwt: {
-				type: String,
-				required: true
-			}
-		},
 	data() {
 		return {
 			msg: "",
@@ -22,9 +17,10 @@ mounted() {
 },
 methods: {
     GetRand() {
+    const token = getCookie('jwt')
     axios.get(`http://localhost:8080/random-jokes/1`, {
       headers: {
-        'Bearer': `${this.jwt}`
+        'Bearer': `${token}`
       }
     })
     .then(response => {

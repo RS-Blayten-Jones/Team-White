@@ -1,15 +1,12 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
 
 export default defineComponent({
 	name: 'ApproveAndDeny',
 		props: {
 			id: {
-				type: String,
-				required: true
-			},
-			jwt: {
 				type: String,
 				required: true
 			},
@@ -23,12 +20,13 @@ export default defineComponent({
 			msg: "",
 			apiData: {}
 		}
-	},
+	}, 
 	methods: {
 		approveData() {
+			const token = getCookie('jwt')
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/approve`, {}, {
 				headers: {
-					Bearer: `${this.jwt}`
+					Bearer: `${token}`
 				}
 			})
 			.then(response => {
@@ -40,9 +38,10 @@ export default defineComponent({
 			})
 		},
 		denyData() {
+			const token = getCookie('jwt')
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/deny`, {}, {
 				headers: {
-					Bearer: `${this.jwt}`
+					Bearer: `${token}`
 				}
 			})
 			.then(response => {
