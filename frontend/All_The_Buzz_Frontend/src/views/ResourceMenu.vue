@@ -65,6 +65,21 @@ const animateCuteBee = () => {
   
   cuteBeeAnimationId = requestAnimationFrame(animateCuteBee)
 }
+const welcomeText=ref("")
+const fName=getCookie("f_name")
+const lName=getCookie("l_name")
+const sideBarName=ref("")
+const sideBarRole=ref("")
+const position=getCookie("role")
+
+onMounted(() => {
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+  welcomeText.value = `Welcome to the hive, ${fName} ${lName}!`
+  sideBarName.value = `${fName} ${lName}`
+  sideBarRole.value= `${role}`
+
+})
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
@@ -82,7 +97,7 @@ onUnmounted(() => {
       <div class="image-container">
       <div class ="overlay-text"> 
       <div class = "welcome-blurb">
-      <p id="name"> Welcome to the hive, Karl!</p>
+      <p id="name">{{ welcomeText }}</p>
       </div>
       <p> This is your landing page for All The Buzz! Here you can access, add,
       and edit jokes, bios, quotes, and trivia. </p>
@@ -136,8 +151,8 @@ onUnmounted(() => {
     <UserInfo id="side-bar"
             image="/person.jpg"
             text="Hi there!"
-            name="Karl Jones"
-            position="Manager"/>
+            :name="sideBarName"
+            :position="sideBarRole" />
             
     
   </div>

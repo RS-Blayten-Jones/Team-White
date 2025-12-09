@@ -69,10 +69,13 @@ async function handleLogin(credentials: { username: string; password: string }) 
     }
     // --- Step 3: We have valid Credentials ---
     const creds = authRes as Credentials
+    console.log(authRes)
     // For now we only need role + persist the JWT
     // Persist for 1 hour; adjust as needed.
     setCookie('jwt', token, 3600)
     setCookie('role', authRes.title , 3600)
+    setCookie('f_name', authRes.fName, 3600)
+    setCookie('l_name', authRes.lName, 3600)
   } catch (error: any) {
     console.error('Login failed:', error)
     alert(`Login failed: ${error.message}`)

@@ -12,7 +12,19 @@
             <h1 class="page-title">Jokes Management</h1>
             <p class="page-subtitle">Bees are terrible comedians—every punchline ends with a buzzkill</p>
           </div>
-          <div class="mini-resource-cards">
+        </div>
+      </div>
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="jokes"/> 
+          </div>
+          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
+        </div>
+        
+        <!-- Mini Resource Cards -->
+        <div class="mini-resource-cards">
           
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
@@ -48,6 +60,7 @@
     <!-- Bee-themed decorative elements -->
     
     <!-- Bee hive decoration -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -255,8 +268,8 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 3rem;
-  height: 3rem;
+  width: 64px;
+  height: 64px;
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -268,8 +281,8 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 60px;
+  height: 60px;
   color: var(--text-on-dark);
 }
 
@@ -304,6 +317,7 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
+  flex-direction: column;
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
@@ -315,15 +329,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 2rem;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 5rem;
-  width: 5rem;
+  height: 175px;
+  width: 175px;
 }
 
 .mini-card:hover {
@@ -337,8 +351,8 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 3rem;
-  height: 3rem;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 
@@ -349,7 +363,20 @@ onUnmounted(() => {
   text-align: center;
 }
 
-
+/* Honeycomb decorative background */
+.honeycomb-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 400px;
+  background-image: 
+    repeating-linear-gradient(30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px),
+    repeating-linear-gradient(-30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* Animations */
 @keyframes slideDown {
@@ -391,7 +418,7 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 2rem;
+  top: 10px;
   right: -30px;
   width: 300px;
   height: auto;
@@ -469,14 +496,5 @@ onUnmounted(() => {
     right: 60px;
     width: 180px;
   }
-}
-
-.fixed-right-image {
-  position: fixed;
-  top: 2rem;      /* distance from top */
-  right: 2rem;    /* distance from right */
-  width: 120px;   /* or use rem/vw for responsive */
-  height: auto;
-  z-index: 100;   /* above most elements */
 }
 </style>

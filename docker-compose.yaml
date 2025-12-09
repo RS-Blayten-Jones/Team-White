@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .         # build from the app folder
+      dockerfile: Dockerfile          # Dockerfile lives inside all_the_buzz/
+    image: all-the-buzz-app
+    ports:
+      - "8080:8080"                   # host:container
+    environment:
+      FLASK_ENV: development          # enable dev mode
+      FLASK_DEBUG: "1"                # enable debug / auto-reload
+    # Optional: mount local code for live reload while editing
+    volumes:
+      - ./all_the_buzz:/app/all_the_buzz
+    # Optional: healthcheck (if you have /health route)
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 3
+    restart: unless-stopped
