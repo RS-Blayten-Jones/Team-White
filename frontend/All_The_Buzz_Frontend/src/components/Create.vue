@@ -111,7 +111,17 @@
         required
         />
       </div>
-      
+      <div class="form-group" v-if="resourceType === 'quotes'">
+        <label for="content">Quote:</label>
+        <textarea
+          id="content"
+          v-model="formData.content.text"
+          type="text"
+          placeholder="Enter quote"
+          rows="4"
+          required
+        ></textarea>
+      </div>
       <div v-if="resourceType === 'bios'" class="form-group" >
         <label for="website_url">Enter your website URL:</label>
         <input type="url" id="website_url" name="website_url" placeholder="https://example.com" required>
