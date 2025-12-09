@@ -111,4 +111,3 @@ def authentication(token) -> Credentials:
         #print(e)
         logger.error(e)
         return ResponseCode('UnauthorizedToken') # returns ResponseCode object which logs to general log
-

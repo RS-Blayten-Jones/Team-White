@@ -13,7 +13,23 @@
             <h1 class="page-title">Jokes Management</h1>
             <p class="page-subtitle">Bees are terrible comedians—every punchline ends with a buzzkill</p>
           </div>
+<<<<<<< HEAD
           <div class="mini-resource-cards">
+=======
+        </div>
+      </div>
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="jokes"/> 
+          </div>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
+        </div>
+        
+        <!-- Mini Resource Cards -->
+        <div class="mini-resource-cards">
+>>>>>>> 49246bdb083c51261d506d32d849d7011264c30d
           
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
@@ -79,15 +95,17 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
 import Delete from '@/components/Delete.vue'
 import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
+const route = useRoute()
 
 interface Bee {
   id: number
@@ -110,12 +128,28 @@ const mouseY = ref(0)
 const beeSound = new Audio('/bee-buzz.mp3')
 beeSound.loop = false
 
+// Get JWT and role from cookies (fallback to route params)
+const jwt = ref<string>('')
+const role = ref<string>('')
+const isManager = ref<boolean>(false)
 
-const resourceType = ref<string>('jokes')
-const userIsManager = ref<Boolean>(true)
-const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
-
-const ready = computed(() => !!resourceType.value && !!jwtToken.value)
+onMounted(() => {
+  // Try to get from cookies first, then route params
+  jwt.value = getCookie('jwt') || (route.params.jwt as string) || ''
+  role.value = getCookie('role') || (route.params.role as string) || ''
+  
+  // Determine if user is manager based on role
+  isManager.value = role.value.toLowerCase() === 'manager'
+  
+  // If no JWT, redirect to login
+  if (!jwt.value) {
+    router.push({ name: 'login' })
+    return
+  }
+  
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
 
 const components = {
   get: GetButton,
