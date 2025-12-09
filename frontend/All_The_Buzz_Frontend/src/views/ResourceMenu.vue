@@ -5,6 +5,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import UserInfo from '@/components/UserInfo.vue'
 import DailyQuote from '@/components/DailyQuote.vue'
 import GetRandomJoke from '@/components/GetRandomJoke.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
 
@@ -42,10 +43,20 @@ const animateCuteBee = () => {
   
   cuteBeeAnimationId = requestAnimationFrame(animateCuteBee)
 }
+const welcomeText=ref("")
+const fName=getCookie("f_name")
+const lName=getCookie("l_name")
+const role=getCookie("role")
+const sideBarName=ref("")
+const sideBarRole=ref("")
 
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
   animateCuteBee()
+  welcomeText.value = `Welcome to the hive, ${fName} ${lName}!`
+  sideBarName.value = `${fName} ${lName}`
+  sideBarRole.value= `${role}`
+
 })
 
 onUnmounted(() => {
@@ -63,7 +74,7 @@ onUnmounted(() => {
       <div class="image-container">
       <div class ="overlay-text"> 
       <div class = "welcome-blurb">
-      <p id="name"> Welcome to the hive, Karl!</p>
+      <p id="name">{{ welcomeText }}</p>
       </div>
       <p> This is your landing page for All The Buzz! Here you can access, add,
       and edit jokes, bios, quotes, and trivia. </p>
@@ -117,8 +128,8 @@ onUnmounted(() => {
     <UserInfo id="side-bar"
             image="/person.jpg"
             text="Hi there!"
-            name="Karl Jones"
-            position="Manager"/>
+            :name="sideBarName"
+            :position="sideBarRole" />
             
     
   </div>
