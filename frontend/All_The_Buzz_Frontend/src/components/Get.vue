@@ -295,19 +295,6 @@ export default defineComponent({
   
 
   methods: {
-    // Helper to normalize response data (parse if string)
-    normalizeResponseData(data: any): any {
-      if (typeof data === 'string') {
-        try {
-          return JSON.parse(data)
-        } catch (e) {
-          console.error('Failed to parse response:', e)
-          return data
-        }
-      }
-      return data
-    },
-
     getAllPub() {
       axios.get(`http://localhost:8080/${this.resourceType}`, {
         headers: {
@@ -315,7 +302,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -445,7 +442,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -461,7 +468,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Backend returns a JSON string instead of object, so parse it if needed
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -482,7 +499,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -501,7 +528,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
@@ -521,7 +558,17 @@ export default defineComponent({
         }
       })
       .then(response => {
-        this.apiData = this.normalizeResponseData(response.data)
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
         this.msg = ''
       })
       .catch(error => {
