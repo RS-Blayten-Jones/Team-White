@@ -27,21 +27,6 @@
             <span>Bios</span>
           </div>
         </div>
-        </div>
-      </div>
-
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="jokes"/> 
-        </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
-      </div>
-      <div class="fixed-right-image">
-        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
-      </div>
-        
-        
       </div>
     </main>
     
@@ -74,7 +59,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import ResourceToggle from '@/components/ResourceToggle.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
@@ -106,7 +90,7 @@ beeSound.loop = false
 
 
 const resourceType = ref<string>('jokes')
-const userIsManager = ref<boolean>(true)
+const userIsManager = ref<Boolean>(true)
 const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
 
 const ready = computed(() => !!resourceType.value && !!jwtToken.value)

@@ -17,7 +17,27 @@
         <tr v-for="(row, rIdx) in rows" :key="rowKey(row, rIdx)">
           <td v-for="col in visibleColumns" :key="col">
             <slot name="cell" :row="row" :column="col" :value="row[col]">
-              {{ formatValue(row[col]) }}
+              <!-- Editable cell in write mode for non-action columns -->
+              <div 
+                v-if="isEditMode && !nonEditableColumns.includes(col)"
+                class="editable-cell"
+              >
+                <input
+                  v-if="typeof row[col] === 'string' || typeof row[col] === 'number'"
+                  v-model="row[col]"
+                  class="cell-input"
+                  :type="typeof row[col] === 'number' ? 'number' : 'text'"
+                />
+                <textarea
+                  v-else-if="typeof row[col] === 'object' && row[col] !== null"
+                  v-model="row[col]"
+                  class="cell-textarea"
+                  rows="2"
+                ></textarea>
+                <span v-else>{{ formatValue(row[col]) }}</span>
+              </div>
+              <!-- Regular display in read mode -->
+              <span v-else>{{ formatValue(row[col]) }}</span>
             </slot>
           </td>
         </tr>
@@ -75,6 +95,22 @@ export default defineComponent({
       type: Function as unknown as () => ((row: Row, index: number) => string | number),
       required: false,
       default: (row: Row, index: number) => row.id ?? index
+    },
+    /**
+     * Whether cells should be editable
+     */
+    isEditMode: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    /**
+     * Columns that should not be editable even in edit mode
+     */
+    nonEditableColumns: {
+      type: Array as () => string[],
+      required: false,
+      default: () => ['_id', 'id', 'actions']
     }
   },
   setup(props) {
@@ -170,5 +206,34 @@ tbody tr:hover td {
   margin-top: var(--spacing-sm);
   color: var(--text-secondary);
   font-size: var(--font-size-xs);
+}
+
+.editable-cell {
+  width: 100%;
+}
+
+.cell-input,
+.cell-textarea {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.cell-input:focus,
+.cell-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 2px rgba(238, 149, 0, 0.1);
+}
+
+.cell-textarea {
+  resize: vertical;
+  min-height: 40px;
 }
 </style>

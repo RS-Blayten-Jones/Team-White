@@ -80,9 +80,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import axios from 'axios'
 
 interface Props {
   resourceType: string
+  jwt?: string
 }
 
 const props = defineProps<Props>()
@@ -93,6 +95,36 @@ const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
 const success = ref('')
+
+// Function to be called from EditButton component
+const UpdateOnClick = async (id: string, data: any, category: string, jwt: string) => {
+  saving.value = true
+  error.value = ''
+  success.value = ''
+
+  try {
+    const url = `http://localhost:8080/${category}/${id}/update`
+    const headers = { 'Bearer': jwt }
+
+    // Make the update request
+    await axios.post(url, data, { headers })
+
+    success.value = 'Item updated successfully!'
+    return { success: true }
+  } catch (err: any) {
+    const status = err?.response?.status ?? 'Unknown'
+    const message = `Error: Status Code = ${status}`
+    error.value = message
+    return { success: false, error: message }
+  } finally {
+    saving.value = false
+  }
+}
+
+// Expose the function so it can be called from parent components
+defineExpose({
+  UpdateOnClick
+})
 
 const fetchItem = async () => {
   if (!searchId.value) {

@@ -39,6 +39,21 @@
             <span>Bios</span>
           </div>
         </div>
+        </div>
+      </div>
+
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="jokes"/> 
+        </div>
+          <GetButton isManager=True jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJDb3RlcyIsImxvY2F0aW9uIjoiSmFwYW4iLCJpZCI6MzQsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiU2FsZXMgQWdlbnQiLCJmaXJzdF9uYW1lIjoiTWFyaW5hIiwic3ViIjoiTWFyaW5hIENvdGVzIiwiaWF0IjoxNzY1MjI3MTI4LCJleHAiOjE3NjUyMzA3Mjh9.6NscKuBdwFaRHknj5GZU0hkaoJ7VLMjH9rDqQwbVpi8" resourceType="jokes"/>
+      </div>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+        
+        
       </div>
     </main>
     
@@ -104,7 +119,7 @@ beeSound.loop = false
 
 
 const resourceType = ref<string>('jokes')
-const userIsManager = ref<boolean>(true)
+const userIsManager = ref<Boolean>(true)
 const jwtToken = ref<string>('eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDk2MTYzMiwiZXhwIjoxNzY0OTY1MjMyfQ.TcKnrQG1LTtEDMzIxGUl9HLMBdOz68yHPUgD19fzbV8')
 
 const ready = computed(() => !!resourceType.value && !!jwtToken.value)

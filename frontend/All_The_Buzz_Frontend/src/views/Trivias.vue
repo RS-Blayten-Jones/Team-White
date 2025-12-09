@@ -67,7 +67,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import ResourceToggle from '@/components/ResourceToggle.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'

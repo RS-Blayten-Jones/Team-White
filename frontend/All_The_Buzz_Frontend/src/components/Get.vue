@@ -56,7 +56,16 @@
 
     <!-- Results -->
     <div class="results" v-if="rows.length">
-      <h3>Results:</h3>
+      <div class="results-header">
+        <h3>Results:</h3>
+        <button 
+          class="mode-toggle-btn" 
+          @click="toggleEditMode"
+          :class="{ 'write-mode': isEditMode }"
+        >
+          {{ isEditMode ? '📝 Write Mode' : '👁️ Read Mode' }}
+        </button>
+      </div>
 
       
       <DataTable
@@ -65,31 +74,63 @@
         :headerMap="headers"
         :hiddenColumns="hidden"
         :getRowKey="getRowKey"
+        :isEditMode="isEditMode"
       >
         <template #cell="{ row, column, value }">
+          <!-- Special rendering for jokes content -->
           <template v-if="resourceType === 'jokes' && column === 'content'">
             <!-- Defensive guards in case content is missing -->
             <template v-if="row && row.content && row.content.type">
               <!-- ONE-LINER -->
               <div v-if="row.content.type === 'one_liner'" class="one-liner-content">
-                {{ row.content.text }}
+                <template v-if="isEditMode">
+                  <input 
+                    v-model="row.content.text" 
+                    class="cell-input"
+                    type="text"
+                  />
+                </template>
+                <template v-else>
+                  {{ row.content.text }}
+                </template>
               </div>
 
               <!-- Q & A -->
               <div
                 v-else-if="row.content.type === 'qa'"
                 class="qa-content"
-                tabindex="0"
+                :class="{ 'edit-mode-qa': isEditMode }"
+                :tabindex="isEditMode ? -1 : 0"
                 aria-live="polite"
               >
                 <div class="question">
-                  <strong>Q:</strong> {{ row.content.question }}
+                  <strong>Q:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.question" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.question }}
+                  </template>
                   <small v-if="row.language" class="muted"> ({{ row.language }})</small>
-                  <small class="hint">Hover or focus to reveal answer</small>
+                  <small v-if="!isEditMode" class="hint">Hover or focus to reveal answer</small>
                 </div>
 
-                <div class="answer" aria-hidden="true">
-                  <strong>A:</strong> {{ row.content.answer }}
+                <div class="answer" :aria-hidden="!isEditMode">
+                  <strong>A:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.answer" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.answer }}
+                  </template>
                 </div>
               </div>
 
@@ -105,9 +146,48 @@
             </template>
           </template>
 
-          <!-- Default rendering for other columns -->
+          <!-- Actions column with edit and delete buttons -->
+          <template v-else-if="column === 'actions'">
+            <div class="action-buttons">
+              <EditButton
+                :item="row"
+                :category="resourceType"
+                :jwt="jwt"
+                :isEditMode="isEditMode"
+                @updated="handleUpdated"
+                @error="handleEditError"
+              />
+              <DeleteButton
+                :id="getItemId(row)"
+                :category="resourceType"
+                :jwt="jwt"
+                :isManager="isManager"
+                @deleted="handleDeleted"
+                @error="handleDeleteError"
+              />
+            </div>
+          </template>
+
+          <!-- All other columns - editable in write mode -->
           <template v-else>
-            {{ value }}
+            <!-- Editable cell in write mode -->
+            <div v-if="isEditMode" class="editable-cell">
+              <input
+                v-if="typeof value === 'string' || typeof value === 'number'"
+                v-model="row[column]"
+                class="cell-input"
+                :type="typeof value === 'number' ? 'number' : 'text'"
+              />
+              <textarea
+                v-else-if="typeof value === 'object' && value !== null"
+                v-model="row[column]"
+                class="cell-textarea"
+                rows="2"
+              ></textarea>
+              <span v-else>{{ value }}</span>
+            </div>
+            <!-- Regular display in read mode -->
+            <span v-else>{{ value }}</span>
           </template>
         </template>
       </DataTable>
@@ -120,10 +200,12 @@
 import axios from 'axios'
 import { defineComponent } from 'vue'
 import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
+import DeleteButton from '@/components/Delete.vue'
+import EditButton from '@/components/EditButton.vue'
 
 export default defineComponent({
   name: 'GetButton',
-  components: { DataTable },
+  components: { DataTable, DeleteButton, EditButton },
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
@@ -136,7 +218,10 @@ export default defineComponent({
       shortAmt: 1,
       amt: 1,
       randAmt: 1,
-      difficulty: '' as number | ''
+      difficulty: '' as number | '',
+      isEditMode: false,
+      editableRows: {} as Record<string, any>,
+      originalData: null as any // Store original data for reverting
     }
   },
   computed: {
@@ -151,17 +236,16 @@ export default defineComponent({
       else return []
 
       // Minimal normalization for jokes to avoid duplicate difficulty + keep native fields for slot
+      // IMPORTANT: Mutate the original objects instead of creating copies so edits are preserved
       if (this.resourceType === 'jokes') {
-        return arr.map((row: any) => {
-          const copy: any = { ...row }
+        arr.forEach((row: any) => {
           // prefer 'difficulty'; derive from 'level' if needed
-          if (copy.level != null && copy.difficulty == null) copy.difficulty = copy.level
+          if (row.level != null && row.difficulty == null) row.difficulty = row.level
           // language normalization
-          if (!copy.language && copy.lang) copy.language = copy.lang
+          if (!row.language && row.lang) row.language = row.lang
           // do NOT delete question/answer/text — we need them in the slot
           // BUT prevent extra visible 'level' column
-          delete copy.level
-          return copy
+          delete row.level
         })
       }
 
@@ -173,11 +257,11 @@ export default defineComponent({
         case 'jokes':
           // Use 'level' (your payload), not 'difficulty'.
           // Keep 'content' and 'explanation' as you requested.
-          return ['difficulty', 'language', 'content', 'explanation']
+          return ['difficulty', 'language', 'content', 'explanation', 'actions']
         case 'quotes':
-          return ['text', 'author', 'length', 'createdAt']
+          return ['text', 'author', 'length', 'createdAt', 'actions']
         default:
-          return []
+          return ['actions']
       }
     },
 
@@ -193,7 +277,10 @@ export default defineComponent({
         status: 'Status',
         author: 'Author',
         length: 'Length',
-        createdAt: 'Created'
+        createdAt: 'Created',
+        
+        // Actions column
+        actions: 'Actions'
       }
     },
 
@@ -228,6 +315,125 @@ export default defineComponent({
       const oid = row?._id?.$oid
       if (oid) return oid
       return row.id ?? `${this.resourceType}-${index}`
+    },
+
+    getItemId(row: any): string {
+      // Extract the ID from the row - handle both _id.$oid and direct id
+      if (row?._id?.$oid) {
+        return row._id.$oid
+      }
+      if (row?.id) {
+        return String(row.id)
+      }
+      if (row?._id) {
+        return String(row._id)
+      }
+      return ''
+    },
+
+    handleDeleted(payload: { id: string }) {
+      // Remove the deleted item from the current data
+      if (Array.isArray(this.apiData)) {
+        const index = this.apiData.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          this.apiData.splice(index, 1)
+        }
+      } else if (this.apiData && Array.isArray((this.apiData as any).items)) {
+        const index = (this.apiData as any).items.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          (this.apiData as any).items.splice(index, 1)
+        }
+      } else if (this.apiData && Array.isArray((this.apiData as any).data)) {
+        const index = (this.apiData as any).data.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          (this.apiData as any).data.splice(index, 1)
+        }
+      }
+      
+      // Update the backup if in edit mode
+      if (this.originalData !== null) {
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+      }
+      
+      // Optionally show success message
+      this.msg = ''
+    },
+
+    handleDeleteError(message: string) {
+      this.msg = message
+    },
+
+    toggleEditMode() {
+      if (!this.isEditMode) {
+        // Entering edit mode - save a deep copy of the current data
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        console.log('Saved original data:', this.originalData)
+        this.isEditMode = true
+      } else {
+        // Exiting edit mode - restore the original data (revert changes)
+        if (this.originalData !== null) {
+          console.log('Restoring from:', this.originalData)
+          console.log('Current apiData before restore:', JSON.parse(JSON.stringify(this.apiData)))
+          
+          // Replace the entire apiData object to trigger reactivity
+          const restored = JSON.parse(JSON.stringify(this.originalData))
+          // Handle different data structures
+          if (Array.isArray(this.apiData)) {
+            this.apiData.length = 0
+            restored.forEach((item: any) => (this.apiData as any).push(item))
+          } else if (Array.isArray((this.apiData as any).items)) {
+            (this.apiData as any).items.length = 0
+            restored.items.forEach((item: any) => (this.apiData as any).items.push(item))
+          } else if (Array.isArray((this.apiData as any).data)) {
+            (this.apiData as any).data.length = 0
+            restored.data.forEach((item: any) => (this.apiData as any).data.push(item))
+          } else {
+            this.apiData = restored
+          }
+          
+          console.log('Current apiData after restore:', JSON.parse(JSON.stringify(this.apiData)))
+          this.originalData = null
+        }
+        this.isEditMode = false
+        this.editableRows = {}
+      }
+    },
+
+    async handleUpdated(payload: { id: string; data: any; category: string; jwt: string }) {
+      // Call the UpdateOnClick function from Edit.vue
+      try {
+        const url = `http://localhost:8080/${payload.category}/${payload.id}/update`
+        const headers = { 'Bearer': payload.jwt }
+
+        await axios.post(url, payload.data, { headers })
+
+        this.msg = ''
+        // Update the original data to reflect the saved changes
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        
+        // Optionally show success message
+        console.log('Item updated successfully:', payload.id)
+        
+        // Refresh the data to show updated values
+        // You can call the appropriate get method here if needed
+      } catch (error: any) {
+        const status = error?.response?.status ?? 'Unknown'
+        this.msg = `Update Error: Status Code = ${status}`
+        console.error('Update failed:', error)
+      }
+    },
+
+    handleEditError(message: string) {
+      this.msg = message
     },
 
 
@@ -390,6 +596,48 @@ h2 {
   font-size: var(--font-size-xl);
 }
 
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.mode-toggle-btn {
+  background-color: var(--color-primary-orange);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mode-toggle-btn:hover {
+  background-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.mode-toggle-btn.write-mode {
+  background-color: #059669;
+}
+
+.mode-toggle-btn.write-mode:hover {
+  background-color: #047857;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .items-grid {
   display: grid;
   gap: var(--spacing-md);
@@ -470,6 +718,13 @@ h2 {
   user-select: text;
 }
 
+/* Always show answer in edit mode */
+.qa-content.edit-mode-qa .answer {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
 .muted {
   color: var(--text-secondary);
   margin-left: 0.25rem;
@@ -479,6 +734,35 @@ h2 {
   margin-left: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.8em;
+}
+
+.editable-cell {
+  width: 100%;
+}
+
+.cell-input,
+.cell-textarea {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.cell-input:focus,
+.cell-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 2px rgba(238, 149, 0, 0.15);
+}
+
+.cell-textarea {
+  resize: vertical;
+  min-height: 50px;
 }
 
 </style>
