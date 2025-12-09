@@ -15,7 +15,7 @@
           <option value="2">Level 2</option>
           <option value="3">Level 3</option>
         </select>
-        <textarea v-if="resourceType === 'jokes' && formData.level == 3" 
+        <textarea v-if="resourceType === 'jokes' && formData.level == '3'" 
           v-model="formData.explanation"
           rows="4"
           placeholder="Enter explanation for difficult joke..."
@@ -45,7 +45,18 @@
           />
         </div>
       </div>
-      
+
+      <div class="form-group" v-if="resourceType === 'quotes'">
+        <label for="content">Quote:</label>
+        <textarea
+          id="content"
+          v-model="formData.content.text"
+          type="text"
+          placeholder="Enter quote"
+          rows="4"
+          required
+        ></textarea>
+      </div>
       <div class="form-group" v-if="resourceType === 'quotes'">
         <label for="author">Author:</label>
         <input
@@ -75,6 +86,36 @@
           placeholder="Enter answer"
         />
       </div>
+      <div v-if="resourceType === 'bios'" class="form-group" >
+        <label for="birthyear">Birth Year:</label>
+        <input
+        id="birthyear"
+        v-model="formData.birthYear"
+        type="number" placeholder="YYYY" min="1000" max="2026" required
+        />
+      </div>
+      <div v-if="resourceType === 'bios'" class="form-group" >
+        <label for="deathyear">Death Year:</label>
+        <input
+        id="deathyear"
+        v-model="formData.deathYear"
+        type="number" placeholder="YYYY" min="1000" max="2026"
+        />
+      </div>
+      <div v-if="resourceType === 'bios'" class="form-group" >
+        <label for="bioName">Subject Name:</label>
+        <input
+        id="bioName"
+        v-model="formData.name"
+        type="text"
+        required
+        />
+      </div>
+      
+      <div v-if="resourceType === 'bios'" class="form-group" >
+        <label for="website_url">Enter your website URL:</label>
+        <input type="url" id="website_url" name="website_url" placeholder="https://example.com" required>
+      </div>
       <div class="form-group">
         <input
           v-model="formData.language"
@@ -103,6 +144,7 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
 
 export default defineComponent({
   name: 'CreateComponent',
@@ -124,14 +166,20 @@ export default defineComponent({
         author: '',
         question: '',
         answer: '',
-        level: 0,
+        level: '',
         explanation: '',
-        language: ''
+        language: '',
+        birthYear: '',
+        deathYear:'',
+        name: '',
+        paragraph: '',
+        summary: '',
+        sourceURL: ''
       },
       loading: false,
       error: '',
       success: '',
-      jwt: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJUd2VlZCIsImxvY2F0aW9uIjoiVW5pdGVkIFN0YXRlcyIsImlkIjo1NzcsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJBdWd1c3RlIiwic3ViIjoiQXVndXN0ZSBUd2VlZCIsImlhdCI6MTc2NDg4MDY3MCwiZXhwIjoxNzY0ODg0MjcwfQ.GCtoifZT1_iq8eqYeX1pD1wgPP3BjXH1vyiK_5KA50M'
+      jwt: ''
     }
   },
   
@@ -156,16 +204,21 @@ export default defineComponent({
       return resourceType;
     },
     handleSubmit(){
-      let formData = this.formatDataByResourceType(this.resourceType);
-      console.log('Formatted Data:', formData);
-      return;
-      axios.post(`http://localhost:8080/${this.resourceType}`, formData, { //changed to http but havent tested it as of 10:40am
+      let formattedData = this.formatDataByResourceType(this.resourceType);
+      console.log('Formatted Data:', formattedData);
+      
+      const role = getCookie('role')
+      const token = getCookie('jwt')
+      console.log('cookies before request:', { role, token })
+
+      // return;
+      axios.post(`http://localhost:8080/${this.resourceType}`, formattedData, {
         headers: {
-          'Bearer': `${this.jwt}`,
+          'Bearer': `${token}`,
           'Content-Type': 'application/json'
         }
       }).then(response => {
-        if (response.status === 200) {
+        if (response.status === 201) {
           this.success = `${this.resourceType} created successfully!`;
           this.resetForm();
         } else {
@@ -180,7 +233,7 @@ export default defineComponent({
     formatDataByResourceType(resourceType: string) {
       if (resourceType === 'jokes' && this.formData.content.type === 'one_liner') {
         return {
-          level: this.formData.level,
+          level: parseInt(this.formData.level),
           content: {
             type: this.formData.content.type,
             text: this.formData.content.text
@@ -190,21 +243,41 @@ export default defineComponent({
       }
       else if (resourceType === 'jokes' && this.formData.content.type === 'qa') {
         return {
-          level: this.formData.level,
+          level: parseInt(this.formData.level),
           content: {
             type: this.formData.content.type,
             question: this.formData.question,
             answer: this.formData.answer
           },
           language: this.formData.language,
-          explanation: this.formData.level == 3 ? this.formData.explanation : ""
+          explanation: this.formData.level == '3' ? this.formData.explanation : ""
+        }
+      }
+      else if (resourceType === 'quotes') {
+        return {
+          content: this.formData.content.text,
+          author: this.formData.author,
+          language: this.formData.language
+        }
+      }
+      else if (resourceType === 'trivias'){
+        return {
+          question: this.formData.question,
+          answer: this.formData.answer,
+          language: this.formData.language
+        }
+      }
+      else if (resourceType === 'bios'){
+        return {
+          birth_year: this.formData.birthYear,
+          death_year: this.formData.deathYear,
+          name: this.formData.name
         }
       }
     }
   }
 })
 </script>
-
 
 <style scoped>
 .create-component {
@@ -223,7 +296,7 @@ form {
 }
 
 .form-group {
-  color: red;
+  /* color: red; */
 }
 
 .error {

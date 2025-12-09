@@ -2040,6 +2040,10 @@ def establish_all_daos():
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
 
 
+def options_handler_anypath(path=None):
+    # Return 200 so preflight succeeds; flask-cors will attach headers
+    return "", 200
+
 
 def create_app():
     """Application factory: initializes Flask app and external resources."""
@@ -2048,14 +2052,39 @@ def create_app():
     # Enable CORS for all routes
     #CORS(app, resources={r"/*": {"origins": "*"}})
     #CORS(app)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://172.16.0.51:5173"]}}, 
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Bearer"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     
 
-    # @app.before_request
-    # def handle_preflight():
-    # if request.method == 'OPTIONS':
-    #     # Let Flask-CORS add the correct headers automatically
-    #     return '', 200
+    def proxy_auth_verify():
+            import requests
+            from flask import request, jsonify
+
+            if request.method == "OPTIONS":
+            # Flask-CORS will add the correct headers; status must be 200
+                return "", 200
+
+            try:
+                body = request.get_json(force=True) or {}
+                print("body: ", body)
+                token = body.get("token")
+                if not token:
+                    return jsonify({"code": "InvalidToken", "message": "token is required"}), 400
+
+                upstream_url = "http://172.16.0.51:8080/auth_service/api/auth/verify"
+                upstream_headers = {"Content-Type": "application/json"}
+                upstream_payload = {"token": token}
+                
+                print("ABOUT TO POST TO AUTH SERVER, TOKEN: ", token)
+                resp = requests.post(upstream_url, json=upstream_payload, headers=upstream_headers, timeout=10)
+                return jsonify(resp.json()), resp.status_code
+            except Exception as e:
+                return jsonify({"code": "AuthServerError", "message": str(e)}), 502
+    
+    app.add_url_rule("/auth/verify", view_func=proxy_auth_verify,
+            methods=["POST", "OPTIONS"], provide_automatic_options=False)
 
 
     try:
@@ -2065,6 +2094,22 @@ def create_app():
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
     
+
+    app.add_url_rule(
+        "/<path:path>",
+        view_func=options_handler_anypath,
+        methods=["OPTIONS"],
+        provide_automatic_options=False
+    )
+
+    # Also handle root "/" in case a preflight targets it directly
+    app.add_url_rule(
+        "/",
+        view_func=options_handler_anypath,
+        methods=["OPTIONS"],
+        provide_automatic_options=False
+    )
+
     
     app.add_url_rule(
         "/jokes",
