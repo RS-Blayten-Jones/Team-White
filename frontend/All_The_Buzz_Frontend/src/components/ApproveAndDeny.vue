@@ -32,6 +32,7 @@ export default defineComponent({
 			.then(response => {
 				this.apiData = response.data;
 				this.msg = '';
+				this.$emit('action-complete', { action: 'approved', id: this.id }) 
 			})
 			.catch(error => {
 				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
@@ -47,6 +48,7 @@ export default defineComponent({
 			.then(response => {
 				this.apiData = response.data;
 				this.msg = '';
+				this.$emit('action-complete', { action: 'deny', id: this.id }) // or 'denied'
 			})
 			.catch(error => {
 				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');

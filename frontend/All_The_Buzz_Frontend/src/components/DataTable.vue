@@ -151,13 +151,15 @@ export default defineComponent({
       return String(val)
     }
 
+    const rows = computed(() => props.data)
+
     return {
       visibleColumns,
       headerMap: props.headerMap,
       rowKey,
       startCase,
       formatValue,
-      rows: props.data
+      rows
     }
   }
 })

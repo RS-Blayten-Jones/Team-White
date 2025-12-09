@@ -70,6 +70,7 @@ const fName=getCookie("f_name")
 const lName=getCookie("l_name")
 const sideBarName=ref("")
 const sideBarRole=ref("")
+const position=getCookie("role")
 
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
