@@ -32,7 +32,7 @@ export default defineComponent({
 	},
 	methods: {
 		getDailyQuote() {
-			axios.get(`http://localhost:8081/daily-quotes`, {
+			axios.get(`http://localhost:8080/daily-quotes`, {
 				headers: {
 					'Bearer': `${this.jwt}`,
 					'Content-Type': 'application/json'

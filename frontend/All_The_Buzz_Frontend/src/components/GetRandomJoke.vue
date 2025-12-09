@@ -22,7 +22,7 @@ mounted() {
 },
 methods: {
     GetRand() {
-    axios.get(`http://localhost:8081/random-jokes/1`, {
+    axios.get(`http://localhost:8080/random-jokes/1`, {
       headers: {
         'Bearer': `${this.jwt}`
       }

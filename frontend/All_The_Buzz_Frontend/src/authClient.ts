@@ -19,12 +19,14 @@ export type AuthResponse =
     'UnauthorizedToken'
   }
 
-export async function exchangeTokenForCredentials(authUri: string, token: string): Promise<AuthResponse> {
-  const headers = { 'Content-Type': 'application/json' }
-  const payload = { token } // NOTE: matches your Python signature: {'token': '<string>'}
-
-  const res = await axios.post(authUri, payload, { headers })
-  return res.data as AuthResponse
+export async function exchangeTokenForCredentials(token: string) {
+  const res = await axios.post('http://localhost:8080/auth/verify', { token }, {
+    headers: { 'Content-Type': 'application/json',
+      'Bearer': token
+     }
+  })
+  console.log("response data back from our server.py route straight to his auth server: ", res.data)
+  return res.data
 }
 
 

@@ -37,12 +37,12 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // const token = loginRes.data.token
 
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = '826s398719asd12jsdhf4'
+    const hardcodedJwt = '' //PUT TOKEN HERE!
     const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
-    const authRes = await exchangeTokenForCredentials(AUTH_URI, token)
-    // Handle the ResponseCode cases your Python could retur
+    const authRes = await exchangeTokenForCredentials(token)
+    // Handle the ResponseCode cases your Python could return
 
     if ('code' in authRes) {
         // These match your Python ResponseCode returns
@@ -66,24 +66,13 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // For now we only need role + persist the JWT
     // Persist for 1 hour; adjust as needed.
     setCookie('jwt', token, 3600)
-    setCookie('role', creds.role, 3600)
+    setCookie('role', authRes.title , 3600)
   } catch (error: any) {
     console.error('Login failed:', error)
     alert(`Login failed: ${error.message}`)
   }
   router.push({ name: 'resource-menu' })
 }
-
-  //if authentication is successful, set the cookie here 
-  //const hardcodedJwt = '826s398719asd12jsdhf4'
-  //const hardcodedRole = 'Manager' // or 'Employee
-  //setCookie('jwt', hardcodedJwt, 3600) //sets cookie to expire in 1 hour (3600 seconds)
-  //setCookie('role', hardcodedRole, 3600) //sets cookie to expire in 1 hour (3600 seconds)
-  //setCookie('jwt', hardcodedJwt)
-  //setCookie('role', hardcodedRole)
-
-
-  // router.push({ name: 'resource-menu' })
 </script>
 
 <style scoped>
