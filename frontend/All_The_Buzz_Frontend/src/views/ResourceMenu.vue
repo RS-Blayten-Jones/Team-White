@@ -134,6 +134,15 @@ onUnmounted(() => {
           <img src="/bio-icon.png" alt="bio icon"></img>
           Bios
           </div>
+          <div class="resource-card" id="about"
+          @click="navigateTo('about')"
+              tabindex="0"
+              role="button"
+              @keydown.enter="navigateTo('about')"
+              @keydown.space.prevent="navigateTo('about')">
+          <!-- <img src="/info-icon.png" alt="about us icon"></img> -->
+          About Us
+          </div>
         </div>
       <div id="topical">
       <DailyQuote :jwt="jwt" />
