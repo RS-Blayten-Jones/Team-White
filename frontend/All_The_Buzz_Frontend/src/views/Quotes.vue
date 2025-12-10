@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import GetButton from '@/components/Get.vue'
 import CreateComponent from '@/components/Create.vue'
@@ -77,7 +77,6 @@ import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
 import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
-const route = useRoute()
 
 interface Bee {
   id: number
@@ -96,15 +95,19 @@ let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
 
-// Get JWT and role from cookies (fallback to route params)
+// Audio for bee buzzing
+const beeSound = new Audio('/bee-buzz.mp3')
+beeSound.loop = false
+
+// Get JWT and role from cookies
 const jwt = ref<string>('')
 const role = ref<string>('')
 const isManager = ref<boolean>(false)
 
 onMounted(() => {
-  // Try to get from cookies first, then route params
-  jwt.value = getCookie('jwt') || (route.params.jwt as string) || ''
-  role.value = getCookie('role') || (route.params.role as string) || ''
+  // Get cookies on mount
+  jwt.value = getCookie('jwt') || ''
+  role.value = getCookie('role') || ''
   
   // Determine if user is manager based on role
   isManager.value = role.value.toLowerCase() === 'manager'
