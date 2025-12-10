@@ -13,8 +13,18 @@
             <h1 class="page-title">Bios Management</h1>
             <p class="page-subtitle">A bee's biography is short: Buzzed in. Stung out.</p>
           </div>
-          <div class="mini-resource-cards">
-          
+        </div>
+      </div>
+      
+      <div class="main-content-layout">
+      <div>
+        <div class="content-area card">
+          <CreateComponent resourceType="bios"/> 
+          </div>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="bios"/>
+        </div>
+        <!-- Mini Resource Cards -->
+        <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
             <span>Jokes</span>
@@ -85,6 +95,7 @@ import CreateComponent from '@/components/Create.vue'
 import Edit from '@/components/Edit.vue'
 import Delete from '@/components/Delete.vue'
 import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
+import { getCookie } from '@/utils/cookies'
 
 const router = useRouter()
 
@@ -114,6 +125,29 @@ const mouseY = ref(0)
 // Audio for bee buzzing
 const beeSound = new Audio('/bee-buzz.mp3')
 beeSound.loop = false
+
+// Get JWT and role from cookies
+const jwt = ref<string>('')
+const role = ref<string>('')
+const isManager = ref<boolean>(false)
+
+onMounted(() => {
+  // Get cookies on mount
+  jwt.value = getCookie('jwt') || ''
+  role.value = getCookie('role') || ''
+  
+  // Determine if user is manager based on role
+  isManager.value = role.value.toLowerCase() === 'manager'
+  
+  // If no JWT, redirect to login
+  if (!jwt.value) {
+    router.push({ name: 'login' })
+    return
+  }
+  
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
 
 
 
