@@ -24,7 +24,13 @@
         <div class="content-area">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
           <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
-          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/>
+          <GetButton 
+            v-show="toggleComponent" 
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="trivias"
+            :filterOptions="triviaFilterOptions"
+          />
         </div>
           <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
       </div>
@@ -107,6 +113,9 @@ beeSound.loop = false
 const jwt = ref<string>('')
 const role = ref<string>('')
 const isManager = ref<boolean>(false)
+
+// Define filter options for trivias (can add filters if needed)
+const triviaFilterOptions: any[] = []
 
 onMounted(() => {
   // Get cookies on mount

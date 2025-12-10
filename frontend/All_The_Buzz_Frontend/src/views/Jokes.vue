@@ -21,7 +21,12 @@
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
           </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
+          <GetButton 
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="jokes"
+            :filterOptions="jokeFilterOptions"
+          />
         </div>
         
         <!-- Mini Resource Cards -->
@@ -117,6 +122,25 @@ beeSound.loop = false
 const jwt = ref<string>('')
 const role = ref<string>('')
 const isManager = ref<boolean>(false)
+
+// Define filter options for jokes
+const jokeFilterOptions = [
+  {
+    name: 'level',
+    label: 'Difficulty Level',
+    type: 'select' as const,
+    options: [
+      { value: 1, label: 'Level 1' },
+      { value: 2, label: 'Level 2' },
+      { value: 3, label: 'Level 3' }
+    ]
+  },
+  {
+    name: 'language',
+    label: 'Language',
+    type: 'text' as const
+  }
+]
 
 onMounted(() => {
   // Get cookies on mount

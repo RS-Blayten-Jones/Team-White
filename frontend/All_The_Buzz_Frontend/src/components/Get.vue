@@ -26,15 +26,43 @@
         Get All Pending {{ resourceType }}
       </button>
 
-      <div>
-        <select v-model.number="difficulty">
-          <option disabled value="">Select Difficulty</option>
-          <option :value="1">difficulty 1</option>
-          <option :value="2">difficulty 2</option>
-          <option :value="3">difficulty 3</option>
-        </select>
-        <button class="fetch-button" @click="GetByDiff(difficulty)">
-          Get by Difficulty
+      <!-- Dynamic filters based on filterOptions prop -->
+      <div v-if="filterOptions.length > 0" class="filter-group">
+        <div v-for="filter in filterOptions" :key="filter.name" class="filter-field">
+          <!-- Select dropdown -->
+          <select 
+            v-if="filter.type === 'select'"
+            v-model="filters[filter.name]"
+          >
+            <option value="">{{ filter.label }}</option>
+            <option 
+              v-for="opt in filter.options" 
+              :key="opt.value"
+              :value="opt.value"
+            >
+              {{ opt.label }}
+            </option>
+          </select>
+          
+          <!-- Number input -->
+          <input 
+            v-else-if="filter.type === 'number'"
+            v-model.number="filters[filter.name]"
+            type="number"
+            :placeholder="filter.label"
+          />
+          
+          <!-- Text input -->
+          <input 
+            v-else-if="filter.type === 'text'"
+            v-model="filters[filter.name]"
+            type="text"
+            :placeholder="filter.label"
+          />
+        </div>
+        
+        <button class="fetch-button" @click="GetByFilters">
+          Get Filtered {{ resourceType }}
         </button>
       </div>
 
@@ -221,7 +249,18 @@ export default defineComponent({
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
-    resourceType: { type: String, required: true }
+    resourceType: { type: String, required: true },
+    // Optional array of filter configurations from parent view
+    filterOptions: {
+      type: Array as () => Array<{
+        name: string
+        label: string
+        type: 'select' | 'number' | 'text'
+        options?: Array<{ value: any, label: string }>
+      }>,
+      required: false,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -230,11 +269,12 @@ export default defineComponent({
       shortAmt: 1,
       amt: 1,
       randAmt: 1,
-      difficulty: '' as number | '',
       isEditMode: false,
       editableRows: {} as Record<string, any>,
       originalData: null as any, // Store original data for reverting
-      showingPending: false
+      showingPending: false,
+      // Dynamic filters based on filterOptions prop
+      filters: {} as Record<string, any>
     }
   },
   computed: {
@@ -508,15 +548,25 @@ export default defineComponent({
       })
     },
 
-    GetByDiff(difficulty: string | number) {
-      this.showingPending = false 
-      if (this.resourceType !== 'jokes') {
-        this.msg = 'GetByDiff is only available for resourceType "jokes".'
+    GetByFilters() {
+      this.showingPending = false
+      
+      // Build query params from non-empty filters
+      const params: Record<string, any> = {}
+      for (const [key, value] of Object.entries(this.filters)) {
+        if (value !== null && value !== undefined && value !== '') {
+          params[key] = value
+        }
+      }
+      
+      // If no filters are set, show error
+      if (Object.keys(params).length === 0) {
+        this.msg = 'Please select at least one filter option.'
         return
       }
-      const n = Number(difficulty)
+      
       axios.get(`http://localhost:8080/${this.resourceType}`, {
-        params: { level: n },
+        params: params,
         headers: {
           'Bearer': `${this.jwt}`
         }
@@ -628,6 +678,23 @@ h2 {
 .filters select,
 .filters input {
   padding: 0.5rem 0.75rem;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 0.75rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .fetch-button {
