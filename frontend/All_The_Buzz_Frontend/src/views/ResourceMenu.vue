@@ -77,7 +77,7 @@ onMounted(() => {
   animateCuteBee()
   welcomeText.value = `Welcome to the hive, ${fName} ${lName}!`
   sideBarName.value = `${fName} ${lName}`
-  sideBarRole.value= `${role}`
+  sideBarRole.value= `${position}`
 
 })
 
