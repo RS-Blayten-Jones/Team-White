@@ -2039,6 +2039,46 @@ def establish_all_daos():
     except Exception as RuntimeError:
         raise ResponseCode("Issue Creating DAOs", RuntimeError)
 
+def get_about_info():
+    """
+    Retrieves the About Us configuration information (GET /about).
+    
+    This endpoint returns company information including mission statement,
+    development team, and copyright information from a JSON config file.
+    
+    This is a public endpoint and does NOT require authentication.
+    
+    Returns:
+        A tuple containing a JSON response body and an HTTP status code:
+        * (JSON string, 200): Successfully retrieved about information
+        * (JSON body, 500): If there's an error reading the config file
+    """
+    logger = LoggerFactory.get_general_logger()
+    logger.debug("Retrieving about information (public endpoint)")
+    
+    try:
+        # Path to the about config file
+        config_path = BASE_DIR / 'configs' / 'about_config.json'
+        
+        # Read the config file
+        with open(config_path, 'r') as config_file:
+            about_data = json.load(config_file)
+        
+        logger.debug("Successfully loaded about configuration")
+        return jsonify(about_data), 200
+        
+    except FileNotFoundError:
+        logger.error("About config file not found")
+        status_code, body = ResponseCode("FileNotFound", "About configuration file not found").to_http_response()
+        return jsonify(body), status_code
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON in about config file")
+        status_code, body = ResponseCode("InvalidJSON", "About configuration file contains invalid JSON").to_http_response()
+        return jsonify(body), status_code
+    except Exception as e:
+        logger.error(f"Error loading about config: {str(e)}")
+        status_code, body = ResponseCode(str(e)).to_http_response()
+        return jsonify(body), status_code
 
 def options_handler_anypath(path=None):
     # Return 200 so preflight succeeds; flask-cors will attach headers
@@ -2086,6 +2126,12 @@ def create_app():
     app.add_url_rule("/auth/verify", view_func=proxy_auth_verify,
             methods=["POST", "OPTIONS"], provide_automatic_options=False)
 
+    app.add_url_rule(
+        "/about",
+        view_func=get_about_info,
+        methods=["GET"],
+        provide_automatic_options=False
+    )
 
     try:
         create_client_connection()
@@ -2234,7 +2280,7 @@ def create_app():
     app.add_url_rule(
         "/trivias/<string:trivia_id>",
         view_func=update_trivia,
-        methods=["PUT", "OPTIONS"],
+        methods=["PUT", "OPTIONS", "DELETE"],
         provide_automatic_options=False
     )
 
