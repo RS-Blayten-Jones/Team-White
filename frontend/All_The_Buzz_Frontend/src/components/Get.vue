@@ -1,7 +1,7 @@
 
 <template>
   <div class="get-component">
-    <h2>{{ resourceType }} Actions</h2>
+    <h2>Get {{ resourceType }} </h2>
 
     <!-- Error Message -->
     <div v-if="msg" class="error">{{ msg }}</div>
@@ -766,9 +766,44 @@ h2 {
   flex-wrap: wrap;
 }
 
+/* Horizontal row layout for trivias */
+.trivias-page .filters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.trivias-page .filters > div {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Horizontal row layout for quotes */
+.quotes-page .filters {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.quotes-page .filters > div {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .filters select,
 .filters input {
   padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
 }
 
 .filter-group {
@@ -894,6 +929,62 @@ h2 {
   font-weight: var(--font-weight-semibold);
   transition: all var(--transition-base);
   white-space: nowrap;
+}
+
+/* Trivia-specific button styling */
+.trivias-page .fetch-button {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.trivias-page .fetch-button:hover {
+  background: linear-gradient(135deg, #1a1a2e 0%, #7c3aed 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Jokes-specific button styling */
+.jokes-page .fetch-button {
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.jokes-page .fetch-button:hover {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8b7b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Quotes-specific button styling */
+.quotes-page .fetch-button {
+  background: linear-gradient(135deg, var(--color-primary-magenta) 0%, var(--color-primary-coral) 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quotes-page .fetch-button:hover {
+  background: linear-gradient(135deg, #d946ef 0%, #ff8b7b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3);
+}
+
+/* Bios-specific button styling */
+.bios-page .fetch-button {
+  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bios-page .fetch-button:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
 }
 
 .fetch-button:hover {

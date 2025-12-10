@@ -45,9 +45,21 @@
             <span>Bios</span>
           </div>
         </div>
+        </div>
       </div>
       
-      
+
+      <div class="main-content-layout">
+      <div style="width:100%" >
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+        <div class="content-area card">
+          <CreateComponent v-show="!toggleComponent" resourceType="jokes"/> 
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
+        </div>
+      </div>
+      </div>
       </main>
 
       <div class ="right-hand-side">
@@ -60,8 +72,6 @@
 
     
     <!-- Bee-themed decorative elements -->
-    
-    <!-- Bee hive decoration -->
     
     <!-- Flying bees -->
     <img 
@@ -106,6 +116,12 @@ interface Bee {
 const activeComponent = ref('get')
 const flyingBees = ref<Bee[]>([])
 let beeIdCounter = 0
+
+// Toggle component visibility
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
 
 // Cute bee random flying
 const cuteBeeX = ref(Math.random() * window.innerWidth)
@@ -233,7 +249,7 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
       const index = flyingBees.value.findIndex(b => b.id === bee.id)
       if (index > -1) {
         flyingBees.value[index] = {
-          ...flyingBees.value[index],
+          id: bee.id,
           x: startX + offsetX,
           y: startY + offsetY
         }
@@ -304,8 +320,8 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 3rem;
-  height: 3rem;
+  width: 64px;
+  height: 64px;
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -317,8 +333,8 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 60px;
+  height: 60px;
   color: var(--text-on-dark);
 }
 
@@ -343,9 +359,7 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
 }
-.primary-content {
-  display:flex;
-}
+
 .main-content-layout {
   display: flex;
   gap: 1.5rem;
@@ -355,7 +369,8 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;
@@ -400,7 +415,20 @@ onUnmounted(() => {
   text-align: center;
 }
 
-
+/* Honeycomb decorative background */
+.honeycomb-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 400px;
+  background-image: 
+    repeating-linear-gradient(30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px),
+    repeating-linear-gradient(-30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* Animations */
 @keyframes slideDown {
@@ -442,11 +470,11 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 5rem;
-  right: 3rem;
+  top: 2rem;
+  right: 2rem;
   width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 6;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -458,6 +486,33 @@ onUnmounted(() => {
 
 .bee-hive:active {
   transform: scale(0.95);
+}
+
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;
+  right: 4rem;
+  width: 100%;
+  height: auto;
+  z-index: 99;
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
 }
 
 /* Flying bee */
@@ -510,6 +565,11 @@ onUnmounted(() => {
     font-size: var(--font-size-2xl);
   }
   
+  .honeycomb-bg {
+    width: 200px;
+    height: 200px;
+  }
+  
   .bee-hive {
     top: 80px;
     right: 60px;
@@ -517,14 +577,41 @@ onUnmounted(() => {
   }
 }
 
-.fixed-right-image {
-  position: fixed;
-  top: 2rem;      /* distance from top */
-  right: 4rem;    /* distance from right */
-  width: 100%;   /* or use rem/vw for responsive */
-  height: auto;
-  z-index: 99;   /* above most elements */
+/* Toggle View Button */
+.main-content-layout button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #404040;
+}
 
+[data-theme="light"] .main-content-layout button {
+  background-color: white;
+  color: #1a1a1a;
+  border-color: #e0e0e0;
+}
+
+.main-content-layout button:hover {
+  background-color: #ffd966;
+  color: #1a1a1a;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.7), 0 0 40px rgba(255, 217, 102, 0.5);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
+}
 </style>

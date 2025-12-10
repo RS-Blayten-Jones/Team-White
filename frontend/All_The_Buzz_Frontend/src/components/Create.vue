@@ -332,10 +332,6 @@ form {
   max-width: 600px;
 }
 
-.form-group {
-  /* color: red; */
-}
-
 .error {
   background-color: var(--color-error-light);
   color: var(--color-error);

@@ -1,7 +1,8 @@
-<template>
+<!-- <template>
   <div class="trivias-page page-container">
     <AppHeader />
-    
+
+    <div class="primary-content">
     <main class="content-wrapper" role="main">
       <div class="page-header">
         <div class="page-title-wrapper">
@@ -10,7 +11,7 @@
           </div>
           <div>
             <h1 class="page-title">Trivia Management</h1>
-            <p class="page-subtitle">Bees ace trivia because they’re always buzzing with facts</p>
+            <p class="page-subtitle">Bees ace trivia because they're always buzzing with facts</p>
           </div>
         </div>
       </div>
@@ -23,6 +24,97 @@
 
         <div class="content-area">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
+          <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/>
+        </div>
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
+      </div>
+       
+        <div class="mini-resource-cards">
+          <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
+            <img src="/joke-icon.png" alt="Jokes" />
+            <span>Jokes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
+            <img src="/quote-icon.png" alt="Quotes" />
+            <span>Quotes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('bios')" tabindex="0" role="button">
+            <img src="/bio-icon.png" alt="Bios" />
+            <span>Bios</span>
+          </div>
+        </div>
+        </div>
+      </div>
+      
+    <div class="main-content-layout">
+      <div style="width:100%" >
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+
+        <div class="content-area card">
+          <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
+          <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/>
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/> comment out 
+        </div>
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
+      </div>
+      </div>
+      </main>
+
+      <div class ="right-hand-side">
+        <img src="/tree.png" alt="tree" class="tree"/>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+      </div>
+      </div>
+
+
+    <img 
+      v-for="bee in flyingBees" 
+      :key="bee.id"
+      src="/favicon.ico" 
+      alt="Flying Bee" 
+      class="flying-bee"
+      :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
+    />
+
+    <img 
+      src="/cute-bee.png" 
+      alt="Cute Bee" 
+      class="cute-bee"
+      :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
+    />
+  </div>
+</template> -->
+
+<template>
+  <div class="trivias-page page-container">
+    <AppHeader />
+   
+    <main class="content-wrapper" role="main">
+      <div class="page-header">
+        <div class="page-title-wrapper">
+          <div class="icon-wrapper">
+            <img src="/trivia-icon.png" alt="Trivia" class="resource-icon" />
+          </div>
+          <div>
+            <h1 class="page-title">Trivia Management</h1>
+            <p class="page-subtitle">Bees ace trivia because they’re always buzzing with facts</p>
+          </div>
+        </div>
+      </div>
+     
+    <div class="main-content-layout">
+      <div style="width:100%" >
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+ 
+        <div class="content-area">
+          <CreateComponent v-show="!toggleComponent" resourceType="trivias"/>
           <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
           <GetButton 
             v-show="toggleComponent" 
@@ -51,29 +143,31 @@
         </div>
       </div>
     </main>
-    
+   
     <!-- Bee hive decoration (behind all content) -->
     <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
-        
+       
     <!-- Flying bees -->
-    <img 
-      v-for="bee in flyingBees" 
+    <img
+      v-for="bee in flyingBees"
       :key="bee.id"
-      src="/favicon.ico" 
-      alt="Flying Bee" 
+      src="/favicon.ico"
+      alt="Flying Bee"
       class="flying-bee"
       :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
     />
-    
+   
     <!-- Randomly flying cute bee -->
-    <img 
-      src="/cute-bee.png" 
-      alt="Cute Bee" 
+    <img
+      src="/cute-bee.png"
+      alt="Cute Bee"
       class="cute-bee"
       :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
     />
   </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -191,7 +285,7 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
       const index = flyingBees.value.findIndex(b => b.id === bee.id)
       if (index > -1) {
         flyingBees.value[index] = {
-          ...flyingBees.value[index],
+          id: bee.id,
           x: startX + offsetX,
           y: startY + offsetY
         }
@@ -264,8 +358,8 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 3rem;
+  height: 3rem;
   background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -277,9 +371,9 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
+  width: 3rem;
+  height: 3rem;
+  color: var(--text-on-dark);
 }
 
 .page-title {
@@ -297,19 +391,64 @@ onUnmounted(() => {
   margin-top: var(--spacing-xs);
 }
 
-
-
+.content-area {
+  display: flex;
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+}
+.primary-content {
+  display:flex;
+}
 .main-content-layout {
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
 }
 
+/* Toggle View Button */
+.main-content-layout button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #404040;
+}
+
+[data-theme="light"] .main-content-layout button {
+  background-color: white;
+  color: #1a1a1a;
+  border-color: #e0e0e0;
+}
+
+.main-content-layout button:hover {
+  background-color: #ffd966;
+  color: #1a1a1a;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.7), 0 0 40px rgba(255, 217, 102, 0.5);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
+}
+
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;
@@ -320,15 +459,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 2rem;
+  gap: 0.3rem;
+  padding: 0.2rem 2rem;
   background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 175px;
-  width: 175px;
+  height: 5rem;
+  width: 5rem;
 }
 
 .mini-card:hover {
@@ -337,13 +476,13 @@ onUnmounted(() => {
 }
 
 .mini-card:focus {
-  outline: 2px solid var(--color-primary-purple);
+  outline: 2px solid var(--color-primary-dark);
   outline-offset: 2px;
 }
 
 .mini-card img {
-  width: 100px;
-  height: 100px;
+  width: 3rem;
+  height: 3rem;
   object-fit: contain;
 }
 
@@ -354,20 +493,7 @@ onUnmounted(() => {
   text-align: center;
 }
 
-/* Honeycomb decorative background */
-.honeycomb-bg {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 400px;
-  background-image: 
-    repeating-linear-gradient(30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px),
-    repeating-linear-gradient(-30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px);
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: 0;
-}
+
 
 /* Animations */
 @keyframes slideDown {
@@ -409,11 +535,11 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 10px;
-  right: -30px;
-  width: 300px;
+  top: 2rem;
+  right: 2rem;
+  width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 6;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -426,12 +552,7 @@ onUnmounted(() => {
 .bee-hive:active {
   transform: scale(0.95);
 }
-.content-area {
-  display: flex;
-  position: relative;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-color);
-}
+
 /* Flying bee */
 .flying-bee {
   position: fixed;
@@ -482,9 +603,39 @@ onUnmounted(() => {
     font-size: var(--font-size-2xl);
   }
   
-  .honeycomb-bg {
-    width: 200px;
-    height: 200px;
+  .bee-hive {
+    top: 80px;
+    right: 60px;
+    width: 180px;
   }
 }
+
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;      /* distance from top */
+  right: 4rem;    /* distance from right */
+  width: 100%;   /* or use rem/vw for responsive */
+  height: auto;
+  z-index: 99;   /* above most elements */
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
+}
+
+
 </style>
