@@ -36,14 +36,8 @@ onMounted(() => {
 })
 
 const navigateTo = (resource: string) => {
-  // Pass jwt and role as route params when navigating
-  router.push({ 
-    name: resource,
-    params: {
-      jwt: jwt.value,
-      role: role.value
-    }
-  })
+  // Just navigate to the resource - the view will get cookies itself
+  router.push({ name: resource })
 }
 
 
@@ -139,6 +133,15 @@ onUnmounted(() => {
               @keydown.space.prevent="navigateTo('bios')">
           <img src="/bio-icon.png" alt="bio icon"></img>
           Bios
+          </div>
+          <div class="resource-card" id="about"
+          @click="navigateTo('about')"
+              tabindex="0"
+              role="button"
+              @keydown.enter="navigateTo('about')"
+              @keydown.space.prevent="navigateTo('about')">
+          <!-- <img src="/info-icon.png" alt="about us icon"></img> -->
+          About Us
           </div>
         </div>
       <div id="topical">
