@@ -49,14 +49,6 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 
-// function setCookie(name: string, value: string, maxAgeSeconds?: number){
-//   const parts = [`${name}=${encodeURIComponent(value)}`, 'path=/']
-//   if (maxAgeSeconds) {
-//     parts.push(`max-age=${maxAgeSeconds}`) //max age is how long it takes the cookie to expire
-//   }
-//   document.cookie = parts.join('; ')
-// }
-
 const handleSubmit = () => {
   error.value = ''
   

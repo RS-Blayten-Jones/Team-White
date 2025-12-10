@@ -1,15 +1,12 @@
 <script lang="ts">
 import axios from 'axios'
 import { defineComponent } from 'vue'
+import { getCookie } from '@/utils/cookies'
 
 export default defineComponent({
 	name: 'ApproveAndDeny',
 		props: {
 			id: {
-				type: String,
-				required: true
-			},
-			jwt: {
 				type: String,
 				required: true
 			},
@@ -23,31 +20,35 @@ export default defineComponent({
 			msg: "",
 			apiData: {}
 		}
-	},
+	}, 
 	methods: {
 		approveData() {
+			const token = getCookie('jwt')
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/approve`, {}, {
 				headers: {
-					Bearer: `${this.jwt}`
+					Bearer: `${token}`
 				}
 			})
 			.then(response => {
 				this.apiData = response.data;
 				this.msg = '';
+				this.$emit('action-complete', { action: 'approved', id: this.id }) 
 			})
 			.catch(error => {
 				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');
 			})
 		},
 		denyData() {
+			const token = getCookie('jwt')
 			axios.post(`http://localhost:8080/${this.category}/${this.id}/deny`, {}, {
 				headers: {
-					Bearer: `${this.jwt}`
+					Bearer: `${token}`
 				}
 			})
 			.then(response => {
 				this.apiData = response.data;
 				this.msg = '';
+				this.$emit('action-complete', { action: 'deny', id: this.id }) // or 'denied'
 			})
 			.catch(error => {
 				this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown');

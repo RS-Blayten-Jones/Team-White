@@ -34,10 +34,13 @@
 
       <div class="main-content-layout">
       <div>
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
         <div class="content-area card">
-          <CreateComponent resourceType="jokes"/> 
+          <CreateComponent v-show="!toggleComponent" resourceType="jokes"/> 
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
         </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
       </div>
       </div>
       </main>
@@ -97,6 +100,12 @@ interface Bee {
 const activeComponent = ref('get')
 const flyingBees = ref<Bee[]>([])
 let beeIdCounter = 0
+
+// Toggle component visibility
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
 
 // Cute bee random flying
 const cuteBeeX = ref(Math.random() * window.innerWidth)
@@ -205,7 +214,7 @@ const animateBee = (bee: Bee, startX: number, startY: number) => {
       const index = flyingBees.value.findIndex(b => b.id === bee.id)
       if (index > -1) {
         flyingBees.value[index] = {
-          ...flyingBees.value[index],
+          id: bee.id,
           x: startX + offsetX,
           y: startY + offsetY
         }
@@ -531,5 +540,43 @@ onUnmounted(() => {
     right: 60px;
     width: 180px;
   }
+}
+
+/* Toggle View Button */
+.main-content-layout button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #404040;
+}
+
+[data-theme="light"] .main-content-layout button {
+  background-color: white;
+  color: #1a1a1a;
+  border-color: #e0e0e0;
+}
+
+.main-content-layout button:hover {
+  background-color: #ffd966;
+  color: #1a1a1a;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.7), 0 0 40px rgba(255, 217, 102, 0.5);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
 }
 </style>

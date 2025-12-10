@@ -43,7 +43,7 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // const token = loginRes.data.token
 
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTb3V0aGFuIiwibG9jYXRpb24iOiJKYXBhbiIsImlkIjo1NTgsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJDdXJ0Iiwic3ViIjoiQ3VydCBTb3V0aGFuIiwiaWF0IjoxNzY1MzA2ODg2LCJleHAiOjE3NjUzMTA0ODZ9.WzOFV3-XDWkMCjcSs7yxOsIeTgKRO1P6x1jtEbPKs-c' //PUT TOKEN HERE!
+    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTb3V0aGFuIiwibG9jYXRpb24iOiJKYXBhbiIsImlkIjo1NTgsImRlcGFydG1lbnQiOiJTYWxlcyIsInRpdGxlIjoiTWFuYWdlciIsImZpcnN0X25hbWUiOiJDdXJ0Iiwic3ViIjoiQ3VydCBTb3V0aGFuIiwiaWF0IjoxNzY1MzE3NTg0LCJleHAiOjE3NjUzMjExODR9.kgEaE6uSXinJ99o4cE1P7IcfN9FkoFi0x6Vi6ywZNYw' //PUT TOKEN HERE!
     const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
@@ -69,10 +69,17 @@ async function handleLogin(credentials: { username: string; password: string }) 
     }
     // --- Step 3: We have valid Credentials ---
     const creds = authRes as Credentials
+    console.log(authRes)
     // For now we only need role + persist the JWT
     // Persist for 1 hour; adjust as needed.
+    if (authRes.title != 'Manager'){
+      authRes.title = 'Employee'
+    }
+
     setCookie('jwt', token, 3600)
     setCookie('role', authRes.title , 3600)
+    setCookie('f_name', authRes.fName, 3600)
+    setCookie('l_name', authRes.lName, 3600)
   } catch (error: any) {
     console.error('Login failed:', error)
     alert(`Login failed: ${error.message}`)
