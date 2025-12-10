@@ -23,8 +23,8 @@
 
         <div class="content-area">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
-          <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
-          <GetButton v-show="toggleComponent" :isManager="true" jwt="" resourceType="trivias"/>
+          <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/>
+          <!-- <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/> -->
         </div>
           <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
       </div>
