@@ -26,15 +26,83 @@
         Get All Pending {{ resourceType }}
       </button>
 
-      <div>
-        <select v-model.number="difficulty">
-          <option disabled value="">Select Difficulty</option>
-          <option :value="1">difficulty 1</option>
-          <option :value="2">difficulty 2</option>
-          <option :value="3">difficulty 3</option>
-        </select>
-        <button class="fetch-button" @click="GetByDiff(difficulty)">
-          Get by Difficulty
+      <!-- Dynamic filters based on filterOptions prop -->
+      <div v-if="filterOptions.length > 0" class="filter-group">
+        <div class="filter-header">
+          <select v-model="selectedFilterOption" class="filter-selector">
+            <option value="" disabled>Select a filter...</option>
+            <option 
+              v-for="filter in availableFilters" 
+              :key="filter.name"
+              :value="filter.name"
+            >
+              {{ filter.label }}
+            </option>
+          </select>
+          <button 
+            class="add-filter-btn" 
+            @click="addFilter"
+            :disabled="!selectedFilterOption"
+          >
+            + Add Filter
+          </button>
+        </div>
+        
+        <!-- Display active filters -->
+        <div v-if="activeFilters.length > 0" class="active-filters">
+          <div 
+            v-for="(activeFilter, index) in activeFilters" 
+            :key="index"
+            class="filter-item"
+          >
+            <label class="filter-label">{{ getFilterConfig(activeFilter.name)?.label }}:</label>
+            
+            <!-- Select dropdown -->
+            <select 
+              v-if="getFilterConfig(activeFilter.name)?.type === 'select'"
+              v-model="activeFilter.value"
+              class="filter-value-input"
+            >
+              <option value="">Select...</option>
+              <option 
+                v-for="opt in getFilterConfig(activeFilter.name)?.options" 
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+            
+            <!-- Number input -->
+            <input 
+              v-else-if="getFilterConfig(activeFilter.name)?.type === 'number'"
+              v-model.number="activeFilter.value"
+              type="number"
+              class="filter-value-input"
+              placeholder="Enter value..."
+            />
+            
+            <!-- Text input -->
+            <input 
+              v-else-if="getFilterConfig(activeFilter.name)?.type === 'text'"
+              v-model="activeFilter.value"
+              type="text"
+              class="filter-value-input"
+              placeholder="Enter value..."
+            />
+            
+            <button class="remove-filter-btn" @click="removeFilter(index)" title="Remove filter">
+              ✕
+            </button>
+          </div>
+        </div>
+        
+        <button 
+          v-if="activeFilters.length > 0"
+          class="fetch-button apply-filters-btn" 
+          @click="GetByFilters"
+        >
+          Apply Filters
         </button>
       </div>
 
@@ -180,8 +248,22 @@
 
           <!-- All other columns - editable in write mode -->
           <template v-else>
-            <!-- Editable cell in write mode -->
-            <div v-if="isEditMode" class="editable-cell">
+            <!-- Special handling for explanation field in jokes -->
+            <div v-if="column === 'explanation' && resourceType === 'jokes'">
+              <div v-if="isEditMode" class="editable-cell">
+                <!-- Show textarea even if no explanation exists, so user can add one -->
+                <textarea
+                  v-model="row.explanation"
+                  class="cell-textarea"
+                  rows="2"
+                  placeholder="Add explanation (optional)"
+                ></textarea>
+              </div>
+              <span v-else>{{ value || '—' }}</span>
+            </div>
+            
+            <!-- Regular editable cell in write mode -->
+            <div v-else-if="isEditMode" class="editable-cell">
               <input
                 v-if="typeof value === 'string' || typeof value === 'number'"
                 v-model="row[column]"
@@ -221,7 +303,18 @@ export default defineComponent({
   props: {
     isManager: { type: Boolean, required: true },
     jwt: { type: String, required: true },
-    resourceType: { type: String, required: true }
+    resourceType: { type: String, required: true },
+    // Optional array of filter configurations from parent view
+    filterOptions: {
+      type: Array as () => Array<{
+        name: string
+        label: string
+        type: 'select' | 'number' | 'text'
+        options?: Array<{ value: any, label: string }>
+      }>,
+      required: false,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -230,11 +323,14 @@ export default defineComponent({
       shortAmt: 1,
       amt: 1,
       randAmt: 1,
-      difficulty: '' as number | '',
       isEditMode: false,
       editableRows: {} as Record<string, any>,
       originalData: null as any, // Store original data for reverting
-      showingPending: false
+      showingPending: false,
+      // Active filters that user has added
+      activeFilters: [] as Array<{ name: string, value: any }>,
+      // Currently selected filter option for the "add filter" dropdown
+      selectedFilterOption: '' as string
     }
   },
   computed: {
@@ -256,6 +352,8 @@ export default defineComponent({
           if (row.level != null && row.difficulty == null) row.difficulty = row.level
           // language normalization
           if (!row.language && row.lang) row.language = row.lang
+          // Ensure explanation field exists for Vue reactivity (even if empty)
+          if (!row.explanation) row.explanation = ''
           // do NOT delete question/answer/text — we need them in the slot
           // BUT prevent extra visible 'level' column
           delete row.level
@@ -301,12 +399,45 @@ export default defineComponent({
       // Hide _id (nested id), keep content visible (we render it via slot).
       const base = ['_id']
       return base
+    },
+
+    // Filters that haven't been added yet
+    availableFilters(): any[] {
+      const activeNames = this.activeFilters.map(f => f.name)
+      return this.filterOptions.filter(opt => !activeNames.includes(opt.name))
     }
   },
 
   
 
   methods: {
+    // Get filter configuration by name
+    getFilterConfig(name: string) {
+      return this.filterOptions.find(opt => opt.name === name)
+    },
+
+    // Add a filter from the dropdown
+    addFilter() {
+      if (!this.selectedFilterOption) return
+      
+      // Check if already added
+      const alreadyAdded = this.activeFilters.some(f => f.name === this.selectedFilterOption)
+      if (alreadyAdded) return
+      
+      this.activeFilters.push({
+        name: this.selectedFilterOption,
+        value: ''
+      })
+      
+      // Reset dropdown
+      this.selectedFilterOption = ''
+    },
+
+    // Remove a filter
+    removeFilter(index: number) {
+      this.activeFilters.splice(index, 1)
+    },
+
     getAllPub() {
       this.showingPending = false 
       axios.get(`http://localhost:8080/${this.resourceType}`, {
@@ -508,15 +639,25 @@ export default defineComponent({
       })
     },
 
-    GetByDiff(difficulty: string | number) {
-      this.showingPending = false 
-      if (this.resourceType !== 'jokes') {
-        this.msg = 'GetByDiff is only available for resourceType "jokes".'
+    GetByFilters() {
+      this.showingPending = false
+      
+      // Build query params from active filters with non-empty values
+      const params: Record<string, any> = {}
+      for (const filter of this.activeFilters) {
+        if (filter.value !== null && filter.value !== undefined && filter.value !== '') {
+          params[filter.name] = filter.value
+        }
+      }
+      
+      // If no filters have values, show error
+      if (Object.keys(params).length === 0) {
+        this.msg = 'Please provide values for at least one filter.'
         return
       }
-      const n = Number(difficulty)
+      
       axios.get(`http://localhost:8080/${this.resourceType}`, {
-        params: { level: n },
+        params: params,
         headers: {
           'Bearer': `${this.jwt}`
         }
@@ -628,6 +769,118 @@ h2 {
 .filters select,
 .filters input {
   padding: 0.5rem 0.75rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.filter-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-selector {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.add-filter-btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary-orange);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  transition: all var(--transition-base);
+}
+
+.add-filter-btn:hover:not(:disabled) {
+  background-color: #d97706;
+}
+
+.add-filter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.filter-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.filter-value-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.remove-filter-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: var(--color-error);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.remove-filter-btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.apply-filters-btn {
+  align-self: flex-start;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .fetch-button {

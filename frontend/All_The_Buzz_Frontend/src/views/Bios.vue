@@ -20,7 +20,12 @@
         <div class="content-area card">
           <CreateComponent resourceType="bios"/> 
           </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="bios"/>
+          <GetButton 
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="bios"
+            :filterOptions="bioFilterOptions"
+          />
         </div>
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
@@ -105,6 +110,9 @@ beeSound.loop = false
 const jwt = ref<string>('')
 const role = ref<string>('')
 const isManager = ref<boolean>(false)
+
+// Define filter options for bios (can add filters if needed)
+const bioFilterOptions: any[] = []
 
 onMounted(() => {
   // Get cookies on mount
