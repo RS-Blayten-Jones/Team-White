@@ -36,14 +36,8 @@ onMounted(() => {
 })
 
 const navigateTo = (resource: string) => {
-  // Pass jwt and role as route params when navigating
-  router.push({ 
-    name: resource,
-    params: {
-      jwt: jwt.value,
-      role: role.value
-    }
-  })
+  // Just navigate to the resource - the view will get cookies itself
+  router.push({ name: resource })
 }
 
 

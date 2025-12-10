@@ -23,8 +23,8 @@
 
         <div class="content-area">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
-          <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/>
-          <!-- <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/> -->
+          <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/>
         </div>
           <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
       </div>
@@ -102,6 +102,29 @@ const mouseY = ref(0)
 // Audio for bee buzzing
 const beeSound = new Audio('/bee-buzz.mp3')
 beeSound.loop = false
+
+// Get JWT and role from cookies
+const jwt = ref<string>('')
+const role = ref<string>('')
+const isManager = ref<boolean>(false)
+
+onMounted(() => {
+  // Get cookies on mount
+  jwt.value = getCookie('jwt') || ''
+  role.value = getCookie('role') || ''
+  
+  // Determine if user is manager based on role
+  isManager.value = role.value.toLowerCase() === 'manager'
+  
+  // If no JWT, redirect to login
+  if (!jwt.value) {
+    router.push({ name: 'login' })
+    return
+  }
+  
+  window.addEventListener('mousemove', handleMouseMove)
+  animateCuteBee()
+})
 
 const navigateTo = (resource: string) => {
   router.push({ name: resource })
@@ -204,11 +227,6 @@ const animateCuteBee = () => {
   
   cuteBeeAnimationId = requestAnimationFrame(animateCuteBee)
 }
-
-onMounted(() => {
-  window.addEventListener('mousemove', handleMouseMove)
-  animateCuteBee()
-})
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
