@@ -370,7 +370,11 @@ export default defineComponent({
           // Keep 'content' and 'explanation' as you requested.
           return ['difficulty', 'language', 'content', 'explanation', 'actions']
         case 'quotes':
-          return ['text', 'author', 'length', 'createdAt', 'actions']
+          return ['language', 'content', 'author', 'actions']
+        case 'trivias':
+          return ['language', 'question', 'answer', 'actions']
+        case 'bios':
+          return ['language', 'name', 'paragraph', 'summary', 'birth_year', 'death_year', "source_url"]
         default:
           return ['actions']
       }
@@ -397,7 +401,7 @@ export default defineComponent({
 
     hidden(): string[] {
       // Hide _id (nested id), keep content visible (we render it via slot).
-      const base = ['_id']
+      const base = ['_id', 'category', 'used_date']
       return base
     },
 
