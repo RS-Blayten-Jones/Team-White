@@ -13,23 +13,7 @@
             <h1 class="page-title">Jokes Management</h1>
             <p class="page-subtitle">Bees are terrible comedians—every punchline ends with a buzzkill</p>
           </div>
-<<<<<<< HEAD
           <div class="mini-resource-cards">
-=======
-        </div>
-      </div>
-
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="jokes"/> 
-          </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
-        </div>
-        
-        <!-- Mini Resource Cards -->
-        <div class="mini-resource-cards">
->>>>>>> 49246bdb083c51261d506d32d849d7011264c30d
           
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
@@ -47,14 +31,13 @@
         </div>
       </div>
       
-      
 
       <div class="main-content-layout">
       <div>
         <div class="content-area card">
           <CreateComponent resourceType="jokes"/> 
         </div>
-          <GetButton isManager=True jwt="joajlgja" resourceType="jokes"/>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="jokes"/>
       </div>
       </div>
       </main>
@@ -69,8 +52,6 @@
 
     
     <!-- Bee-themed decorative elements -->
-    
-    <!-- Bee hive decoration -->
     
     <!-- Flying bees -->
     <img 
@@ -295,8 +276,8 @@ onUnmounted(() => {
 }
 
 .icon-wrapper {
-  width: 3rem;
-  height: 3rem;
+  width: 64px;
+  height: 64px;
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   display: flex;
@@ -308,8 +289,8 @@ onUnmounted(() => {
 }
 
 .resource-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 60px;
+  height: 60px;
   color: var(--text-on-dark);
 }
 
@@ -334,9 +315,7 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
 }
-.primary-content {
-  display:flex;
-}
+
 .main-content-layout {
   display: flex;
   gap: 1.5rem;
@@ -346,7 +325,8 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;
@@ -391,7 +371,20 @@ onUnmounted(() => {
   text-align: center;
 }
 
-
+/* Honeycomb decorative background */
+.honeycomb-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 400px;
+  background-image: 
+    repeating-linear-gradient(30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px),
+    repeating-linear-gradient(-30deg, transparent, transparent 20px, rgba(238, 149, 0, 0.03) 20px, rgba(238, 149, 0, 0.03) 40px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* Animations */
 @keyframes slideDown {
@@ -451,6 +444,33 @@ onUnmounted(() => {
   transform: scale(0.95);
 }
 
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;
+  right: 4rem;
+  width: 100%;
+  height: auto;
+  z-index: 99;
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 2rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
+}
+
 /* Flying bee */
 .flying-bee {
   position: fixed;
@@ -501,39 +521,15 @@ onUnmounted(() => {
     font-size: var(--font-size-2xl);
   }
   
+  .honeycomb-bg {
+    width: 200px;
+    height: 200px;
+  }
+  
   .bee-hive {
     top: 80px;
     right: 60px;
     width: 180px;
   }
 }
-
-.fixed-right-image {
-  position: fixed;
-  top: 2rem;      /* distance from top */
-  right: 4rem;    /* distance from right */
-  width: 100%;   /* or use rem/vw for responsive */
-  height: auto;
-  z-index: 99;   /* above most elements */
-}
-
-.right-hand-side {
-  position: fixed;
-  top: 2rem;
-  right: 0;
-  width: auto;
-  height: auto;
-  z-index: 5;
-}
-
-.tree {
-  position: fixed;
-  top: 2rem;
-  right: 0;
-  width: 400px;
-  height: auto;
-  z-index: 5;
-}
-
-
 </style>

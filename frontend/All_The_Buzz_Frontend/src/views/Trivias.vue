@@ -283,7 +283,8 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;

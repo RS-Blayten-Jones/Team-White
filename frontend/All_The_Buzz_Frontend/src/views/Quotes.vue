@@ -13,24 +13,8 @@
             <h1 class="page-title">Quotes Management</h1>
             <p class="page-subtitle">Every bee's favorite quote? To bee or not to bee.</p>
           </div>
-<<<<<<< HEAD
           <div class="mini-resource-cards">
           
-=======
-        </div>
-      </div>
-      
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="quotes"/> 
-          </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="quotes"/>
-        </div>
-        
-        <!-- Mini Resource Cards -->
-        <div class="mini-resource-cards">
->>>>>>> 49246bdb083c51261d506d32d849d7011264c30d
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
             <span>Jokes</span>
@@ -53,7 +37,7 @@
         <div class="content-area card">
           <CreateComponent resourceType="quotes"/> 
         </div>
-          <GetButton :isManager="true" jwt="joajlgja" resourceType="quotes"/>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="quotes"/>
       </div>
       </div>
       </main>
@@ -120,6 +104,10 @@ const cuteBeeY = ref(Math.random() * window.innerHeight)
 let cuteBeeAnimationId: number | null = null
 const mouseX = ref(0)
 const mouseY = ref(0)
+
+// Audio for bee buzzing
+const beeSound = new Audio('/bee-buzz.mp3')
+beeSound.loop = false
 
 // Get JWT and role from cookies (fallback to route params)
 const jwt = ref<string>('')
@@ -317,7 +305,8 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  gap: 1.5rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;

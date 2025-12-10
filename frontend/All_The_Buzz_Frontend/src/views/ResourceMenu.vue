@@ -220,6 +220,8 @@ onUnmounted(() => {
   align-items: center;
   color: white;
   font-size: 1.2em;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .resource-card img {
@@ -228,6 +230,7 @@ onUnmounted(() => {
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 1em;
+  transition: transform 0.3s ease;
 }
 #joke.resource-card {
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
@@ -242,7 +245,12 @@ onUnmounted(() => {
   background: linear-gradient(135deg, var(--color-primary-magenta) 0%, var(--color-primary-coral) 100%);
 }
 .resource-card:hover {
-  background-color: var(--color-gray-400);
+  transform: scale(1.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.resource-card:hover img {
+  transform: scale(1.1);
 }
 .image-container {
   position:relative;
