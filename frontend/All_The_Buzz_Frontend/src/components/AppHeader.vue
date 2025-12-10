@@ -11,6 +11,12 @@
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
         <button 
+          class="btn btn-neutral btn-sm"
+          @click="goToAboutUs"
+          >
+          About Us
+        </button>
+        <button 
           v-if="showMenuButton"
           class="btn btn-neutral btn-sm back-button" 
           @click="goToMenu"
@@ -68,6 +74,9 @@ const goToMenu = () => {
   router.push({ name: 'resource-menu' })
 }
 
+const goToAboutUs = () => {
+  router.push({ name: 'about' })
+}
 const logout = () => {
   // TODO: Implement logout logic
   router.push({ name: 'login' })
