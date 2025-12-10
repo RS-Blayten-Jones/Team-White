@@ -2084,6 +2084,31 @@ def options_handler_anypath(path=None):
     # Return 200 so preflight succeeds; flask-cors will attach headers
     return "", 200
 
+def proxy_get_jwt():
+    """
+    Receives a JSON object, forwards it to an external URI, and returns the JWT from the response.
+    Example usage: POST /proxy-get-jwt with JSON body { "username": "...", "password": "..." }
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    try:
+        body = request.get_json(force=True) or {}
+        # You may want to validate the input here
+        upstream_url = "https://external-auth-server.com/api/login"  # <-- change to your target URI
+        upstream_headers = {"Content-Type": "application/json"}
+        # Forward the body as-is
+        resp = requests.post(upstream_url, json=body, headers=upstream_headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        # Assume the JWT is in data["jwt"] or similar
+        jwt = data.get("jwt") or data.get("token")
+        if not jwt:
+            return jsonify({"code": "NoJWT", "message": "JWT not found in response"}), 502
+        return jsonify({"jwt": jwt}), 200
+    except Exception as e:
+        return jsonify({"code": "ProxyError", "message": str(e)}), 502
+    
 
 def create_app():
     """Application factory: initializes Flask app and external resources."""
@@ -2140,7 +2165,11 @@ def create_app():
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
 
-
+    app.add_url_rule("/proxy-get-jwt", 
+        view_func=proxy_get_jwt, 
+        methods=["POST", "OPTIONS"], 
+        provide_automatic_options=False)
+    
     app.add_url_rule(
         "/<path:path>",
         view_func=options_handler_anypath,
