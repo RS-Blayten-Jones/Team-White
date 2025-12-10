@@ -248,8 +248,22 @@
 
           <!-- All other columns - editable in write mode -->
           <template v-else>
-            <!-- Editable cell in write mode -->
-            <div v-if="isEditMode" class="editable-cell">
+            <!-- Special handling for explanation field in jokes -->
+            <div v-if="column === 'explanation' && resourceType === 'jokes'">
+              <div v-if="isEditMode" class="editable-cell">
+                <!-- Show textarea even if no explanation exists, so user can add one -->
+                <textarea
+                  v-model="row.explanation"
+                  class="cell-textarea"
+                  rows="2"
+                  placeholder="Add explanation (optional)"
+                ></textarea>
+              </div>
+              <span v-else>{{ value || '—' }}</span>
+            </div>
+            
+            <!-- Regular editable cell in write mode -->
+            <div v-else-if="isEditMode" class="editable-cell">
               <input
                 v-if="typeof value === 'string' || typeof value === 'number'"
                 v-model="row[column]"
@@ -338,6 +352,8 @@ export default defineComponent({
           if (row.level != null && row.difficulty == null) row.difficulty = row.level
           // language normalization
           if (!row.language && row.lang) row.language = row.lang
+          // Ensure explanation field exists for Vue reactivity (even if empty)
+          if (!row.explanation) row.explanation = ''
           // do NOT delete question/answer/text — we need them in the slot
           // BUT prevent extra visible 'level' column
           delete row.level
