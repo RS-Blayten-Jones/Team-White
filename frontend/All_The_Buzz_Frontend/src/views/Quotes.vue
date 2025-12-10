@@ -33,7 +33,7 @@
       
 
       <div class="main-content-layout">
-      <div>
+      <div style="width:100%" >
           <button @click="toggleVisibility">
             Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
           </button>

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="trivias-page page-container">
     <AppHeader />
 
@@ -24,12 +24,12 @@
 
         <div class="content-area">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
-          <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
           <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/>
         </div>
-          <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
       </div>
-        <!-- Mini Resource Cards -->
+       
         <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
@@ -56,9 +56,9 @@
         <div class="content-area card">
           <CreateComponent v-show="!toggleComponent" resourceType="trivias"/> 
           <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/>
-          <!-- <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/> -->
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/> comment out 
         </div>
-          <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> comment out 
       </div>
       </div>
       </main>
@@ -71,10 +71,7 @@
       </div>
       </div>
 
-    
-    <!-- Bee-themed decorative elements -->
-        
-    <!-- Flying bees -->
+
     <img 
       v-for="bee in flyingBees" 
       :key="bee.id"
@@ -83,8 +80,7 @@
       class="flying-bee"
       :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
     />
-    
-    <!-- Randomly flying cute bee -->
+
     <img 
       src="/cute-bee.png" 
       alt="Cute Bee" 
@@ -92,7 +88,80 @@
       :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
     />
   </div>
+</template> -->
+
+<template>
+  <div class="trivias-page page-container">
+    <AppHeader />
+   
+    <main class="content-wrapper" role="main">
+      <div class="page-header">
+        <div class="page-title-wrapper">
+          <div class="icon-wrapper">
+            <img src="/trivia-icon.png" alt="Trivia" class="resource-icon" />
+          </div>
+          <div>
+            <h1 class="page-title">Trivia Management</h1>
+            <p class="page-subtitle">Bees ace trivia because they’re always buzzing with facts</p>
+          </div>
+        </div>
+      </div>
+     
+    <div class="main-content-layout">
+      <div style="width:100%" >
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+ 
+        <div class="content-area">
+          <CreateComponent v-show="!toggleComponent" resourceType="trivias"/>
+          <!-- <GetButton v-show="toggleComponent" :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+          <GetButton v-show="toggleComponent" :isManager="isManager" :jwt="jwt" resourceType="trivias"/>
+        </div>
+          <!-- <GetButton :isManager="true" jwt="joajlgja" resourceType="trivias"/> -->
+      </div>
+        <!-- Mini Resource Cards -->
+        <div class="mini-resource-cards">
+          <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
+            <img src="/joke-icon.png" alt="Jokes" />
+            <span>Jokes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
+            <img src="/quote-icon.png" alt="Quotes" />
+            <span>Quotes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('bios')" tabindex="0" role="button">
+            <img src="/bio-icon.png" alt="Bios" />
+            <span>Bios</span>
+          </div>
+        </div>
+      </div>
+    </main>
+   
+    <!-- Bee hive decoration (behind all content) -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+       
+    <!-- Flying bees -->
+    <img
+      v-for="bee in flyingBees"
+      :key="bee.id"
+      src="/favicon.ico"
+      alt="Flying Bee"
+      class="flying-bee"
+      :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
+    />
+   
+    <!-- Randomly flying cute bee -->
+    <img
+      src="/cute-bee.png"
+      alt="Cute Bee"
+      class="cute-bee"
+      :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
+    />
+  </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'

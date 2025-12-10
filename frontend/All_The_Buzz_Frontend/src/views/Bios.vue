@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="bios-page page-container">
     <AppHeader />
 
@@ -23,7 +23,7 @@
           </div>
           <GetButton :isManager="isManager" :jwt="jwt" resourceType="bios"/>
         </div>
-        <!-- Mini Resource Cards -->
+
         <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
@@ -64,9 +64,6 @@
       </div>
 
     
-    <!-- Bee-themed decorative elements -->
-    
-    <!-- Flying bees -->
     <img 
       v-for="bee in flyingBees" 
       :key="bee.id"
@@ -76,10 +73,77 @@
       :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
     />
     
-    <!-- Randomly flying cute bee -->
     <img 
       src="/cute-bee.png" 
       alt="Cute Bee" 
+      class="cute-bee"
+      :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
+    />
+  </div>
+</template> -->
+
+<template>
+  <div class="bios-page page-container">
+    <AppHeader />
+   
+    <main class="content-wrapper" role="main">
+      <div class="page-header">
+        <div class="page-title-wrapper">
+          <div class="icon-wrapper">
+            <img src="/bio-icon.png" alt="Bios" class="resource-icon" />
+          </div>
+          <div>
+            <h1 class="page-title">Bios Management</h1>
+            <p class="page-subtitle">A bee’s biography is short: Buzzed in. Stung out.</p>
+          </div>
+        </div>
+      </div>
+     
+      <div class="main-content-layout">
+      <div style="width:100%" >
+        <div class="content-area card">
+          <CreateComponent resourceType="bios"/>
+          </div>
+          <GetButton :isManager="isManager" :jwt="jwt" resourceType="bios"/>
+        </div>
+        <!-- Mini Resource Cards -->
+        <div class="mini-resource-cards">
+          <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
+            <img src="/joke-icon.png" alt="Jokes" />
+            <span>Jokes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
+            <img src="/quote-icon.png" alt="Quotes" />
+            <span>Quotes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('trivia')" tabindex="0" role="button">
+            <img src="/trivia-icon.png" alt="Trivia" />
+            <span>Trivia</span>
+          </div>
+        </div>
+      </div>
+    </main>
+   
+    <!-- Bee-themed decorative elements -->
+    <div class="honeycomb-bg" aria-hidden="true"></div>
+   
+    <!-- Bee hive decoration -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+   
+    <!-- Flying bees -->
+    <img
+      v-for="bee in flyingBees"
+      :key="bee.id"
+      src="/favicon.ico"
+      alt="Flying Bee"
+      class="flying-bee"
+      :style="{ left: bee.x + 'px', top: bee.y + 'px' }"
+    />
+   
+    <!-- Randomly flying cute bee -->
+    <img
+      src="/cute-bee.png"
+      alt="Cute Bee"
       class="cute-bee"
       :style="{ left: cuteBeeX + 'px', top: cuteBeeY + 'px' }"
     />
