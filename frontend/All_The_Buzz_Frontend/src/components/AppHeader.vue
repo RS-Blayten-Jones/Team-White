@@ -80,8 +80,11 @@ const logout = () => {
   color: var(--text-on-dark);
   padding: var(--spacing-sm) var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 100;
 }
 

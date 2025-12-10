@@ -10,23 +10,10 @@
           </div>
           <div>
             <h1 class="page-title">Bios Management</h1>
-            <p class="page-subtitle">A bee’s biography is short: Buzzed in. Stung out.</p>
+            <p class="page-subtitle">A bee's biography is short: Buzzed in. Stung out.</p>
           </div>
         </div>
-      </div>
-      
-      <div class="main-content-layout">
-      <div>
-        <div class="content-area card">
-          <CreateComponent resourceType="bios"/> 
-          </div>
-          <GetButton 
-            :isManager="isManager" 
-            :jwt="jwt" 
-            resourceType="bios"
-            :filterOptions="bioFilterOptions"
-          />
-        </div>
+        
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
@@ -43,13 +30,36 @@
           </div>
         </div>
       </div>
+      
+      <div class="main-content-layout">
+      <div style="width:100%">
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+
+        <div class="content-area card">
+          <CreateComponent v-show="!toggleComponent" resourceType="bios"/> 
+          <GetButton 
+            v-show="toggleComponent"
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="bios"
+            :filterOptions="bioFilterOptions"
+          />
+        </div>
+      </div>
+      </div>
     </main>
+
+    <div class="right-hand-side">
+      <img src="/tree.png" alt="tree" class="tree"/>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+    </div>
     
     <!-- Bee-themed decorative elements -->
     <div class="honeycomb-bg" aria-hidden="true"></div>
-    
-    <!-- Bee hive decoration -->
-    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -94,6 +104,12 @@ interface Bee {
 const activeComponent = ref('get')
 const flyingBees = ref<Bee[]>([])
 let beeIdCounter = 0
+
+// === Toggle flag for Create/Get ===
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
 
 // Cute bee random flying
 const cuteBeeX = ref(Math.random() * window.innerWidth)
@@ -243,6 +259,10 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.content-wrapper {
+  padding-top: 5rem;
+}
+
 .bios-page {
   background-color: var(--bg-primary);
   position: relative;
@@ -252,6 +272,10 @@ onUnmounted(() => {
 .page-header {
   margin-bottom: var(--spacing-xl);
   animation: slideDown 0.5s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
 .page-title-wrapper {
@@ -304,30 +328,68 @@ onUnmounted(() => {
   align-items: flex-start;
 }
 
+/* Toggle View Button */
+.main-content-layout button {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #404040;
+}
+
+[data-theme="light"] .main-content-layout button {
+  background-color: white;
+  color: #1a1a1a;
+  border-color: #e0e0e0;
+}
+
+.main-content-layout button:hover {
+  background-color: #ffd966;
+  color: #1a1a1a;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.7), 0 0 40px rgba(255, 217, 102, 0.5);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
+}
+
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 0;
-  margin-left: 1.5rem;
+  gap: 1rem;
   z-index: 10;
   position: relative;
+  flex-shrink: 0;
 }
 
 .mini-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.5rem 2rem;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.5rem;
   background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 175px;
-  width: 175px;
+  height: 4rem;
+  width: 4rem;
 }
 
 .mini-card:hover {
@@ -341,13 +403,13 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 100px;
-  height: 100px;
+  width: 2rem;
+  height: 2rem;
   object-fit: contain;
 }
 
 .mini-card span {
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   color: white;
   text-align: center;
@@ -395,9 +457,9 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 10px;
-  right: -30px;
-  width: 300px;
+  top: 5rem;
+  right: 5rem;
+  width: 13rem;
   height: auto;
   z-index: 5;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
@@ -467,5 +529,32 @@ onUnmounted(() => {
     width: 200px;
     height: 200px;
   }
+}
+
+.fixed-right-image {
+  position: fixed;
+  top: 3.5rem;
+  right: 4rem;
+  width: 100%;
+  height: auto;
+  z-index: 99;
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 3.5rem;
+  right: 0;
+  width: auto;
+  height: auto;
+  z-index: 5;
+}
+
+.tree {
+  position: fixed;
+  top: 3.5rem;
+  right: 0;
+  width: 400px;
+  height: auto;
+  z-index: 5;
 }
 </style>
