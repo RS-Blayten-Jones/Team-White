@@ -101,6 +101,8 @@ function devBypass() {
   // Set dummy cookies for development
   setCookie('jwt', 'dev-bypass-token', 3600)
   setCookie('role', 'Manager', 3600)
+  setCookie('f_name', 'Karl', 3600)
+  setCookie('l_name', 'Walters', 3600)
   router.push({ name: 'resource-menu' })
 }
 // END DEV BYPASS
