@@ -9,6 +9,9 @@
       <button class="dev-bypass-btn" @click="devBypass">
         🐝 DEV BYPASS (No Auth)
       </button>
+      <button class="submit-button" @click="aboutUsPageNoAuth">
+        About Us
+      </button>
       <!-- END DEV BYPASS -->
     </div>
   </div>
@@ -43,7 +46,7 @@ async function handleLogin(credentials: { username: string; password: string }) 
     // const token = loginRes.data.token
 
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJHcmVzd2VsbCIsImxvY2F0aW9uIjoiSmFwYW4iLCJpZCI6MzEsImRlcGFydG1lbnQiOiJJbmZvcm1hdGlvbiBUZWNobm9sb2d5IiwidGl0bGUiOiJNYW5hZ2VyIiwiZmlyc3RfbmFtZSI6IlRpbW90aGVlIiwic3ViIjoiVGltb3RoZWUgR3Jlc3dlbGwiLCJpYXQiOjE3NjUzOTUyNTgsImV4cCI6MTc2NTM5ODg1OH0.aNDOgEmYluIFjPiWa8bZZdzTWLGHiljI6uqfK-YH51I' //PUT TOKEN HERE!
+    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTM5OTk5NCwiZXhwIjoxNzY1NDAzNTk0fQ.phDTG8N2JF0kAsiJzBHiUpNUSSzbjUNjLL_Zs78H-Js' //PUT TOKEN HERE!
     const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
@@ -97,9 +100,45 @@ function devBypass() {
 }
 // END DEV BYPASS
 
+function aboutUsPageNoAuth(){
+  console.log("No auth, just going to about us page")
+  setCookie('jwt', '')
+  setCookie('role', '')
+  setCookie('f_name', '')
+  setCookie('l_name', '')
+  router.push({ name: 'about'})
+}
+
 </script>
 
 <style scoped>
+
+.submit-button {
+  background-color: var(--bg-secondary);
+  color: var(--text-on-secondary);
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-top: 5%;
+  width: 100%;
+}
+
+.submit-button:hover {
+  color: var(--text-on-primary);
+  background-color: #3a2e63;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
+}
+
 .login-page {
   display: flex;
   justify-content: center;
