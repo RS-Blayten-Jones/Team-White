@@ -18,7 +18,7 @@
     <div class="main-content-layout">
       <div style="width:100%" >
           <button @click="toggleVisibility">
-            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+            {{ toggleComponent ? 'Create Action' : 'Get Actions' }} 
           </button>
 
         <div class="content-area card">
