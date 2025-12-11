@@ -444,6 +444,18 @@ export default defineComponent({
         length: 'Length',
         createdAt: 'Created',
         
+        // Bios
+        name: 'Name',
+        paragraph: 'Paragraph',
+        summary: 'Summary',
+        birth_year: 'Birth Year',
+        death_year: 'Death Year',
+        source_url: 'Source URL',
+        
+        // Trivias
+        question: 'Question',
+        answer: 'Answer',
+        
         // Actions column
         actions: 'Actions'
       }
@@ -716,7 +728,12 @@ export default defineComponent({
       const params: Record<string, any> = {}
       for (const filter of this.activeFilters) {
         if (filter.value !== null && filter.value !== undefined && filter.value !== '') {
-          params[filter.name] = filter.value
+          // Trim whitespace from string values
+          let value = filter.value
+          if (typeof value === 'string') {
+            value = value.trim()
+          }
+          params[filter.name] = value
         }
       }
       
