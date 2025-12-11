@@ -20,7 +20,12 @@
         <div class="content-area card">
           <CreateComponent resourceType="quotes"/> 
           </div>
-          <GetButton :isManager="isManager" :jwt="jwt" resourceType="quotes"/>
+          <GetButton 
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="quotes"
+            :filterOptions="quoteFilterOptions"
+          />
         </div>
         
         <!-- Mini Resource Cards -->
@@ -103,6 +108,9 @@ beeSound.loop = false
 const jwt = ref<string>('')
 const role = ref<string>('')
 const isManager = ref<boolean>(false)
+
+// Define filter options for quotes (can add filters if needed)
+const quoteFilterOptions: any[] = []
 
 onMounted(() => {
   // Get cookies on mount
