@@ -261,6 +261,56 @@
               </div>
               <span v-else>{{ value || '—' }}</span>
             </div>
+
+            <!-- Special handling for trivia answer - hidden like Q/A jokes -->
+            <div v-else-if="column === 'answer' && resourceType === 'trivias'" 
+                 class="trivia-answer-cell"
+                 :class="{ 'edit-mode-trivia': isEditMode }"
+                 :tabindex="isEditMode ? -1 : 0"
+                 aria-live="polite">
+              <template v-if="isEditMode">
+                <input 
+                  v-model="row.answer" 
+                  class="cell-input"
+                  type="text"
+                />
+              </template>
+              <template v-else>
+                <div class="answer-hidden">
+                  {{ value }}
+                  <small class="hint">Hover or focus to reveal answer</small>
+                </div>
+              </template>
+            </div>
+
+            <!-- Special handling for source_url in bios - show as clickable link -->
+            <div v-else-if="column === 'source_url' && resourceType === 'bios'">
+              <div v-if="isEditMode" class="editable-cell">
+                <input
+                  v-model="row.source_url"
+                  class="cell-input"
+                  type="text"
+                  placeholder="Enter URL"
+                />
+              </div>
+              <a v-else-if="value" :href="value" target="_blank" rel="noopener noreferrer" class="url-link">
+                {{ value }}
+              </a>
+              <span v-else>—</span>
+            </div>
+
+            <!-- Special handling for birth_year and death_year - number only in edit mode -->
+            <div v-else-if="(column === 'birth_year' || column === 'death_year') && resourceType === 'bios'">
+              <div v-if="isEditMode" class="editable-cell">
+                <input
+                  v-model.number="row[column]"
+                  class="cell-input"
+                  type="number"
+                  :placeholder="column === 'birth_year' ? 'Birth year' : 'Death year'"
+                />
+              </div>
+              <span v-else>{{ value || '—' }}</span>
+            </div>
             
             <!-- Regular editable cell in write mode -->
             <div v-else-if="isEditMode" class="editable-cell">
@@ -370,7 +420,11 @@ export default defineComponent({
           // Keep 'content' and 'explanation' as you requested.
           return ['difficulty', 'language', 'content', 'explanation', 'actions']
         case 'quotes':
-          return ['text', 'author', 'length', 'createdAt', 'actions']
+          return ['language', 'content', 'author', 'actions']
+        case 'trivias':
+          return ['language', 'question', 'answer', 'actions']
+        case 'bios':
+          return ['language', 'name', 'paragraph', 'summary', 'birth_year', 'death_year', 'source_url', 'actions']
         default:
           return ['actions']
       }
@@ -390,6 +444,18 @@ export default defineComponent({
         length: 'Length',
         createdAt: 'Created',
         
+        // Bios
+        name: 'Name',
+        paragraph: 'Paragraph',
+        summary: 'Summary',
+        birth_year: 'Birth Year',
+        death_year: 'Death Year',
+        source_url: 'Source URL',
+        
+        // Trivias
+        question: 'Question',
+        answer: 'Answer',
+        
         // Actions column
         actions: 'Actions'
       }
@@ -397,7 +463,7 @@ export default defineComponent({
 
     hidden(): string[] {
       // Hide _id (nested id), keep content visible (we render it via slot).
-      const base = ['_id']
+      const base = ['_id', 'category', 'used_date']
       return base
     },
 
@@ -662,7 +728,12 @@ export default defineComponent({
       const params: Record<string, any> = {}
       for (const filter of this.activeFilters) {
         if (filter.value !== null && filter.value !== undefined && filter.value !== '') {
-          params[filter.name] = filter.value
+          // Trim whitespace from string values
+          let value = filter.value
+          if (typeof value === 'string') {
+            value = value.trim()
+          }
+          params[filter.name] = value
         }
       }
       
@@ -1116,6 +1187,41 @@ h2 {
   opacity: 1;
   filter: blur(0);
   user-select: text;
+}
+
+/* Trivia answer - hidden until hover/focus like Q/A jokes */
+.trivia-answer-cell .answer-hidden {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 180ms ease, filter 180ms ease;
+  user-select: none;
+}
+
+.trivia-answer-cell:hover .answer-hidden,
+.trivia-answer-cell:focus-within .answer-hidden {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+/* Always show trivia answer in edit mode */
+.trivia-answer-cell.edit-mode-trivia {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+/* URL link styling for bios */
+.url-link {
+  color: var(--color-primary-orange);
+  text-decoration: none;
+  transition: color 0.2s;
+  word-break: break-all;
+}
+
+.url-link:hover {
+  color: #d97706;
+  text-decoration: underline;
 }
 
 .muted {

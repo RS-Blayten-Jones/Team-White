@@ -3,47 +3,64 @@
     <h2>Create New {{ resourceType }}</h2>
     
     <form @submit.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="type-dropdown" v-if="resourceType === 'jokes'">Select a joke type</label>
-        <select id="type-dropdown" v-if="resourceType === 'jokes'" v-model="formData.content.type" required>
+      <div class="form-group" v-if="resourceType === 'jokes'">
+        <label for="type-dropdown">Select a joke type</label>
+        <select id="type-dropdown" v-model="formData.content.type" required>
           <option value="one_liner">One Liner</option>
           <option value="qa">Question and Answer</option>
         </select>
-        <label for="difficulty-dropdown" v-if="resourceType === 'jokes'" >Select Difficulty Level</label>
-        <select id="difficulty-dropdown" v-if="resourceType === 'jokes'" v-model="formData.level" required>
+      </div>
+
+      <div class="form-group" v-if="resourceType === 'jokes'">
+        <label for="difficulty-dropdown">Select Difficulty Level</label>
+        <select id="difficulty-dropdown" v-model="formData.level" required>
           <option value="1">Level 1</option>
           <option value="2">Level 2</option>
           <option value="3">Level 3</option>
         </select>
-        <textarea v-if="resourceType === 'jokes' && formData.level == '3'" 
+      </div>
+
+      <div class="form-group" v-if="resourceType === 'jokes' && formData.level == '3'">
+        <label for="explanation">Explanation (for Level 3 jokes)</label>
+        <textarea 
+          id="explanation"
           v-model="formData.explanation"
           rows="4"
           placeholder="Enter explanation for difficult joke..."
         ></textarea>
+      </div>
 
+      <div class="form-group" v-if="resourceType === 'jokes' && formData.content.type == 'one_liner'">
+        <label for="content">Joke Content</label>
         <textarea
           id="content"
-          v-if="formData.content.type == 'one_liner'"
           v-model="formData.content.text"
           rows="4"
           :placeholder="`Enter ${getSingularResourceName(resourceType)}...`"
           required
         ></textarea>
+      </div>
 
-        <div v-if="formData.content.type == 'qa'">
-          <input
-            v-model="formData.question"
-            type="text"
-            placeholder="Enter question..."
-            required
-          />
-          <input
-            v-model="formData.answer"
-            type="text"
-            placeholder="Enter answer..."
-            required
-          />
-        </div>
+      <div class="form-group" v-if="resourceType === 'jokes' && formData.content.type == 'qa'">
+        <label for="question">Question</label>
+        <input
+          id="question"
+          v-model="formData.question"
+          type="text"
+          placeholder="Enter question..."
+          required
+        />
+      </div>
+
+      <div class="form-group" v-if="resourceType === 'jokes' && formData.content.type == 'qa'">
+        <label for="answer">Answer</label>
+        <input
+          id="answer"
+          v-model="formData.answer"
+          type="text"
+          placeholder="Enter answer..."
+          required
+        />
       </div>
 
       <div class="form-group" v-if="resourceType === 'quotes'">
@@ -57,15 +74,28 @@
           required
         ></textarea>
       </div>
-      <div class="form-group" v-if="resourceType === 'quotes'">
-        <label for="author">Author:</label>
-        <input
-          id="author"
-          v-model="formData.author"
-          type="text"
-          placeholder="Enter author name"
-          required
-        />
+
+      <div v-if="resourceType === 'quotes'" class="form-row">
+        <div class="form-group">
+          <label for="author">Author:</label>
+          <input
+            id="author"
+            v-model="formData.author"
+            type="text"
+            placeholder="Enter author name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="language-quotes">Language:</label>
+          <input
+            id="language-quotes"
+            v-model="formData.language"
+            type="text"
+            placeholder="Enter language"
+            required
+          />
+        </div>
       </div>
       
       <div v-if="resourceType === 'trivias'" class="form-group">
@@ -86,22 +116,7 @@
           placeholder="Enter answer"
         />
       </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="birthyear">Birth Year:</label>
-        <input
-        id="birthyear"
-        v-model="formData.birthYear"
-        type="number" placeholder="YYYY" min="1000" max="2026" required
-        />
-      </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="deathyear">Death Year:</label>
-        <input
-        id="deathyear"
-        v-model="formData.deathYear"
-        type="number" placeholder="YYYY" min="1000" max="2026"
-        />
-      </div>
+      
       <div v-if="resourceType === 'bios'" class="form-group" >
         <label for="bioName">Subject Name:</label>
         <input
@@ -111,6 +126,26 @@
         required
         />
       </div>
+
+      <div v-if="resourceType === 'bios'" class="form-row">
+        <div class="form-group">
+          <label for="birthyear">Birth Year:</label>
+          <input
+          id="birthyear"
+          v-model="formData.birthYear"
+          type="number" placeholder="YYYY" min="1000" max="2026" required
+          />
+        </div>
+        <div class="form-group">
+          <label for="deathyear">Death Year:</label>
+          <input
+          id="deathyear"
+          v-model="formData.deathYear"
+          type="number" placeholder="YYYY" min="1000" max="2026"
+          />
+        </div>
+      </div>
+
       <div class="form-group" v-if="resourceType === 'bios'">
         <label for="bioParagraph">Paragraph:</label>
         <textarea
@@ -133,23 +168,29 @@
           required
         ></textarea>
       </div>
-      <div class="form-group" v-if="resourceType === 'quotes'">
-        <label for="content">Quote:</label>
-        <textarea
-          id="content"
-          v-model="formData.content.text"
-          type="text"
-          placeholder="Enter quote"
-          rows="4"
-          required
-        ></textarea>
+
+      <div v-if="resourceType === 'bios'" class="form-row">
+        <div class="form-group">
+          <label for="website_url">Website URL:</label>
+          <input type="url" id="website_url" name="website_url" v-model="formData.sourceURL" placeholder="https://example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="language">Language:</label>
+          <input
+            id="language"
+            v-model="formData.language"
+            type="text"
+            placeholder="Enter language"
+            required
+          >
+          </input>
+        </div>
       </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="website_url">Enter your website URL:</label>
-        <input type="url" id="website_url" name="website_url" v-model="formData.sourceURL" placeholder="https://example.com" required>
-      </div>
-      <div class="form-group">
+
+      <div class="form-group" v-if="resourceType !== 'bios' && resourceType !== 'quotes'">
+        <label for="language">Language:</label>
         <input
+          id="language"
           v-model="formData.language"
           type="text"
           placeholder="Enter language"
@@ -331,11 +372,51 @@ h2 {
 }
 
 form {
-  max-width: 600px;
+  max-width: 100%;
+  width: 100%;
 }
 
 .form-group {
-  /* color: red; */
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 3px rgba(238, 149, 0, 0.1);
 }
 
 .error {
@@ -364,8 +445,8 @@ form {
 }
 
 .submit-button {
-  background-color: var(--color-success);
-  color: var(--text-on-primary);
+  background-color: #ffd966;
+  color: #2d2d2d;
   padding: 0.75rem 2rem;
   border: none;
   border-radius: var(--border-radius-md);
@@ -376,7 +457,7 @@ form {
 }
 
 .submit-button:hover:not(:disabled) {
-  background-color: #047857;
+  background-color: #ffc233;
   transform: translateY(-1px);
 }
 
