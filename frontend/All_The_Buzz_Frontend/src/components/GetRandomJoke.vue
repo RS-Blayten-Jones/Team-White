@@ -53,7 +53,8 @@ methods: {
             {{ this.apiData.text }}
         </div>
         <div v-if="isContentTypeqa()">
-            {{ this.apiData.question }}
+            <p>{{ this.apiData.question }}</p>
+            <p>{{ this.apiData.answer }}</p>
         </div>
 	</div>
 </template>

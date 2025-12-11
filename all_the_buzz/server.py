@@ -881,7 +881,7 @@ def update_bio(bio_id: str, credentials: Credentials):
     request_body = request.get_json()
     if credentials.title == 'Manager':
         logger.debug("Update as manager")
-        public_bios_dao = get_dao_set_credentials(credentials, "B")
+        public_bios_dao = get_dao_set_credentials(credentials, "PublicBioDAO")
         #entity validation
         try:
             updated_bio = Bio.from_json_object(request_body)
