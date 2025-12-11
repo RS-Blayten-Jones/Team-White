@@ -9,6 +9,9 @@
       <button class="dev-bypass-btn" @click="devBypass">
         🐝 DEV BYPASS (No Auth)
       </button>
+      <button class="submit-button" @click="aboutUsPageNoAuth">
+        About Us
+      </button>
       <!-- END DEV BYPASS -->
     </div>
   </div>
@@ -107,9 +110,45 @@ function devBypass() {
 }
 // END DEV BYPASS
 
+function aboutUsPageNoAuth(){
+  console.log("No auth, just going to about us page")
+  setCookie('jwt', '')
+  setCookie('role', '')
+  setCookie('f_name', '')
+  setCookie('l_name', '')
+  router.push({ name: 'about'})
+}
+
 </script>
 
 <style scoped>
+
+.submit-button {
+  background-color: var(--bg-secondary);
+  color: var(--text-on-secondary);
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-top: 5%;
+  width: 100%;
+}
+
+.submit-button:hover {
+  color: var(--text-on-primary);
+  background-color: #3a2e63;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.submit-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
+}
+
 .login-page {
   display: flex;
   justify-content: center;
