@@ -147,8 +147,6 @@ class Credentials:
             raise ValueError("dept can't only be spaces")
         elif len(dept) > 35:
             raise ValueError("dept cannot be greater than 35 characters")
-        elif not all(part.strip().isalpha() for part in dept.strip().split()):
-            raise ValueError("dept must be letters")
         else:
             self.__dept=dept.strip()
 
@@ -209,8 +207,6 @@ class Credentials:
             raise ValueError("loc can not be spaces")
         elif len(loc.strip()) > 75:
             raise ValueError("loc cannot be greater than 75 characters")
-        elif not all(part.strip().isalpha() for part in loc.strip().split()):
-            raise ValueError("loc can only be letters")
         else:
             self.__loc=loc.strip()
 

@@ -21,9 +21,13 @@
 import { useRouter } from 'vue-router'
 import UserCreds from '@/components/UserCreds.vue'
 import { exchangeTokenForCredentials, type Credentials } from '@/authClient'
+import axios from 'axios'
+import { encryptPassword } from '@/utils/encryption'
 
 const AUTH_URI = "http://172.16.0.51:8080/auth_service/api/auth/verify"
-
+const LOGIN_URI ="http://172.16.0.51:42068/login"
+const LOGIN_URI1="http://localhost:8080/proxy-get-jwt"
+const LOGIN_URI2="http://host.docker.internal:42068/login"
 const router = useRouter()
 
 function setCookie(name: string, value: string, maxAgeSeconds?: number){
@@ -38,16 +42,20 @@ function setCookie(name: string, value: string, maxAgeSeconds?: number){
 async function handleLogin(credentials: { username: string; password: string }) {
   // TODO: Implement actual authentication logic
   console.log('Login attempt:', credentials)
+  console.log('password', credentials.password)
   
   try {
     // --- Step 1: (Simulated) obtain token from login server ---
     // Normally you would call loginUri with credentials and get back a token:
-    // const loginRes = await axios.post(LOGIN_URI, credentials)
-    // const token = loginRes.data.token
-
+    
+    const encryptedPassword=encryptPassword(credentials.username, credentials.password).password
+    const loginRes = await axios.post(LOGIN_URI1, { username: credentials.username, password: encryptedPassword})
+    console.log(loginRes)
+    const token = loginRes.data.jwt
+    console.log("here is the token", token)
     // For now, use hardcoded token as requested:
-    const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTQ3MDEzNCwiZXhwIjoxNzY1NDczNzM0fQ.vV7S-Xk54E09Iu_mT53U1xWGh-64zR4SjwYY6zmxfiI' //PUT TOKEN HERE!
-    const token = hardcodedJwt
+    // const hardcodedJwt = 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTM5Njk1MiwiZXhwIjoxNzY1NDAwNTUyfQ.IYW6-v_F6A9dZVGJxfukGrWIPj_gkS7egPTwVqXEqXs' //PUT TOKEN HERE!
+    // const token = hardcodedJwt
 
     // --- Step 2: Exchange token for Credentials using your auth server ---
     const authRes = await exchangeTokenForCredentials(token)
@@ -96,6 +104,8 @@ function devBypass() {
   // Set dummy cookies for development
   setCookie('jwt', 'dev-bypass-token', 3600)
   setCookie('role', 'Manager', 3600)
+  setCookie('f_name', 'Karl', 3600)
+  setCookie('l_name', 'Walters', 3600)
   router.push({ name: 'resource-menu' })
 }
 // END DEV BYPASS

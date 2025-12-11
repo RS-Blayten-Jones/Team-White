@@ -2085,6 +2085,8 @@ def options_handler_anypath(path=None):
     return "", 200
 
 
+    
+
 def create_app():
     """Application factory: initializes Flask app and external resources."""
     app = MyFlask(__name__)
@@ -2097,7 +2099,36 @@ def create_app():
          allow_headers=["Content-Type", "Bearer"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
+    def proxy_get_jwt():
+        import requests
+        from flask import request, jsonify
+        """
+        Receives a JSON object, forwards it to an external URI, and returns the JWT from the response.
+        Example usage: POST /proxy-get-jwt with JSON body { "username": "...", "password": "..." }
+        """
+        if request.method == "OPTIONS":
+            return "", 200
 
+        try:
+            body = request.get_json(force=True) or {}
+            print("made it here", body)
+            # You may want to validate the input here
+            upstream_url = "http://172.16.0.204:42068/login"  # <-- change to your target URI
+            upstream_headers = {"Content-Type": "application/json"}
+            # Forward the body as-is
+            resp = requests.post(upstream_url, json=body, headers=upstream_headers)
+            resp.raise_for_status()
+            data = resp.json()
+            # Assume the JWT is in data["jwt"] or similar
+            jwt = data.get("jwt") or data.get("token")
+            #jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTQwNTUyMCwiZXhwIjoxNzY1NDA5MTIwfQ.OhjLQ9qzqLCNmYm8F-z9NBca6BfK4TwIcvbOsJ8ZrWw"
+            print("here is the jwt", jwt)
+            if not jwt:
+                return jsonify({"code": "NoJWT", "message": "JWT not found in response"}), 502
+            return jsonify({"jwt": jwt}), 200
+        except Exception as e:
+            return jsonify({"code": "ProxyError", "message": str(e)}), 502
+    
     def proxy_auth_verify():
             import requests
             from flask import request, jsonify
@@ -2140,7 +2171,11 @@ def create_app():
         print(f"CRITICAL SHUTDOWN: Failed to initialize application resources: {e}")
         raise
 
-
+    app.add_url_rule("/proxy-get-jwt", 
+        view_func=proxy_get_jwt, 
+        methods=["POST", "OPTIONS"], 
+        provide_automatic_options=False)
+    
     app.add_url_rule(
         "/<path:path>",
         view_func=options_handler_anypath,
