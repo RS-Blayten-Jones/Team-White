@@ -7,20 +7,20 @@
     <div v-if="msg" class="error">{{ msg }}</div>
 
     <div class="filters">
-      <button class="fetch-button" @click="getAllPub">
+      <button :class="['fetch-button', buttonColorClass]" @click="getAllPub">
         Get All {{ resourceType }}
       </button>
 
       <div>
         <input type="number" v-model.number="randAmt" min="1" placeholder="Amount" />
-        <button class="fetch-button" @click="GetRand(randAmt)">
+        <button :class="['fetch-button', buttonColorClass]" @click="GetRand(randAmt)">
           Get Random {{ resourceType }}
         </button>
       </div>
 
       <button
         v-if="isManager"
-        class="fetch-button"
+        :class="['fetch-button', buttonColorClass]"
         @click="getAllPend"
       >
         Get All Pending {{ resourceType }}
@@ -99,7 +99,7 @@
         
         <button 
           v-if="activeFilters.length > 0"
-          class="fetch-button apply-filters-btn" 
+          :class="['fetch-button', 'apply-filters-btn', buttonColorClass]" 
           @click="GetByFilters"
         >
           Apply Filters
@@ -108,14 +108,14 @@
 
       <div v-if="resourceType === 'quotes'">
         <!-- Daily Quote -->
-        <button class="fetch-button" @click="GetDailyQuote">
+        <button :class="['fetch-button', buttonColorClass]" @click="GetDailyQuote">
           Get Daily Quote
         </button>
 
         <!-- Short Quotes with amt -->
         <div>
           <input type="number" v-model.number="shortAmt" min="1" placeholder="Amount" />
-          <button class="fetch-button" @click="GetShortQuote(shortAmt)">
+          <button :class="['fetch-button', buttonColorClass]" @click="GetShortQuote(shortAmt)">
             Get Short Quotes
           </button>
         </div>
@@ -405,6 +405,22 @@ export default defineComponent({
     availableFilters(): any[] {
       const activeNames = this.activeFilters.map(f => f.name)
       return this.filterOptions.filter(opt => !activeNames.includes(opt.name))
+    },
+
+    // Get button color class based on resource type
+    buttonColorClass(): string {
+      switch (this.resourceType) {
+        case 'jokes':
+          return 'button-jokes'
+        case 'quotes':
+          return 'button-quotes'
+        case 'bios':
+          return 'button-bios'
+        case 'trivias':
+          return 'button-trivias'
+        default:
+          return 'button-default'
+      }
     }
   },
 
@@ -904,6 +920,57 @@ h2 {
 .fetch-button:focus {
   outline: 3px solid var(--color-primary-orange);
   outline-offset: 2px;
+}
+
+/* Resource-specific button colors matching mini-card gradients */
+.fetch-button.button-jokes {
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
+  color: white;
+}
+
+.fetch-button.button-jokes:hover {
+  background: linear-gradient(135deg, #e8850f 0%, #ff6961 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-quotes {
+  background: linear-gradient(135deg, var(--color-primary-magenta) 0%, var(--color-primary-coral) 100%);
+  color: white;
+}
+
+.fetch-button.button-quotes:hover {
+  background: linear-gradient(135deg, #c71585 0%, #ff6961 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-bios {
+  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+  color: white;
+}
+
+.fetch-button.button-bios:hover {
+  background: linear-gradient(135deg, #7b2cbf 0%, #c71585 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-trivias {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
+  color: white;
+}
+
+.fetch-button.button-trivias:hover {
+  background: linear-gradient(135deg, #240046 0%, #7b2cbf 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-default {
+  background-color: var(--color-success);
+  color: var(--text-on-primary);
+}
+
+.fetch-button.button-default:hover {
+  background-color: #047857;
+  transform: translateY(-1px);
 }
 
 .error {
