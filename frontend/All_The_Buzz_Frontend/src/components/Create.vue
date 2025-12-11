@@ -74,15 +74,28 @@
           required
         ></textarea>
       </div>
-      <div class="form-group" v-if="resourceType === 'quotes'">
-        <label for="author">Author:</label>
-        <input
-          id="author"
-          v-model="formData.author"
-          type="text"
-          placeholder="Enter author name"
-          required
-        />
+
+      <div v-if="resourceType === 'quotes'" class="form-row">
+        <div class="form-group">
+          <label for="author">Author:</label>
+          <input
+            id="author"
+            v-model="formData.author"
+            type="text"
+            placeholder="Enter author name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="language-quotes">Language:</label>
+          <input
+            id="language-quotes"
+            v-model="formData.language"
+            type="text"
+            placeholder="Enter language"
+            required
+          />
+        </div>
       </div>
       
       <div v-if="resourceType === 'trivias'" class="form-group">
@@ -103,22 +116,7 @@
           placeholder="Enter answer"
         />
       </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="birthyear">Birth Year:</label>
-        <input
-        id="birthyear"
-        v-model="formData.birthYear"
-        type="number" placeholder="YYYY" min="1000" max="2026" required
-        />
-      </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="deathyear">Death Year:</label>
-        <input
-        id="deathyear"
-        v-model="formData.deathYear"
-        type="number" placeholder="YYYY" min="1000" max="2026"
-        />
-      </div>
+      
       <div v-if="resourceType === 'bios'" class="form-group" >
         <label for="bioName">Subject Name:</label>
         <input
@@ -128,6 +126,26 @@
         required
         />
       </div>
+
+      <div v-if="resourceType === 'bios'" class="form-row">
+        <div class="form-group">
+          <label for="birthyear">Birth Year:</label>
+          <input
+          id="birthyear"
+          v-model="formData.birthYear"
+          type="number" placeholder="YYYY" min="1000" max="2026" required
+          />
+        </div>
+        <div class="form-group">
+          <label for="deathyear">Death Year:</label>
+          <input
+          id="deathyear"
+          v-model="formData.deathYear"
+          type="number" placeholder="YYYY" min="1000" max="2026"
+          />
+        </div>
+      </div>
+
       <div class="form-group" v-if="resourceType === 'bios'">
         <label for="bioParagraph">Paragraph:</label>
         <textarea
@@ -150,23 +168,29 @@
           required
         ></textarea>
       </div>
-      <div class="form-group" v-if="resourceType === 'quotes'">
-        <label for="content">Quote:</label>
-        <textarea
-          id="content"
-          v-model="formData.content.text"
-          type="text"
-          placeholder="Enter quote"
-          rows="4"
-          required
-        ></textarea>
+
+      <div v-if="resourceType === 'bios'" class="form-row">
+        <div class="form-group">
+          <label for="website_url">Website URL:</label>
+          <input type="url" id="website_url" name="website_url" v-model="formData.sourceURL" placeholder="https://example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="language">Language:</label>
+          <input
+            id="language"
+            v-model="formData.language"
+            type="text"
+            placeholder="Enter language"
+            required
+          >
+          </input>
+        </div>
       </div>
-      <div v-if="resourceType === 'bios'" class="form-group" >
-        <label for="website_url">Enter your website URL:</label>
-        <input type="url" id="website_url" name="website_url" v-model="formData.sourceURL" placeholder="https://example.com" required>
-      </div>
-      <div class="form-group">
+
+      <div class="form-group" v-if="resourceType !== 'bios' && resourceType !== 'quotes'">
+        <label for="language">Language:</label>
         <input
+          id="language"
           v-model="formData.language"
           type="text"
           placeholder="Enter language"
@@ -346,11 +370,23 @@ h2 {
 }
 
 form {
-  max-width: 600px;
+  max-width: 100%;
+  width: 100%;
 }
 
 .form-group {
   margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .form-group label {

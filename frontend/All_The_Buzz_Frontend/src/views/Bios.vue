@@ -12,7 +12,21 @@
             <h1 class="page-title">Bios Management</h1>
             <p class="page-subtitle">A bee’s biography is short: Buzzed in. Stung out.</p>
           </div>
+           <div class="mini-resource-cards">
+          <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
+            <img src="/joke-icon.png" alt="Jokes" />
+            <span>Jokes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
+            <img src="/quote-icon.png" alt="Quotes" />
+            <span>Quotes</span>
+          </div>
+          <div class="mini-card" @click="navigateTo('trivia')" tabindex="0" role="button">
+            <img src="/trivia-icon.png" alt="Trivia" />
+            <span>Trivia</span>
+          </div>
         </div>
+      </div>
       </div>
       
       <div class="main-content-layout">
@@ -33,7 +47,7 @@
         </div>
         </div>
         <!-- Mini Resource Cards -->
-        <div class="mini-resource-cards">
+        <!-- <div class="mini-resource-cards">
           <div class="mini-card" @click="navigateTo('jokes')" tabindex="0" role="button">
             <img src="/joke-icon.png" alt="Jokes" />
             <span>Jokes</span>
@@ -47,6 +61,7 @@
             <span>Trivia</span>
           </div>
         </div>
+      </div> -->
       </div>
     </main>
 
@@ -333,12 +348,13 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;
   position: relative;
+  justify-content: flex-start;
 }
 
 .mini-card {
@@ -346,14 +362,13 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  padding: 1.5rem 2rem;
+  padding: .5rem 2rem;
   background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 175px;
-  width: 175px;
+  width: 22%
 }
 
 .mini-card:hover {
@@ -367,8 +382,8 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: auto;
   object-fit: contain;
 }
 

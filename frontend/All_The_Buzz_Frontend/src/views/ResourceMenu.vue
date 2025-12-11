@@ -200,7 +200,7 @@ onUnmounted(() => {
 #side-bar {
   flex: 1;
   flex-direction: column;
-
+  margin-top: 4rem;
 }
 #resource-menu {
   display: flex
@@ -264,9 +264,11 @@ onUnmounted(() => {
 }
 .image-container {
   position:relative;
-  display: inline-block;
-  align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--bg-primary);
+  margin-top: 4rem;
 }
 .overlay-text{
   background-color: var(--bg-primary);
