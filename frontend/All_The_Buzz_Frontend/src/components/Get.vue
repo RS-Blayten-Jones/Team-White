@@ -1,0 +1,1161 @@
+
+<template>
+  <div class="get-component">
+    <h2>{{ resourceType }} Actions</h2>
+
+    <!-- Error Message -->
+    <div v-if="msg" class="error">{{ msg }}</div>
+
+    <div class="filters">
+      <button :class="['fetch-button', buttonColorClass]" @click="getAllPub">
+        Get All {{ resourceType }}
+      </button>
+
+      <div>
+        <input type="number" v-model.number="randAmt" min="1" placeholder="Amount" />
+        <button :class="['fetch-button', buttonColorClass]" @click="GetRand(randAmt)">
+          Get Random {{ resourceType }}
+        </button>
+      </div>
+
+      <button
+        v-if="isManager"
+        :class="['fetch-button', buttonColorClass]"
+        @click="getAllPend"
+      >
+        Get All Pending {{ resourceType }}
+      </button>
+
+      <!-- Dynamic filters based on filterOptions prop -->
+      <div v-if="filterOptions.length > 0" class="filter-group">
+        <div class="filter-header">
+          <select v-model="selectedFilterOption" class="filter-selector">
+            <option value="" disabled>Select a filter...</option>
+            <option 
+              v-for="filter in availableFilters" 
+              :key="filter.name"
+              :value="filter.name"
+            >
+              {{ filter.label }}
+            </option>
+          </select>
+          <button 
+            class="add-filter-btn" 
+            @click="addFilter"
+            :disabled="!selectedFilterOption"
+          >
+            + Add Filter
+          </button>
+        </div>
+        
+        <!-- Display active filters -->
+        <div v-if="activeFilters.length > 0" class="active-filters">
+          <div 
+            v-for="(activeFilter, index) in activeFilters" 
+            :key="index"
+            class="filter-item"
+          >
+            <label class="filter-label">{{ getFilterConfig(activeFilter.name)?.label }}:</label>
+            
+            <!-- Select dropdown -->
+            <select 
+              v-if="getFilterConfig(activeFilter.name)?.type === 'select'"
+              v-model="activeFilter.value"
+              class="filter-value-input"
+            >
+              <option value="">Select...</option>
+              <option 
+                v-for="opt in getFilterConfig(activeFilter.name)?.options" 
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ opt.label }}
+              </option>
+            </select>
+            
+            <!-- Number input -->
+            <input 
+              v-else-if="getFilterConfig(activeFilter.name)?.type === 'number'"
+              v-model.number="activeFilter.value"
+              type="number"
+              class="filter-value-input"
+              placeholder="Enter value..."
+            />
+            
+            <!-- Text input -->
+            <input 
+              v-else-if="getFilterConfig(activeFilter.name)?.type === 'text'"
+              v-model="activeFilter.value"
+              type="text"
+              class="filter-value-input"
+              placeholder="Enter value..."
+            />
+            
+            <button class="remove-filter-btn" @click="removeFilter(index)" title="Remove filter">
+              ✕
+            </button>
+          </div>
+        </div>
+        
+        <button 
+          v-if="activeFilters.length > 0"
+          :class="['fetch-button', 'apply-filters-btn', buttonColorClass]" 
+          @click="GetByFilters"
+        >
+          Apply Filters
+        </button>
+      </div>
+
+      <div v-if="resourceType === 'quotes'">
+        <!-- Daily Quote -->
+        <button :class="['fetch-button', buttonColorClass]" @click="GetDailyQuote">
+          Get Daily Quote
+        </button>
+
+        <!-- Short Quotes with amt -->
+        <div>
+          <input type="number" v-model.number="shortAmt" min="1" placeholder="Amount" />
+          <button :class="['fetch-button', buttonColorClass]" @click="GetShortQuote(shortAmt)">
+            Get Short Quotes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="results" v-if="rows.length">
+      <div class="results-header">
+        <h3>Results:</h3>
+        <button 
+          v-if="!showingPending"
+          class="mode-toggle-btn" 
+          @click="toggleEditMode"
+          :class="{ 'write-mode': isEditMode }"
+        >
+          {{ isEditMode ? '👁️ Read Mode' : '📝 Write Mode'  }}
+        </button>
+      </div>
+
+      
+      <DataTable
+        :data="rows"
+        :columns="preferredColumns"
+        :headerMap="headers"
+        :hiddenColumns="hidden"
+        :getRowKey="getRowKey"
+        :isEditMode="isEditMode"
+      >
+        <template #cell="{ row, column, value }">
+          <!-- Special rendering for jokes content -->
+          <template v-if="resourceType === 'jokes' && column === 'content'">
+            <!-- Defensive guards in case content is missing -->
+            <template v-if="row && row.content && row.content.type">
+              <!-- ONE-LINER -->
+              <div v-if="row.content.type === 'one_liner'" class="one-liner-content">
+                <template v-if="isEditMode">
+                  <input 
+                    v-model="row.content.text" 
+                    class="cell-input"
+                    type="text"
+                  />
+                </template>
+                <template v-else>
+                  {{ row.content.text }}
+                </template>
+              </div>
+
+              <!-- Q & A -->
+              <div
+                v-else-if="row.content.type === 'qa'"
+                class="qa-content"
+                :class="{ 'edit-mode-qa': isEditMode }"
+                :tabindex="isEditMode ? -1 : 0"
+                aria-live="polite"
+              >
+                <div class="question">
+                  <strong>Q:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.question" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.question }}
+                  </template>
+                  <small v-if="row.language" class="muted"> ({{ row.language }})</small>
+                  <small v-if="!isEditMode" class="hint">Hover or focus to reveal answer</small>
+                </div>
+
+                <div class="answer" :aria-hidden="!isEditMode">
+                  <strong>A:</strong> 
+                  <template v-if="isEditMode">
+                    <input 
+                      v-model="row.content.answer" 
+                      class="cell-input"
+                      type="text"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ row.content.answer }}
+                  </template>
+                </div>
+              </div>
+
+              <!-- Fallback for unknown type -->
+              <div v-else>
+                {{ value }}
+              </div>
+            </template>
+
+            <!-- If content is missing -->
+            <template v-else>
+              {{ value }}
+            </template>
+          </template>
+
+          <!-- Actions column with edit and delete buttons -->
+          <template v-else-if="column === 'actions'">
+            <div class="action-buttons">
+              <ApproveAndDeny 
+                v-if="showingPending"
+                :id="getItemId(row)"
+                :category="resourceType"
+                @action-complete="handleApproveDeny"
+                />
+              <EditButton
+                v-if="!showingPending"
+                :id="getItemId(row)"
+                :category="resourceType"
+                :jwt="jwt"
+                :body="row"
+                :isEditMode="isEditMode"
+                @updated="handleUpdated"
+                @error="handleEditError"
+              />
+              <DeleteButton
+                v-if="!showingPending"
+                :id="getItemId(row)"
+                :category="resourceType"
+                :jwt="jwt"
+                :isManager="isManager"
+                @deleted="handleDeleted"
+                @error="handleDeleteError"
+              />
+            </div>
+          </template>
+
+          <!-- All other columns - editable in write mode -->
+          <template v-else>
+            <!-- Special handling for explanation field in jokes -->
+            <div v-if="column === 'explanation' && resourceType === 'jokes'">
+              <div v-if="isEditMode" class="editable-cell">
+                <!-- Show textarea even if no explanation exists, so user can add one -->
+                <textarea
+                  v-model="row.explanation"
+                  class="cell-textarea"
+                  rows="2"
+                  placeholder="Add explanation (optional)"
+                ></textarea>
+              </div>
+              <span v-else>{{ value || '—' }}</span>
+            </div>
+            
+            <!-- Regular editable cell in write mode -->
+            <div v-else-if="isEditMode" class="editable-cell">
+              <input
+                v-if="typeof value === 'string' || typeof value === 'number'"
+                v-model="row[column]"
+                class="cell-input"
+                :type="typeof value === 'number' ? 'number' : 'text'"
+              />
+              <textarea
+                v-else-if="typeof value === 'object' && value !== null"
+                v-model="row[column]"
+                class="cell-textarea"
+                rows="2"
+              ></textarea>
+              <span v-else>{{ value }}</span>
+            </div>
+            <!-- Regular display in read mode -->
+            <span v-else>{{ value }}</span>
+          </template>
+        </template>
+      </DataTable>
+
+
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import axios from 'axios'
+import { defineComponent } from 'vue'
+import DataTable from '@/components/DataTable.vue' // keep if alias is configured; else use './DataTable.vue'
+import DeleteButton from '@/components/Delete.vue'
+import EditButton from '@/components/EditButton.vue'
+import ApproveAndDeny from '@/components/ApproveAndDeny.vue'
+
+export default defineComponent({
+  name: 'GetButton',
+  components: { DataTable, DeleteButton, EditButton, ApproveAndDeny },
+  props: {
+    isManager: { type: Boolean, required: true },
+    jwt: { type: String, required: true },
+    resourceType: { type: String, required: true },
+    // Optional array of filter configurations from parent view
+    filterOptions: {
+      type: Array as () => Array<{
+        name: string
+        label: string
+        type: 'select' | 'number' | 'text'
+        options?: Array<{ value: any, label: string }>
+      }>,
+      required: false,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      msg: "",
+      apiData: {},
+      shortAmt: 1,
+      amt: 1,
+      randAmt: 1,
+      isEditMode: false,
+      editableRows: {} as Record<string, any>,
+      originalData: null as any, // Store original data for reverting
+      showingPending: false,
+      // Active filters that user has added
+      activeFilters: [] as Array<{ name: string, value: any }>,
+      // Currently selected filter option for the "add filter" dropdown
+      selectedFilterOption: '' as string
+    }
+  },
+  computed: {
+    // Normalize apiData into an array for the table
+    rows(): any[] {
+      const d = this.apiData
+      let arr: any[] = []
+      if (Array.isArray(d)) arr = d
+      else if (d && Array.isArray((d as any).items)) arr = (d as any).items
+      else if (d && Array.isArray((d as any).data)) arr = (d as any).data
+      else if (d && typeof d === 'object' && Object.keys(d).length) arr = [d]
+      else return []
+
+      // Minimal normalization for jokes to avoid duplicate difficulty + keep native fields for slot
+      // IMPORTANT: Mutate the original objects instead of creating copies so edits are preserved
+      if (this.resourceType === 'jokes') {
+        arr.forEach((row: any) => {
+          // prefer 'difficulty'; derive from 'level' if needed
+          if (row.level != null && row.difficulty == null) row.difficulty = row.level
+          // language normalization
+          if (!row.language && row.lang) row.language = row.lang
+          // Ensure explanation field exists for Vue reactivity (even if empty)
+          if (!row.explanation) row.explanation = ''
+          // do NOT delete question/answer/text — we need them in the slot
+          // BUT prevent extra visible 'level' column
+          delete row.level
+        })
+      }
+
+      return arr
+    },
+
+    preferredColumns(): string[] {
+      switch (this.resourceType) {
+        case 'jokes':
+          // Use 'level' (your payload), not 'difficulty'.
+          // Keep 'content' and 'explanation' as you requested.
+          return ['difficulty', 'language', 'content', 'explanation', 'actions']
+        case 'quotes':
+          return ['text', 'author', 'length', 'createdAt', 'actions']
+        default:
+          return ['actions']
+      }
+    },
+
+    headers(): Record<string, string> {
+      return {
+        // For jokes: remap 'level' to a friendly header
+        language: 'Language',
+        content: 'Content',
+        explanation: 'Explanation',
+
+        // Quotes
+        text: this.resourceType === 'quotes' ? 'Quote' : 'Text',
+        status: 'Status',
+        author: 'Author',
+        length: 'Length',
+        createdAt: 'Created',
+        
+        // Actions column
+        actions: 'Actions'
+      }
+    },
+
+    hidden(): string[] {
+      // Hide _id (nested id), keep content visible (we render it via slot).
+      const base = ['_id']
+      return base
+    },
+
+    // Filters that haven't been added yet
+    availableFilters(): any[] {
+      const activeNames = this.activeFilters.map(f => f.name)
+      return this.filterOptions.filter(opt => !activeNames.includes(opt.name))
+    },
+
+    // Get button color class based on resource type
+    buttonColorClass(): string {
+      switch (this.resourceType) {
+        case 'jokes':
+          return 'button-jokes'
+        case 'quotes':
+          return 'button-quotes'
+        case 'bios':
+          return 'button-bios'
+        case 'trivias':
+          return 'button-trivias'
+        default:
+          return 'button-default'
+      }
+    }
+  },
+
+  
+
+  methods: {
+    // Get filter configuration by name
+    getFilterConfig(name: string) {
+      return this.filterOptions.find(opt => opt.name === name)
+    },
+
+    // Add a filter from the dropdown
+    addFilter() {
+      if (!this.selectedFilterOption) return
+      
+      // Check if already added
+      const alreadyAdded = this.activeFilters.some(f => f.name === this.selectedFilterOption)
+      if (alreadyAdded) return
+      
+      this.activeFilters.push({
+        name: this.selectedFilterOption,
+        value: ''
+      })
+      
+      // Reset dropdown
+      this.selectedFilterOption = ''
+    },
+
+    // Remove a filter
+    removeFilter(index: number) {
+      this.activeFilters.splice(index, 1)
+    },
+
+    getAllPub() {
+      this.showingPending = false 
+      axios.get(`http://localhost:8080/${this.resourceType}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    
+    getRowKey(row: any, index: number) {
+      // Prefer Mongo-style OID if present
+      const oid = row?._id?.$oid
+      if (oid) return oid
+      return row.id ?? `${this.resourceType}-${index}`
+    },
+
+    getItemId(row: any): string {
+      // Extract the ID from the row - handle both _id.$oid and direct id
+      if (row?._id?.$oid) {
+        return row._id.$oid
+      }
+      if (row?.id) {
+        return String(row.id)
+      }
+      if (row?._id) {
+        return String(row._id)
+      }
+      return ''
+    },
+
+    handleDeleted(payload: { id: string }) {
+      // Remove the deleted item from the current data
+      if (Array.isArray(this.apiData)) {
+        const index = this.apiData.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          this.apiData.splice(index, 1)
+        }
+      } else if (this.apiData && Array.isArray((this.apiData as any).items)) {
+        const index = (this.apiData as any).items.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          (this.apiData as any).items.splice(index, 1)
+        }
+      } else if (this.apiData && Array.isArray((this.apiData as any).data)) {
+        const index = (this.apiData as any).data.findIndex((item: any) => {
+          const itemId = this.getItemId(item)
+          return itemId === payload.id
+        })
+        if (index > -1) {
+          (this.apiData as any).data.splice(index, 1)
+        }
+      }
+      
+      // Update the backup if in edit mode
+      if (this.originalData !== null) {
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+      }
+      
+      // Optionally show success message
+      this.msg = ''
+    },
+
+    handleDeleteError(message: string) {
+      this.msg = message
+    },
+
+    toggleEditMode() {
+      if (!this.isEditMode) {
+        // Entering edit mode - save a deep copy of the current data
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+        console.log('Saved original data:', this.originalData)
+        this.isEditMode = true
+      } else {
+        // Exiting edit mode - restore the original data (revert changes)
+        if (this.originalData !== null) {
+          console.log('Restoring from:', this.originalData)
+          console.log('Current apiData before restore:', JSON.parse(JSON.stringify(this.apiData)))
+          
+          // Replace the entire apiData object to trigger reactivity
+          const restored = JSON.parse(JSON.stringify(this.originalData))
+          // Handle different data structures
+          if (Array.isArray(this.apiData)) {
+            this.apiData.length = 0
+            restored.forEach((item: any) => (this.apiData as any).push(item))
+          } else if (Array.isArray((this.apiData as any).items)) {
+            (this.apiData as any).items.length = 0
+            restored.items.forEach((item: any) => (this.apiData as any).items.push(item))
+          } else if (Array.isArray((this.apiData as any).data)) {
+            (this.apiData as any).data.length = 0
+            restored.data.forEach((item: any) => (this.apiData as any).data.push(item))
+          } else {
+            this.apiData = restored
+          }
+          
+          console.log('Current apiData after restore:', JSON.parse(JSON.stringify(this.apiData)))
+          this.originalData = null
+        }
+        this.isEditMode = false
+        this.editableRows = {}
+      }
+    },
+
+    async handleUpdated(payload: { id: string }) {
+      // Update was successful via EditButton
+      // Update the original data to reflect the saved changes
+      if (this.originalData !== null) {
+        this.originalData = JSON.parse(JSON.stringify(this.apiData))
+      }
+      
+      this.msg = ''
+      console.log('Item updated successfully:', payload.id)
+    },
+
+    handleEditError(message: string) {
+      this.msg = message
+    },
+
+
+    getAllPend() {
+      axios.get(`http://localhost:8080/pending-${this.resourceType}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.showingPending = true
+        console.log(this.showingPending)
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+    handleApproveDeny({ action, id }: { action: string, id: string }) {
+      // Optionally show a confirmation message
+      this.msg = `Item ${id} was ${action}.`
+      // Refresh the pending table
+      this.getAllPend()
+    },
+
+    GetRand(amt: string | number) {
+      this.showingPending = false 
+      const n = Number(amt)
+      axios.get(`http://localhost:8080/random-${this.resourceType}/${n}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Backend returns a JSON string instead of object, so parse it if needed
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    GetByFilters() {
+      this.showingPending = false
+      
+      // Build query params from active filters with non-empty values
+      const params: Record<string, any> = {}
+      for (const filter of this.activeFilters) {
+        if (filter.value !== null && filter.value !== undefined && filter.value !== '') {
+          params[filter.name] = filter.value
+        }
+      }
+      
+      // If no filters have values, show error
+      if (Object.keys(params).length === 0) {
+        this.msg = 'Please provide values for at least one filter.'
+        return
+      }
+      
+      axios.get(`http://localhost:8080/${this.resourceType}`, {
+        params: params,
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    GetDailyQuote() {
+      this.showingPending = false 
+      if (this.resourceType !== 'quotes') {
+        this.msg = 'Daily Quote is only available for resourceType "quotes".'
+        return
+      }
+      axios.get(`http://localhost:8080/daily-quotes`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    },
+
+    GetShortQuote(amt: string | number) {
+      this.showingPending = false 
+      if (this.resourceType !== 'quotes') {
+        this.msg = 'Short Quote is only available for resourceType "quotes".'
+        return
+      }
+      const n = Number(amt)
+      axios.get(`http://localhost:8080/short-quotes/${n}`, {
+        headers: {
+          'Bearer': `${this.jwt}`
+        }
+      })
+      .then(response => {
+        // Parse response if it's a string
+        let data = response.data
+        if (typeof data === 'string') {
+          try {
+            data = JSON.parse(data)
+          } catch (e) {
+            console.error('Failed to parse response:', e)
+          }
+        }
+        // Force reactivity by creating a new object reference
+        this.apiData = Array.isArray(data) ? [...data] : { ...data }
+        this.msg = ''
+      })
+      .catch(error => {
+        this.msg = "Error: Status Code = " + (error.response?.status || 'Unknown')
+      })
+    }
+  }
+})
+</script>
+
+
+<style scoped>
+.get-component {
+  padding: var(--spacing-md);
+}
+
+h2 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  text-transform: capitalize;
+  font-size: var(--font-size-2xl);
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.filters select,
+.filters input {
+  padding: 0.5rem 0.75rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.filter-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-selector {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.add-filter-btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary-orange);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  transition: all var(--transition-base);
+}
+
+.add-filter-btn:hover:not(:disabled) {
+  background-color: #d97706;
+}
+
+.add-filter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.active-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.filter-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.filter-value-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.remove-filter-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: var(--color-error);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.remove-filter-btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.apply-filters-btn {
+  align-self: flex-start;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fetch-button {
+  background-color: var(--color-success);
+  color: var(--text-on-primary);
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.fetch-button:hover {
+  background-color: #047857;
+  transform: translateY(-1px);
+}
+
+.fetch-button:focus {
+  outline: 3px solid var(--color-primary-orange);
+  outline-offset: 2px;
+}
+
+/* Resource-specific button colors matching mini-card gradients */
+.fetch-button.button-jokes {
+  background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
+  color: white;
+}
+
+.fetch-button.button-jokes:hover {
+  background: linear-gradient(135deg, #e8850f 0%, #ff6961 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-quotes {
+  background: linear-gradient(135deg, var(--color-primary-magenta) 0%, var(--color-primary-coral) 100%);
+  color: white;
+}
+
+.fetch-button.button-quotes:hover {
+  background: linear-gradient(135deg, #c71585 0%, #ff6961 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-bios {
+  background: linear-gradient(135deg, var(--color-primary-purple) 0%, var(--color-primary-magenta) 100%);
+  color: white;
+}
+
+.fetch-button.button-bios:hover {
+  background: linear-gradient(135deg, #7b2cbf 0%, #c71585 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-trivias {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-purple) 100%);
+  color: white;
+}
+
+.fetch-button.button-trivias:hover {
+  background: linear-gradient(135deg, #240046 0%, #7b2cbf 100%);
+  transform: translateY(-1px);
+}
+
+.fetch-button.button-default {
+  background-color: var(--color-success);
+  color: var(--text-on-primary);
+}
+
+.fetch-button.button-default:hover {
+  background-color: #047857;
+  transform: translateY(-1px);
+}
+
+.error {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.results h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-xl);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.mode-toggle-btn {
+  background-color: var(--color-primary-orange);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mode-toggle-btn:hover {
+  background-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.mode-toggle-btn.write-mode {
+  background-color: #059669;
+}
+
+.mode-toggle-btn.write-mode:hover {
+  background-color: #047857;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.items-grid {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.item-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  transition: box-shadow var(--transition-base), background-color var(--transition-base);
+}
+
+.item-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.item-id {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.item-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.item-status.approved {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.item-status.pending {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.item-content p {
+  margin: var(--spacing-sm) 0;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* optional polish */
+.muted {
+  color: var(--text-secondary);
+  margin-left: 0.25rem;
+  font-size: 0.85em;
+}
+.question {
+  margin-bottom: 0.25rem;
+}
+
+.qa-content .answer {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 180ms ease, filter 180ms ease;
+  user-select: none;
+}
+.qa-content:hover .answer,
+.qa-content:focus-within .answer {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+/* Always show answer in edit mode */
+.qa-content.edit-mode-qa .answer {
+  opacity: 1;
+  filter: blur(0);
+  user-select: text;
+}
+
+.muted {
+  color: var(--text-secondary);
+  margin-left: 0.25rem;
+  font-size: 0.85em;
+}
+.hint {
+  margin-left: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.8em;
+}
+
+.editable-cell {
+  width: 100%;
+}
+
+.cell-input,
+.cell-textarea {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.cell-input:focus,
+.cell-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 2px rgba(238, 149, 0, 0.15);
+}
+
+.cell-textarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+</style>

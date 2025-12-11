@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -8,7 +8,7 @@ credentials_entity.py
 This module contains entity classes for data related to authentication.
 
 Classes:
-    Credentials: An entity class for storing and validating credential information. 
+    Credentials: An entity class for storing and validating credential information.
     Token: An entity class for storing and validating the token
 '''
 
@@ -17,7 +17,7 @@ class Credentials:
     Validates credential data passed to it.
     This class includes the id, first name, last name, dept,
     title, and loc information for the user.
-    
+
     To initialize this class, the from_json_object method can be used.
     To do this just pass in a dict in form:
     {'id': <id>, 'fName' : <fName>, 'lName': <lName>,
@@ -26,8 +26,8 @@ class Credentials:
 
     All fields are required.
     '''
-    def __init__(self, id=0, fName="Mike", lName="Tiger", 
-                 dept="Sales", title="Manager", 
+    def __init__(self, id=0, fName="Mike", lName="Tiger",
+                 dept="Sales", title="Manager",
                  loc="United States" ):
         self.id=id
         self.fName=fName
@@ -39,13 +39,13 @@ class Credentials:
     @property
     def id(self):
         return self.__id
-    
+
     @id.setter
     def id(self,id):
         """
         Validates the ID is the in the proper format and follows
         business logic.
-        
+
         Exceptions:
             ValueError: ID is missing
             ValueError: ID must be integer
@@ -65,12 +65,12 @@ class Credentials:
     @property
     def fName(self):
         return self.__fName
-    
+
     @fName.setter
     def fName(self, fName):
         """
         Validates First Name follows business logic.
-        
+
         Exceptions:
             ValueError: First name must be provide
             ValueError: First name must be string
@@ -91,16 +91,16 @@ class Credentials:
         # Add code to test for SQL injection
         else:
             self.__fName=fName.strip()
-    
+
     @property
     def lName(self):
         return self.__lName
-    
+
     @lName.setter
     def lName(self,lName):
         """
         Method for validating Last name follows business logic.
-        
+
         Exceptions:
             ValueError: Last name must be provided
             ValueError: Last name must be string
@@ -125,12 +125,12 @@ class Credentials:
     @property
     def dept(self):
         return self.__dept
-    
+
     @dept.setter
     def dept(self, dept):
         """
         Method for ensuring dept follows business rules.
-        
+
         Exceptions:
             ValueError: dept must be present
             ValueError: dept must be a string
@@ -147,15 +147,13 @@ class Credentials:
             raise ValueError("dept can't only be spaces")
         elif len(dept) > 35:
             raise ValueError("dept cannot be greater than 35 characters")
-        elif not all(part.strip().isalpha() for part in dept.strip().split()):
-            raise ValueError("dept must be letters")
         else:
             self.__dept=dept.strip()
 
     @property
     def title(self):
         return self.__title
-    
+
     @title.setter
     def title(self, title):
         """
@@ -186,12 +184,12 @@ class Credentials:
     @property
     def loc(self):
         return self.__loc
-    
+
     @loc.setter
     def loc(self, loc):
         """
         Method for validating loc follows business logic.
-        
+
         Exceptions:
             ValueError: loc is required
             ValueError: loc must be a string
@@ -209,8 +207,6 @@ class Credentials:
             raise ValueError("loc can not be spaces")
         elif len(loc.strip()) > 75:
             raise ValueError("loc cannot be greater than 75 characters")
-        elif not all(part.strip().isalpha() for part in loc.strip().split()):
-            raise ValueError("loc can only be letters")
         else:
             self.__loc=loc.strip()
 
@@ -219,7 +215,7 @@ class Credentials:
         """
         Method for initializing Credential object with dictionary. This
         method will also ensure the dictionary has the required fields.
-        
+
         Exception:
             ValueError: Must be a dictionary
             ValueError: Authentication Server Response
@@ -233,15 +229,15 @@ class Credentials:
             raise ValueError(content[error_field])
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
-        else: 
+        else:
             if content['title'].capitalize() != 'Manager':
                 content['title']='Employee'
-        
-            return Credentials(content["id"], content["fName"], 
-                            content["lName"], content["dept"], 
+
+            return Credentials(content["id"], content["fName"],
+                            content["lName"], content["dept"],
                             content["title"], content["loc"])
-    
-    
+
+
 
 class Token:
     """
@@ -253,7 +249,7 @@ class Token:
     @property
     def token(self):
         return self.__token
-    
+
     @token.setter
     def token(self,token):
         """
@@ -266,6 +262,7 @@ class Token:
             ValueError: Token is too short
             ValueError: Token is too long
         """
+        print(token)
         if token is None:
             raise ValueError("Token can not be None")
         elif not isinstance(token, str):
@@ -273,6 +270,7 @@ class Token:
         elif len(token) == 0:
             raise ValueError("No token provided")
         elif len(token) < 250:
+            print(token)
             raise ValueError("Token is too short")
         elif len(token) > 400:
             raise ValueError("Token is too long")
@@ -285,7 +283,7 @@ class Token:
         Method for initializing Token object from a dictionary.
         This method also validates the format of the dictionary and ensures
         the token field is present.
-        
+
         Exceptions:
             ValueError: Must be a dictionary
             ValueError: Missing Required fields
@@ -297,7 +295,7 @@ class Token:
             raise ValueError("Missing Requried fields")
         else:
             return Token(content["token"])
-    
+
     def to_json_object(self):
         return {'token': self.__token}
-    
+

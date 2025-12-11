@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -8,7 +8,7 @@ from all_the_buzz.utilities.logger import LoggerFactory
 '''
 sanitize.py
 
-This module contains a function for sanitizing external inputs to avoid 
+This module contains a function for sanitizing external inputs to avoid
 code injection.
 
 Functions:
@@ -18,11 +18,11 @@ Functions:
 def sanitize_json(content):
     """
     This function uses the nh3 library to clean inputs.
-    
+
     Args:
         content: this is either a dictionary, list, or string that needs to be
             sanitized (if it's not of this type it will be just returned)
-        
+
     Returns:
         either cleaned content if proper format or the original content input
         """
@@ -41,5 +41,3 @@ def sanitize_json(content):
         return text
     else:
         return content
-    
-

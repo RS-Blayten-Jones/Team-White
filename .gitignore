@@ -1,5 +1,7 @@
 .venv/
+venv/
 .env
+env
 .vscode/
 .DS_Store
 all_the_buzz/logs/
@@ -9,3 +11,10 @@ checksummer.py
 all_the_buzz/database_operations/test_file.py
 all_the_buzz/.coverage
 all_the_buzz/entities/__pycache__/
+# Coverage and test artifacts
+.coverage
+.pytest_cache/
+htmlcov/
+key.txt
+key.txt.pub
+frontend/All_The_Buzz_Frontent/node_modules

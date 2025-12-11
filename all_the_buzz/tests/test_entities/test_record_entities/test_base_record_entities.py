@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Team White 
+# Copyright (C) 2025 Team White
 # Licensed under the MIT License
 # See LICENSE for more details
 
@@ -40,7 +40,7 @@ def test_invalid_base_record_id_length():
     ref_id_hex_str = ("2" * 24)
     with pytest.raises(ValueError, match="Invalid Record ID"):
         DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
-    
+
 def test_invalid_base_record_id_hex_value():
     id_hex_str = ("$" * 24)
     ref_id_hex_str = ("2" * 24)
@@ -59,7 +59,7 @@ def test_invalid_base_record_ref_id_length():
     ref_id_hex_str = ("2" * 23)
     with pytest.raises(ValueError, match="Invalid Record ID"):
         DummyRecord(id=id_hex_str, ref_id=ref_id_hex_str, is_edit=False, language="english")
-    
+
 def test_invalid_base_record_ref_id_hex_value():
     id_hex_str = ("1" * 24)
     ref_id_hex_str = ("$" * 24)
