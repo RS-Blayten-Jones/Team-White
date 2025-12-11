@@ -122,7 +122,13 @@ const role = ref<string>('')
 const isManager = ref<boolean>(false)
 
 // Define filter options for trivias (can add filters if needed)
-const triviaFilterOptions: any[] = []
+const triviaFilterOptions = [
+  {
+    name: 'language',
+    label: 'Language',
+    type: 'text' as const
+  }
+]
 
 onMounted(() => {
   // Get cookies on mount

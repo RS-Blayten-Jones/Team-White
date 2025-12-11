@@ -122,7 +122,18 @@ const role = ref<string>('')
 const isManager = ref<boolean>(false)
 
 // Define filter options for quotes (can add filters if needed)
-const quoteFilterOptions: any[] = []
+const quoteFilterOptions = [
+  {
+    name: 'author',
+    label: 'Author',
+    type: 'text' as const
+  },
+  {
+    name: 'language',
+    label: 'Language',
+    type: 'text' as const
+  }
+]
 
 // === Toggle flag for Create/Get ===
 const toggleComponent = ref(false) // false => show Create, true => show Get
