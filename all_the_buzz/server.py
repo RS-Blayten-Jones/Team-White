@@ -2122,7 +2122,7 @@ def create_app():
             # Assume the JWT is in data["jwt"] or similar
             jwt = data.get("jwt") or data.get("token")
             #jwt="eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBdXRoIFNlcnZpY2UiLCJsYXN0X25hbWUiOiJTdGVubmluZ3MiLCJsb2NhdGlvbiI6IlVuaXRlZCBTdGF0ZXMiLCJpZCI6OCwiZGVwYXJ0bWVudCI6IkluZm9ybWF0aW9uIFRlY2hub2xvZ3kiLCJ0aXRsZSI6IkRldmVsb3BlciIsImZpcnN0X25hbWUiOiJCYXNpbCIsInN1YiI6IkJhc2lsIFN0ZW5uaW5ncyIsImlhdCI6MTc2NTQwNTUyMCwiZXhwIjoxNzY1NDA5MTIwfQ.OhjLQ9qzqLCNmYm8F-z9NBca6BfK4TwIcvbOsJ8ZrWw"
-            print(data)
+            print("here is the jwt", jwt)
             if not jwt:
                 return jsonify({"code": "NoJWT", "message": "JWT not found in response"}), 502
             return jsonify({"jwt": jwt}), 200
