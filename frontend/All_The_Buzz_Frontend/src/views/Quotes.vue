@@ -23,7 +23,6 @@
 
         <div class="content-area card">
           <CreateComponent v-show="!toggleComponent" resourceType="quotes"/> 
-          </div>
           <GetButton 
             v-show="toggleComponent"
             :isManager="isManager" 
@@ -31,6 +30,7 @@
             resourceType="quotes"
             :filterOptions="quoteFilterOptions"
           />
+        </div>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -433,7 +433,7 @@ onUnmounted(() => {
   right: 5rem;
   width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 0;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -516,7 +516,7 @@ onUnmounted(() => {
   position: fixed;
   top: 3.5rem;
   right: 0;
-  z-index: 98;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -526,7 +526,7 @@ onUnmounted(() => {
   top: 0;
   width: 20rem;
   height: auto;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
 }
 
