@@ -265,8 +265,8 @@ class Joke(BaseRecord):
             """
         if not isinstance(explanation, str) and not isinstance(explanation, type(None)):
             raise ValueError("Not the proper explanation type")
-        elif (explanation is None or len(explanation.strip()) == 0) and self.difficulty == 3:
-            raise ValueError("Jokes must have an explanation when difficulty is 3")
+        #elif (explanation is None or len(explanation.strip()) == 0) and self.difficulty == 3:
+        #    raise ValueError("Jokes must have an explanation when difficulty is 3")
         self.__explanation=explanation
 
     @staticmethod
@@ -291,17 +291,20 @@ class Joke(BaseRecord):
         elif not isinstance(content['content'], dict):
             raise ValueError("Content must be a dictionary")
         else:
-            joke_object=Joke(difficulty=content['level'], content=content['content'],
-                        language=content["language"])
+            if "explaination" in content:
+                joke_object=Joke(difficulty=content['level'], content=content['content'],
+                            language=content["language"], explanation=content["explanation"])
+            else:
+                joke_object=Joke(difficulty=content['level'], content=content['content'],
+                            language=content["language"])
+                
             if "id" in content:
-
+                print("here 1")
                 joke_object.id=content["id"]
             if "original_id" in content:
                 joke_object.ref_id=content["original_id"]
             if "is_edit" in content:
                 joke_object.is_edit=content["is_edit"]
-            if "explanation" in content:
-                joke_object.explanation=content["explanation"]
             return joke_object
 
 
@@ -320,8 +323,6 @@ class Joke(BaseRecord):
 
         return record_dict
 
-#joke=Joke.from_json_object(content)
-#joke.to_json_object()
 
 
 class Trivia(BaseRecord):

@@ -271,7 +271,9 @@ export default defineComponent({
             type: this.formData.content.type,
             text: this.formData.content.text
           },
-          language: this.formData.language
+          language: this.formData.language,
+          explanation: this.formData.level == '3' ? this.formData.explanation : ""
+
         }
       }
       else if (resourceType === 'jokes' && this.formData.content.type === 'qa') {

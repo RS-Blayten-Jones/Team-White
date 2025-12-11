@@ -236,6 +236,7 @@ def create_a_new_joke(credentials: Credentials):
             ResponseCode error).
     """
     logger=LoggerFactory.get_general_logger()
+    logger.debug("in server.py, joke response body: ", request.get_json())
     logger.debug("creating new joke")
     if credentials.title == 'Employee':
         logger.debug("New joke as employee")
