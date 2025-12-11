@@ -138,12 +138,12 @@ const bioFilterOptions = [
   {
     name: 'birth_year',
     label: 'Birth Year',
-    type: 'text' as const
+    type: 'number' as const
   },
   {
     name: 'death_year',
     label: 'Death Year',
-    type: 'text' as const
+    type: 'number' as const
   },
 ]
 
