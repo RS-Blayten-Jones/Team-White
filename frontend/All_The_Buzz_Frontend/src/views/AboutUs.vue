@@ -1,6 +1,9 @@
 <template>
   <div class="about-us-page">
-    <AppHeader />
+    <!-- <AppHeader /> -->
+     <button id="top-button" class="back-button" @click="goBack">
+        Back
+      </button>
     
     <div class="about-content">
       <h1>About Us</h1>
@@ -41,7 +44,7 @@
       </div>
       
       <button class="back-button" @click="goBack">
-        Back to Menu
+        Back
       </button>
     </div>
   </div>
@@ -114,6 +117,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+#top-button {
+  margin-left: 80%;
+  margin-bottom: 0%;
+  margin-top: 2%;
+}
+
 .about-us-page {
   min-height: 100vh;
   background: linear-gradient(135deg, var(--color-primary-yellow) 0%, var(--color-primary-orange) 100%);
@@ -123,6 +133,7 @@ export default defineComponent({
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 1rem;
 }
 
 h1 {

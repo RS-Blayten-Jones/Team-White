@@ -32,7 +32,7 @@
       <div class="main-content-layout">
       <div style="width:100%">
           <button @click="toggleVisibility">
-            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+            {{ toggleComponent ? 'Create Action' : 'Get Actions' }}
           </button>
 
         <div class="content-area card">
@@ -139,7 +139,28 @@ const role = ref<string>('')
 const isManager = ref<boolean>(false)
 
 // Define filter options for bios (can add filters if needed)
-const bioFilterOptions: any[] = []
+const bioFilterOptions = [
+  {
+    name: 'name',
+    label: 'Name',
+    type: 'text' as const,
+  },
+  {
+    name: 'language',
+    label: 'Language',
+    type: 'text' as const
+  },
+  {
+    name: 'birth_year',
+    label: 'Birth Year',
+    type: 'number' as const
+  },
+  {
+    name: 'death_year',
+    label: 'Death Year',
+    type: 'number' as const
+  },
+]
 
 // === Toggle flag for Create/Get ===
 const toggleComponent = ref(false) // false => show Create, true => show Get

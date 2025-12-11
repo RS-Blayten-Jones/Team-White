@@ -71,7 +71,7 @@ onMounted(() => {
   animateCuteBee()
   welcomeText.value = `Welcome to the hive, ${fName} ${lName}!`
   sideBarName.value = `${fName} ${lName}`
-  sideBarRole.value= `${role}`
+  sideBarRole.value= `${position}`
 
 })
 
@@ -133,15 +133,6 @@ onUnmounted(() => {
               @keydown.space.prevent="navigateTo('bios')">
           <img src="/bio-icon.png" alt="bio icon"></img>
           Bios
-          </div>
-          <div class="resource-card" id="about"
-          @click="navigateTo('about')"
-              tabindex="0"
-              role="button"
-              @keydown.enter="navigateTo('about')"
-              @keydown.space.prevent="navigateTo('about')">
-          <!-- <img src="/info-icon.png" alt="about us icon"></img> -->
-          About Us
           </div>
         </div>
       <div id="topical">
