@@ -17,16 +17,21 @@
       </div>
 
       <div class="main-content-layout">
-      <div>
+      <div style="width:100%">
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+
         <div class="content-area card">
-          <CreateComponent resourceType="jokes"/> 
-          </div>
+          <CreateComponent v-show="!toggleComponent" resourceType="jokes"/> 
           <GetButton 
+            v-show="toggleComponent"
             :isManager="isManager" 
             :jwt="jwt" 
             resourceType="jokes"
             :filterOptions="jokeFilterOptions"
           />
+        </div>
         </div>
         
         <!-- Mini Resource Cards -->
@@ -62,6 +67,7 @@
     <!-- Bee-themed decorative elements -->
     
     <!-- Bee hive decoration -->
+    <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
     
     <!-- Flying bees -->
     <img 
@@ -141,6 +147,12 @@ const jokeFilterOptions = [
     type: 'text' as const
   }
 ]
+
+// === Toggle flag for Create/Get ===
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
 
 onMounted(() => {
   // Get cookies on mount
@@ -345,6 +357,7 @@ onUnmounted(() => {
 }
 .primary-content {
   display:flex;
+  padding-top: 5rem;
 }
 .main-content-layout {
   display: flex;
@@ -443,7 +456,7 @@ onUnmounted(() => {
 .bee-hive {
   position: fixed;
   top: 5rem;
-  right: 3rem;
+  right: 5rem;
   width: 13rem;
   height: auto;
   z-index: 5;
@@ -524,6 +537,70 @@ onUnmounted(() => {
   width: 100%;   /* or use rem/vw for responsive */
   height: auto;
   z-index: 99;   /* above most elements */
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 3.5rem;
+  right: 0;
+  z-index: 98;
+  pointer-events: none;
+}
+
+.tree {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20rem;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Toggle View Button */
+.main-content-layout button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  margin-bottom: 1rem;
+}
+
+/* Dark mode button styling */
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #444;
+}
+
+[data-theme="dark"] .main-content-layout button:hover {
+  background-color: #3d3d3d;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Light mode button styling */
+[data-theme="light"] .main-content-layout button,
+:root:not([data-theme="dark"]) .main-content-layout button {
+  background-color: white;
+  color: #2d2d2d;
+  border-color: #ddd;
+}
+
+[data-theme="light"] .main-content-layout button:hover,
+:root:not([data-theme="dark"]) .main-content-layout button:hover {
+  background-color: #f5f5f5;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
 }
 
 

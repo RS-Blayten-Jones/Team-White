@@ -68,8 +68,21 @@ const goToMenu = () => {
   router.push({ name: 'resource-menu' })
 }
 
+
+function setCookie(name: string, value: string, maxAgeSeconds?: number){
+  const parts = [`${name}=${encodeURIComponent(value)}`, 'path=/']
+  if (maxAgeSeconds) {
+    parts.push(`max-age=${maxAgeSeconds}`) //max age is how long it takes the cookie to expire
+  }
+  document.cookie = parts.join('; ')
+}
+
 const logout = () => {
-  // TODO: Implement logout logic
+
+  setCookie('jwt', '')
+  setCookie('role', '')
+  setCookie('f_name', '')
+  setCookie('l_name', '')
   router.push({ name: 'login' })
 }
 </script>
@@ -80,8 +93,11 @@ const logout = () => {
   color: var(--text-on-dark);
   padding: var(--spacing-sm) var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 100;
 }
 
