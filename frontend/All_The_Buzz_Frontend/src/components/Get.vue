@@ -424,7 +424,7 @@ export default defineComponent({
         case 'trivias':
           return ['language', 'question', 'answer', 'actions']
         case 'bios':
-          return ['language', 'name', 'paragraph', 'summary', 'birth_year', 'death_year', "source_url"]
+          return ['language', 'name', 'paragraph', 'summary', 'birth_year', 'death_year', 'source_url', 'actions']
         default:
           return ['actions']
       }
