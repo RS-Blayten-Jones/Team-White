@@ -102,7 +102,12 @@ export default defineComponent({
     },
     
     goBack() {
-      this.$router.push({ name: 'resource-menu' })
+
+      if (getCookie('jwt') == '' && getCookie('role') == '' && getCookie('f_name') == '' && getCookie('l_name') == '') {
+        this.$router.push({ name: 'login' })
+      } else {
+        this.$router.push({ name: 'resource-menu' })
+      }
     }
   }
 })
