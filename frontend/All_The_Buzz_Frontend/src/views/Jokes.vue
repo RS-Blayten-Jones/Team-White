@@ -13,30 +13,8 @@
             <h1 class="page-title">Jokes Management</h1>
             <p class="page-subtitle">Bees are terrible comedians—every punchline ends with a buzzkill</p>
           </div>
-        </div>
-      </div>
-
-      <div class="main-content-layout">
-      <div style="width:100%">
-          <button @click="toggleVisibility">
-            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
-          </button>
-
-        <div class="content-area card">
-          <CreateComponent v-show="!toggleComponent" resourceType="jokes"/> 
-          <GetButton 
-            v-show="toggleComponent"
-            :isManager="isManager" 
-            :jwt="jwt" 
-            resourceType="jokes"
-            :filterOptions="jokeFilterOptions"
-          />
-        </div>
-        </div>
-        
         <!-- Mini Resource Cards -->
         <div class="mini-resource-cards">
-          
           <div class="mini-card" @click="navigateTo('quotes')" tabindex="0" role="button">
             <img src="/quote-icon.png" alt="Quotes" />
             <span>Quotes</span>
@@ -51,6 +29,27 @@
           </div>
         </div>
       </div>
+    </div>
+
+      <div class="main-content-layout">
+      <div style="width:100%">
+          <button @click="toggleVisibility">
+            {{ toggleComponent ? 'Create Action' : 'Get Actions' }}
+          </button>
+
+        <div class="content-area card">
+          <CreateComponent v-show="!toggleComponent" resourceType="jokes"/> 
+          <GetButton 
+            v-show="toggleComponent"
+            :isManager="isManager" 
+            :jwt="jwt" 
+            resourceType="jokes"
+            :filterOptions="jokeFilterOptions"
+          />
+        </div>
+        </div>
+      </div>
+        
       
       
       </main>
@@ -355,10 +354,15 @@ onUnmounted(() => {
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
 }
-.primary-content {
-  display:flex;
-  padding-top: 5rem;
+
+.content-wrapper {
+  padding-top: 3rem;
 }
+
+.primary-content {
+  padding-top: 2rem;
+}
+
 .main-content-layout {
   display: flex;
   gap: 1.5rem;
@@ -368,26 +372,27 @@ onUnmounted(() => {
 /* Mini Resource Cards */
 .mini-resource-cards {
   display: flex;
+  flex-direction: row;
   gap: 1.5rem;
   margin-top: 0;
   margin-left: 1.5rem;
   z-index: 10;
   position: relative;
+  justify-content: flex-start;
 }
 
 .mini-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.2rem 2rem;
+  gap: 0.75rem;
+  padding: .5rem 2rem;
   background: linear-gradient(135deg, var(--color-primary-orange) 0%, var(--color-primary-coral) 100%);
   border-radius: var(--border-radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  height: 5rem;
-  width: 5rem;
+  width: 22%
 }
 
 .mini-card:hover {
@@ -401,8 +406,8 @@ onUnmounted(() => {
 }
 
 .mini-card img {
-  width: 3rem;
-  height: 3rem;
+  width: 100%;
+  height: auto;
   object-fit: contain;
 }
 
@@ -459,7 +464,7 @@ onUnmounted(() => {
   right: 5rem;
   width: 13rem;
   height: auto;
-  z-index: 5;
+  z-index: 0;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -543,7 +548,7 @@ onUnmounted(() => {
   position: fixed;
   top: 3.5rem;
   right: 0;
-  z-index: 98;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -553,7 +558,7 @@ onUnmounted(() => {
   top: 0;
   width: 20rem;
   height: auto;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
 }
 
