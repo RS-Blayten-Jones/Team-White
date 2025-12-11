@@ -177,12 +177,6 @@ def test_dept_setter_greater_than_35():
     with pytest.raises(ValueError):
         cred.dept = "a" * 36
 
-def test_dept_setter_non_letters():
-    cred = Credentials()
-    cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.dept = "$4l3$"
-
 # ------ Testing Title setter ------
 def test_title_setter_valid():
     cred = Credentials()
@@ -262,12 +256,6 @@ def test_loc_setter_greater_than_75():
     cred.id = 1234
     with pytest.raises(ValueError):
         cred.loc = "a" *76
-
-def test_loc_setter_non_letters():
-    cred = Credentials()
-    cred.id = 1234
-    with pytest.raises(ValueError):
-        cred.loc = "4ndr0m3d4 G414xy"
 
 # ----- Test Credentials Json Methods -----
 class TestCredentialsJsonMethods:

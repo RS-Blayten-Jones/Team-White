@@ -11,6 +11,12 @@
           {{ isDarkMode ? '☀️' : '🌙' }}
         </button>
         <button 
+          class="btn btn-neutral btn-sm"
+          @click="goToAboutUs"
+          >
+          About Us
+        </button>
+        <button 
           v-if="showMenuButton"
           class="btn btn-neutral btn-sm back-button" 
           @click="goToMenu"
@@ -77,6 +83,9 @@ function setCookie(name: string, value: string, maxAgeSeconds?: number){
   document.cookie = parts.join('; ')
 }
 
+const goToAboutUs = () => {
+  router.push({ name: 'about' })
+}
 const logout = () => {
 
   setCookie('jwt', '')
