@@ -16,11 +16,16 @@
       </div>
       
       <div class="main-content-layout">
-      <div>
+      <div style="width:100%">
+          <button @click="toggleVisibility">
+            Toggle View ({{ toggleComponent ? 'Get' : 'Create' }})
+          </button>
+
         <div class="content-area card">
-          <CreateComponent resourceType="quotes"/> 
+          <CreateComponent v-show="!toggleComponent" resourceType="quotes"/> 
           </div>
           <GetButton 
+            v-show="toggleComponent"
             :isManager="isManager" 
             :jwt="jwt" 
             resourceType="quotes"
@@ -45,6 +50,13 @@
         </div>
       </div>
     </main>
+
+    <div class="right-hand-side">
+      <img src="/tree.png" alt="tree" class="tree"/>
+      <div class="fixed-right-image">
+        <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
+      </div>
+    </div>
     
     <!-- Bee hive decoration (behind all content) -->
     <img src="/Bee-Hive.png" alt="Bee Hive" class="bee-hive" @click="releaseBee" />
@@ -111,6 +123,12 @@ const isManager = ref<boolean>(false)
 
 // Define filter options for quotes (can add filters if needed)
 const quoteFilterOptions: any[] = []
+
+// === Toggle flag for Create/Get ===
+const toggleComponent = ref(false) // false => show Create, true => show Get
+const toggleVisibility = () => {
+  toggleComponent.value = !toggleComponent.value
+}
 
 onMounted(() => {
   // Get cookies on mount
@@ -238,6 +256,14 @@ onUnmounted(() => {
   background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
+}
+
+.content-wrapper {
+  padding-top: 5rem;
+}
+
+.primary-content {
+  padding-top: 5rem;
 }
 
 .page-header { 
@@ -403,9 +429,9 @@ onUnmounted(() => {
 /* Bee hive decoration */
 .bee-hive {
   position: fixed;
-  top: 10px;
-  right: -30px;
-  width: 300px;
+  top: 5rem;
+  right: 5rem;
+  width: 13rem;
   height: auto;
   z-index: 5;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
@@ -475,5 +501,78 @@ onUnmounted(() => {
     width: 200px;
     height: 200px;
   }
+}
+
+.fixed-right-image {
+  position: fixed;
+  top: 2rem;
+  right: 4rem;
+  width: 100%;
+  height: auto;
+  z-index: 99;
+}
+
+.right-hand-side {
+  position: fixed;
+  top: 3.5rem;
+  right: 0;
+  z-index: 98;
+  pointer-events: none;
+}
+
+.tree {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20rem;
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Toggle View Button */
+.main-content-layout button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  margin-bottom: 1rem;
+}
+
+/* Dark mode button styling */
+[data-theme="dark"] .main-content-layout button {
+  background-color: #2d2d2d;
+  color: white;
+  border-color: #444;
+}
+
+[data-theme="dark"] .main-content-layout button:hover {
+  background-color: #3d3d3d;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Light mode button styling */
+[data-theme="light"] .main-content-layout button,
+:root:not([data-theme="dark"]) .main-content-layout button {
+  background-color: white;
+  color: #2d2d2d;
+  border-color: #ddd;
+}
+
+[data-theme="light"] .main-content-layout button:hover,
+:root:not([data-theme="dark"]) .main-content-layout button:hover {
+  background-color: #f5f5f5;
+  border-color: #ffd966;
+  box-shadow: 0 0 20px rgba(255, 217, 102, 0.3);
+  transform: translateY(-2px);
+}
+
+.main-content-layout button:active {
+  transform: translateY(0);
 }
 </style>
