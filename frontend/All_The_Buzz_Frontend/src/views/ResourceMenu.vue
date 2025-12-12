@@ -191,7 +191,7 @@ onUnmounted(() => {
 #side-bar {
   flex: 1;
   flex-direction: column;
-  margin-top: 4rem;
+  margin-top: 3rem;
 }
 #resource-menu {
   display: flex

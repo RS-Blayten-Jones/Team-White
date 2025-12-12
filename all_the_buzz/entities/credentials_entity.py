@@ -230,6 +230,7 @@ class Credentials:
         elif not all(key in content for key in requried_fields):
             raise ValueError("Missing required fields")
         else:
+            print(content['title'].capitalize() == 'Manager')
             if content['title'].capitalize() != 'Manager':
                 content['title']='Employee'
 
